@@ -127,6 +127,68 @@ public class PushNotificationServiceTest extends TestFixtureBase
         tr.Run();
     }
 
+
+    @Test
+    public void testScheduleNormalizedPushNotificationUTC() throws Exception
+    {
+        TestResult tr = new TestResult();
+
+        BrainCloudClient.getInstance().getPushNotificationService().scheduleNormalizedPushNotificationUTC(
+                getUser(Users.UserA).profileId,
+                "{ \"body\": \"content of message\", \"title\": \"message title\" }",
+                Helpers.createJsonPair("1", "asdf"),
+                0,
+                tr);
+
+        tr.Run();
+    }
+
+    @Test
+    public void testScheduleNormalizedPushNotificationMinutes() throws Exception
+    {
+        TestResult tr = new TestResult();
+
+        BrainCloudClient.getInstance().getPushNotificationService().scheduleNormalizedPushNotificationMinutes(
+                getUser(Users.UserA).profileId,
+                "{ \"body\": \"content of message\", \"title\": \"message title\" }",
+                Helpers.createJsonPair("1", "asdf"),
+                42,
+                tr);
+
+        tr.Run();
+    }
+
+    @Test
+    public void testScheduleRichPushNotificationUTC() throws Exception
+    {
+        TestResult tr = new TestResult();
+
+        BrainCloudClient.getInstance().getPushNotificationService().scheduleRichPushNotificationUTC(
+                getUser(Users.UserA).profileId,
+                1,
+                Helpers.createJsonPair("1", "asdf"),
+                0,
+                tr);
+
+        tr.Run();
+    }
+
+    @Test
+    public void testScheduleRichPushNotificationMinutes() throws Exception
+    {
+        TestResult tr = new TestResult();
+
+        BrainCloudClient.getInstance().getPushNotificationService().scheduleRichPushNotificationMinutes(
+                getUser(Users.UserA).profileId,
+                1,
+                Helpers.createJsonPair("1", "asdf"),
+                42,
+                tr);
+
+        tr.Run();
+    }
+
+
     @Test
     public void testSendNormalizedPushNotification() throws Exception
     {

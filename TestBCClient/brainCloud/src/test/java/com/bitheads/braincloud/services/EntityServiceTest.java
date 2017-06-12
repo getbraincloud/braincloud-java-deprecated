@@ -82,12 +82,12 @@ public class EntityServiceTest extends TestFixtureBase {
     }
 
     @Test
-    public void testGetInstanceSharedEntitiesForPlayerId() throws Exception {
+    public void testGetInstanceSharedEntitiesForProfileId() throws Exception {
         TestResult tr = new TestResult();
         createDefaultAddressEntity(ACL.Access.None);
 
         //getInstanceEntity
-        BrainCloudClient.getInstance().getEntityService().getSharedEntitiesForPlayerId(getUser(Users.UserA).profileId, tr);
+        BrainCloudClient.getInstance().getEntityService().getSharedEntitiesForProfileId(getUser(Users.UserA).profileId, tr);
         tr.Run();
         deleteAllDefaultEntities();
     }
@@ -132,11 +132,11 @@ public class EntityServiceTest extends TestFixtureBase {
     }
 
     @Test
-    public void testGetSharedEntityForPlayerId() throws Exception {
+    public void testGetSharedEntityForProfileId() throws Exception {
         TestResult tr = new TestResult();
         String entityId = createDefaultAddressEntity(ACL.Access.ReadWrite);
 
-        BrainCloudClient.getInstance().getEntityService().getSharedEntityForPlayerId(
+        BrainCloudClient.getInstance().getEntityService().getSharedEntityForProfileId(
                 BrainCloudClient.getInstance().getAuthenticationService().getProfileId(),
                 entityId,
                 tr);
@@ -300,13 +300,13 @@ public class EntityServiceTest extends TestFixtureBase {
     }
 
     @Test
-    public void testGetSharedEntitiesListForPlayerId() throws Exception {
+    public void testGetSharedEntitiesListForProfileId() throws Exception {
         TestResult tr = new TestResult();
 
         createDefaultAddressEntity(ACL.Access.None);
         createDefaultAddressEntity(ACL.Access.None);
 
-        BrainCloudClient.getInstance().getEntityService().getSharedEntitiesListForPlayerId(
+        BrainCloudClient.getInstance().getEntityService().getSharedEntitiesListForProfileId(
                 getUser(Users.UserA).profileId,
                 Helpers.createJsonPair("entityType", _defaultEntityType),
                 "",

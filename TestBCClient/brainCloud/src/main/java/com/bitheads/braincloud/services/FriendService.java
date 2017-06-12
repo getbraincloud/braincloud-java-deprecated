@@ -90,7 +90,7 @@ public class FriendService {
      * Service Name - Friend
      * Service Operation - GET_EXTERNAL_ID_FOR_PROFILE_ID
      *
-     * @param profileId Profile (player) ID.
+     * @param profileId Profile ID.
      * @param authenticationType The authentication type e.g. Facebook
      */
     public void getExternalIdForProfileId(String profileId, String authenticationType, IServerCallback callback) {
@@ -107,7 +107,7 @@ public class FriendService {
     }
 
     /**
-     * Finds a list of players matching the search text by performing an exact match search
+     * Finds a list of users matching the search text by performing an exact match search
      *
      * Service Name - friend
      * Service Operation - FIND_USERS_BY_EXACT_NAME
@@ -130,8 +130,8 @@ public class FriendService {
     }
 
     /**
-     * Finds a list of players matching the search text by performing a substring
-     * search of all player names.
+     * Finds a list of users matching the search text by performing a substring
+     * search of all user names.
      *
      * Service Name - friend
      * Service Operation - FIND_USERS_BY_SUBSTR_NAME
@@ -154,12 +154,28 @@ public class FriendService {
     }
 
     /**
+     * @deprecated Use findUserByUniversalId() instead - Removal after September 1 2017
+     */
+    public void findPlayerByUniversalId(String searchText, int maxResults, IServerCallback callback) {
+        JSONObject data = new JSONObject();
+        try {
+            data.put(Parameter.searchText.name(), searchText);
+            data.put(Parameter.maxResults.name(), maxResults);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        ServerCall sc = new ServerCall(ServiceName.friend, ServiceOperation.FIND_PLAYER_BY_UNIVERSAL_ID, data, callback);
+        BrainCloudClient.getInstance().sendRequest(sc);
+    }
+
+    /**
      * Retrieves profile information for the partial matches of the specified text.
      *
      * @param searchText Universal ID text on which to search.
      * @param maxResults Maximum number of results to return.
      */
-    public void findPlayerByUniversalId(String searchText, int maxResults, IServerCallback callback) {
+    public void findUserByUniversalId(String searchText, int maxResults, IServerCallback callback) {
         JSONObject data = new JSONObject();
         try {
             data.put(Parameter.searchText.name(), searchText);
@@ -219,7 +235,22 @@ public class FriendService {
     }
 
     /**
-     * Read a friend's player state.
+     * @deprecated Use readFriendUserState() instead - Removal after September 1 2017
+     */
+    public void readFriendPlayerState(String friendId, IServerCallback callback) {
+        JSONObject data = new JSONObject();
+        try {
+            data.put(Parameter.friendId.name(), friendId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        ServerCall sc = new ServerCall(ServiceName.friend, ServiceOperation.READ_FRIEND_PLAYER_STATE, data, callback);
+        BrainCloudClient.getInstance().sendRequest(sc);
+    }
+
+    /**
+     * Read a friend's user state.
      *
      * Service Name - PlayerState
      * Service Operation - ReadFriendsPlayerState
@@ -227,7 +258,7 @@ public class FriendService {
      * @param friendId Target friend
      * @param callback The callback handler
      */
-    public void readFriendPlayerState(String friendId, IServerCallback callback) {
+    public void readFriendUserState(String friendId, IServerCallback callback) {
         JSONObject data = new JSONObject();
         try {
             data.put(Parameter.friendId.name(), friendId);
@@ -263,12 +294,12 @@ public class FriendService {
     }
 
     /**
-     * Links the current player and the specified players as brainCloud friends.
+     * Links the current user and the specified users as brainCloud friends.
      *
      * Service Name - Friend
      * Service Operation - ADD_FRIENDS
      *
-     * @param profileIds Collection of player IDs.
+     * @param profileIds Collection of profile IDs.
      * @param callback Method to be invoked when the server response is received.
      */
     public void addFriends(String[] profileIds, IServerCallback callback) {
@@ -289,12 +320,12 @@ public class FriendService {
     }
 
     /**
-     * Unlinks the current player and the specified players as brainCloud friends.
+     * Unlinks the current user and the specified users as brainCloud friends.
      *
      * Service Name - Friend
      * Service Operation - REMOVE_FRIENDS
      *
-     * @param profileIds Collection of player IDs.
+     * @param profileIds Collection of profile IDs.
      * @param callback Method to be invoked when the server response is received.
      */
     public void removeFriends(String[] profileIds, IServerCallback callback) {
@@ -315,9 +346,9 @@ public class FriendService {
     }
 
     /**
-     * Returns player state of a particular user.
+     * Returns state of a particular user.
      *
-     * @param profileId Profile Id of player to retrieve player state for.
+     * @param profileId Profile Id of user to retrieve user state for.
      * @param callback Method to be invoked when the server response is received.
      */
     public void getSummaryDataForProfileId(String profileId, IServerCallback callback) {

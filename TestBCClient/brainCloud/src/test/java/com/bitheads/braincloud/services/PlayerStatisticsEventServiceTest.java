@@ -26,7 +26,7 @@ public class PlayerStatisticsEventServiceTest extends TestFixtureBase implements
     {
         TestResult tr = new TestResult();
 
-        BrainCloudClient.getInstance().getPlayerStatisticsEventService().triggerPlayerStatisticsEvent(
+        BrainCloudClient.getInstance().getPlayerStatisticsEventService().triggerUserStatsEvent(
                 _eventId01,
                 1,
                 tr);
@@ -51,7 +51,7 @@ public class PlayerStatisticsEventServiceTest extends TestFixtureBase implements
         events.put(event1);
         events.put(event2);
 
-        BrainCloudClient.getInstance().getPlayerStatisticsEventService().triggerPlayerStatisticsEvents(
+        BrainCloudClient.getInstance().getPlayerStatisticsEventService().triggerUserStatsEvents(
                 events.toString(),
                 tr);
 
@@ -63,7 +63,7 @@ public class PlayerStatisticsEventServiceTest extends TestFixtureBase implements
     {
         m_rewardCallbackHitCount = 0;
         TestResult tr = new TestResult();
-        BrainCloudClient.getInstance().getPlayerStateService().resetPlayer(tr);
+        BrainCloudClient.getInstance().getPlayerStateService().resetUser(tr);
         tr.Run();
 
         JSONObject event1 = new JSONObject();
@@ -80,7 +80,7 @@ public class PlayerStatisticsEventServiceTest extends TestFixtureBase implements
 
         BrainCloudClient.getInstance().registerRewardCallback(this);
 
-        BrainCloudClient.getInstance().getPlayerStatisticsEventService().triggerPlayerStatisticsEvents(
+        BrainCloudClient.getInstance().getPlayerStatisticsEventService().triggerUserStatsEvents(
                 events.toString(),
                 tr);
         tr.Run();
@@ -93,7 +93,7 @@ public class PlayerStatisticsEventServiceTest extends TestFixtureBase implements
     {
         m_rewardCallbackHitCount = 0;
         TestResult tr = new TestResult();
-        BrainCloudClient.getInstance().getPlayerStateService().resetPlayer(tr);
+        BrainCloudClient.getInstance().getPlayerStateService().resetUser(tr);
         tr.Run();
 
         JSONObject event1 = new JSONObject();
@@ -110,10 +110,10 @@ public class PlayerStatisticsEventServiceTest extends TestFixtureBase implements
 
         BrainCloudClient.getInstance().registerRewardCallback(this);
 
-        BrainCloudClient.getInstance().getPlayerStatisticsEventService().triggerPlayerStatisticsEvents(
+        BrainCloudClient.getInstance().getPlayerStatisticsEventService().triggerUserStatsEvents(
                 events1.toString(),
                 tr);
-        BrainCloudClient.getInstance().getPlayerStatisticsEventService().triggerPlayerStatisticsEvents(
+        BrainCloudClient.getInstance().getPlayerStatisticsEventService().triggerUserStatsEvents(
                 events2.toString(),
                 tr);
         tr.RunExpectCount(2);

@@ -35,4 +35,21 @@ public class MailServiceTest extends TestFixtureBase {
 
         tr.Run();
     }
+
+    @Test
+    public void testSendAdvancedEmailByAddress() throws Exception {
+        TestResult tr = new TestResult();
+
+        JSONObject data = new JSONObject();
+        data.put("subject", "Test Subject - TestSendAdvancedEmailByAddress");
+        data.put("body", "Test body");
+        data.put("categories", new String[]{"unit-test"});
+
+        BrainCloudClient.getInstance().getMailService().sendAdvancedEmailByAddress(
+                getUser(Users.UserA).email,
+                data.toString(),
+                tr);
+
+        tr.Run();
+    }
 }

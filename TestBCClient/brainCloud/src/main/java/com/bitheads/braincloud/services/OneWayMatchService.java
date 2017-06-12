@@ -29,15 +29,15 @@ public class OneWayMatchService {
      * Service Name - OneWayMatch 
      * Service Operation - StartMatch
      *
-     * @param in_otherPlayerId The player to start a match with
-     * @param in_rangeDeltaThe Range delta used for the initial match search
+     * @param otherPlayerId The player to start a match with
+     * @param rangeDelta The Range delta used for the initial match search
      * @param callback The callback.
      */
-    public void startMatch(String in_otherPlayerId, long in_rangeDelta, IServerCallback callback) {
+    public void startMatch(String otherPlayerId, long rangeDelta, IServerCallback callback) {
         try {
             JSONObject data = new JSONObject();
-            data.put(Parameter.playerId.name(), in_otherPlayerId);
-            data.put(Parameter.rangeDelta.name(), in_rangeDelta);
+            data.put(Parameter.playerId.name(), otherPlayerId);
+            data.put(Parameter.rangeDelta.name(), rangeDelta);
 
             ServerCall sc = new ServerCall(ServiceName.onewayMatch, ServiceOperation.START_MATCH, data, callback);
             _client.sendRequest(sc);
@@ -51,13 +51,13 @@ public class OneWayMatchService {
      * Service Name - OneWayMatch 
      * Service Operation - CancelMatch
      *
-     * @param in_playbackStreamId The playback stream id returned in the start match
+     * @param playbackStreamId The playback stream id returned in the start match
      * @param callback The callback.
      */
-    public void cancelMatch(String in_playbackStreamId, IServerCallback callback) {
+    public void cancelMatch(String playbackStreamId, IServerCallback callback) {
         try {
             JSONObject data = new JSONObject();
-            data.put(Parameter.playbackStreamId.name(), in_playbackStreamId);
+            data.put(Parameter.playbackStreamId.name(), playbackStreamId);
 
             ServerCall sc = new ServerCall(ServiceName.onewayMatch, ServiceOperation.CANCEL_MATCH, data, callback);
             _client.sendRequest(sc);
@@ -71,13 +71,13 @@ public class OneWayMatchService {
      * Service Name - OneWayMatch 
      * Service Operation - CompleteMatch
      *
-     * @param in_playbackStreamId The playback stream id returned in the initial start match
+     * @param playbackStreamId The playback stream id returned in the initial start match
      * @param callback The callback.
      */
-    public void completeMatch(String in_playbackStreamId, IServerCallback callback) {
+    public void completeMatch(String playbackStreamId, IServerCallback callback) {
         try {
             JSONObject data = new JSONObject();
-            data.put(Parameter.playbackStreamId.name(), in_playbackStreamId);
+            data.put(Parameter.playbackStreamId.name(), playbackStreamId);
 
             ServerCall sc = new ServerCall(ServiceName.onewayMatch, ServiceOperation.COMPLETE_MATCH, data, callback);
             _client.sendRequest(sc);

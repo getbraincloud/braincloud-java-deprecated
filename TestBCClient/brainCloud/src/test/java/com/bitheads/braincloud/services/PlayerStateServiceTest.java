@@ -19,7 +19,7 @@ public class PlayerStateServiceTest extends TestFixtureBase
     {
         TestResult tr = new TestResult();
 
-        BrainCloudClient.getInstance().getPlayerStateService().deletePlayer(
+        BrainCloudClient.getInstance().getPlayerStateService().deleteUser(
                 tr);
         tr.Run();
         BrainCloudClient.getInstance().getAuthenticationService().clearSavedProfileId();
@@ -59,7 +59,7 @@ public class PlayerStateServiceTest extends TestFixtureBase
     {
         TestResult tr = new TestResult();
 
-        BrainCloudClient.getInstance().getPlayerStateService().readPlayerState(
+        BrainCloudClient.getInstance().getPlayerStateService().readUserState(
                 tr);
 
         tr.Run();
@@ -82,7 +82,7 @@ public class PlayerStateServiceTest extends TestFixtureBase
     {
         TestResult tr = new TestResult();
 
-        BrainCloudClient.getInstance().getPlayerStateService().resetPlayer(
+        BrainCloudClient.getInstance().getPlayerStateService().resetUser(
                 tr);
 
         tr.Run();
@@ -110,7 +110,7 @@ public class PlayerStateServiceTest extends TestFixtureBase
     {
         TestResult tr = new TestResult();
 
-        BrainCloudClient.getInstance().getPlayerStateService().updatePlayerName(
+        BrainCloudClient.getInstance().getPlayerStateService().updateUserName(
                 "ABC",
                 tr);
 
@@ -137,7 +137,7 @@ public class PlayerStateServiceTest extends TestFixtureBase
     {
         TestResult tr = new TestResult();
 
-        BrainCloudClient.getInstance().getPlayerStateService().updatePlayerPictureUrl(
+        BrainCloudClient.getInstance().getPlayerStateService().updateUserPictureUrl(
                 "https://some.domain.com/mypicture.jpg",
                 tr);
 

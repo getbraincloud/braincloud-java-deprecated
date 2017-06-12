@@ -25,8 +25,24 @@ public class PlayerStatisticsEventService {
     }
 
     /**
-     * Trigger an event server side that will increase the players statistics.
-     * This may cause one or more awards to be sent back to the player - 
+     * @deprecated Use triggerUserStatsEvent() instead - Removal after September 1 2017
+     */
+    public void triggerPlayerStatisticsEvent(String eventName, int eventMultiplier, IServerCallback callback) {
+        try {
+            JSONObject data = new JSONObject();
+            data.put(Parameter.eventName.name(), eventName);
+            data.put(Parameter.eventMultiplier.name(), eventMultiplier);
+
+            ServerCall sc = new ServerCall(ServiceName.playerStatisticsEvent, ServiceOperation.TRIGGER, data, callback);
+            _client.sendRequest(sc);
+
+        } catch (JSONException ignored) {
+        }
+    }
+
+    /**
+     * Trigger an event server side that will increase the user statistics.
+     * This may cause one or more awards to be sent back to the user -
      * could be achievements, experience, etc. Achievements will be sent by this
      * client library to the appropriate awards service (Apple Game Center, etc).
      *
@@ -39,15 +55,30 @@ public class PlayerStatisticsEventService {
      *
      * @see PlayerStatisticsService
      */
-    public void triggerPlayerStatisticsEvent(String in_eventName, int in_eventMultiplier, IServerCallback callback) {
+    public void triggerUserStatsEvent(String eventName, int eventMultiplier, IServerCallback callback) {
         try {
             JSONObject data = new JSONObject();
-            data.put(Parameter.eventName.name(), in_eventName);
-            data.put(Parameter.eventMultiplier.name(), in_eventMultiplier);
+            data.put(Parameter.eventName.name(), eventName);
+            data.put(Parameter.eventMultiplier.name(), eventMultiplier);
 
             ServerCall sc = new ServerCall(ServiceName.playerStatisticsEvent, ServiceOperation.TRIGGER, data, callback);
             _client.sendRequest(sc);
 
+        } catch (JSONException ignored) {
+        }
+    }
+
+    /**
+     * @deprecated Use triggerUserStatsEvents() instead - Removal after September 1 2017
+     */
+    public void triggerPlayerStatisticsEvents(String jsonData, IServerCallback callback) {
+        try {
+            JSONObject data = new JSONObject();
+            JSONArray jsonArray = new JSONArray(jsonData);
+            data.put(Parameter.events.name(), jsonArray);
+
+            ServerCall sc = new ServerCall(ServiceName.playerStatisticsEvent, ServiceOperation.TRIGGER_MULTIPLE, data, callback);
+            _client.sendRequest(sc);
         } catch (JSONException ignored) {
         }
     }
@@ -59,7 +90,7 @@ public class PlayerStatisticsEventService {
      * Service Name - PlayerStatisticsEvent
      * Service Operation - TriggerMultiple
      *
-     * @param in_jsonData
+     * @param jsonData
      *   [
      *     {
      *       "eventName": "event1",
@@ -71,11 +102,11 @@ public class PlayerStatisticsEventService {
      *     }
      *   ]
      */
-    public void triggerPlayerStatisticsEvents(String in_jsonData, IServerCallback callback) {
+    public void triggerUserStatsEvents(String jsonData, IServerCallback callback) {
         try {
             JSONObject data = new JSONObject();
-            JSONArray jsonData = new JSONArray(in_jsonData);
-            data.put(Parameter.events.name(), jsonData);
+            JSONArray jsonArray = new JSONArray(jsonData);
+            data.put(Parameter.events.name(), jsonArray);
 
             ServerCall sc = new ServerCall(ServiceName.playerStatisticsEvent, ServiceOperation.TRIGGER_MULTIPLE, data, callback);
             _client.sendRequest(sc);

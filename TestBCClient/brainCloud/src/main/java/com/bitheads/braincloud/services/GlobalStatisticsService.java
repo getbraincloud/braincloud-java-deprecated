@@ -64,17 +64,17 @@ public class GlobalStatisticsService {
      * Service Name - GlobalStatistics
      * Service Operation - READ_FOR_CATEGORY
      *
-     * @param in_category The global statistics category
+     * @param category The global statistics category
      *
      * @param callback Callback.
      */
     public void readGlobalStatsForCategory(
-            String in_category,
+            String category,
             IServerCallback callback) {
         try {
 
             JSONObject data = new JSONObject();
-            data.put(Parameter.category.name(), in_category);
+            data.put(Parameter.category.name(), category);
 
             ServerCall sc = new ServerCall(ServiceName.globalGameStatistics, ServiceOperation.READ_FOR_CATEGORY, data, callback);
             _client.sendRequest(sc);

@@ -243,7 +243,7 @@ public class AuthenticationService {
         try {
             JSONObject message = new JSONObject();
             message.put(Parameter.externalId.name(), email);
-            message.put(Parameter.gameId.name(), _client.getGameId());
+            message.put(Parameter.gameId.name(), _client.getAppId());
 
             ServerCall serverCall = new ServerCall(
                     ServiceName.authenticationV2,
@@ -270,9 +270,9 @@ public class AuthenticationService {
 
             message.put(Parameter.profileId.name(), _profileId);
             message.put(Parameter.anonymousId.name(), _anonymousId);
-            message.put(Parameter.gameId.name(), _client.getGameId());
+            message.put(Parameter.gameId.name(), _client.getAppId());
             message.put(Parameter.releasePlatform.name(), _client.getReleasePlatform());
-            message.put(Parameter.upgradeAppId.name(), _client.getGameVersion());
+            message.put(Parameter.upgradeAppId.name(), _client.getAppVersion());
             message.put(Parameter.version.name(), _client.getBrainCloudVersion());
 
             if (StringUtil.IsOptionalParameterValid(externalAuthName)) {

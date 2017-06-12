@@ -36,29 +36,29 @@ public class GroupACL {
         return _other;
     }
 
-    public void setOther(Access in_value) {
-        _other = in_value;
+    public void setOther(Access value) {
+        _other = value;
     }
 
-    public void setOther(int in_value) {
-        _other = Access.fromOrdinal(in_value);
+    public void setOther(int value) {
+        _other = Access.fromOrdinal(value);
     }
 
     public Access getMember() {
         return _member;
     }
 
-    public void setMember(Access in_value) {
-        _member = in_value;
+    public void setMember(Access value) {
+        _member = value;
     }
 
-    public void setMember(int in_value) {
-        _member = Access.fromOrdinal(in_value);
+    public void setMember(int value) {
+        _member = Access.fromOrdinal(value);
     }
 
-    public static GroupACL createFromJson(String in_json) {
+    public static GroupACL createFromJson(String json) {
         try {
-            JSONObject jsonObj = new JSONObject(in_json);
+            JSONObject jsonObj = new JSONObject(json);
             return createFromJson(jsonObj);
         } catch (JSONException je) {
             je.printStackTrace();
@@ -67,25 +67,25 @@ public class GroupACL {
         return new GroupACL();
     }
 
-    public static GroupACL createFromJson(JSONObject in_json) {
+    public static GroupACL createFromJson(JSONObject json) {
         GroupACL acl = new GroupACL();
-        acl.readFromJson(in_json);
+        acl.readFromJson(json);
         return acl;
     }
 
-    public void readFromJson(String in_json) {
+    public void readFromJson(String json) {
         try {
-            JSONObject jsonObj = new JSONObject(in_json);
+            JSONObject jsonObj = new JSONObject(json);
             readFromJson(jsonObj);
         } catch (JSONException je) {
             je.printStackTrace();
         }
     }
 
-    public void readFromJson(JSONObject in_json) {
+    public void readFromJson(JSONObject json) {
         try {
-            setOther(in_json.getInt("other"));
-            setMember(in_json.getInt("member"));
+            setOther(json.getInt("other"));
+            setMember(json.getInt("member"));
         } catch (JSONException je) {
             je.printStackTrace();
         }

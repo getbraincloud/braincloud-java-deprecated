@@ -16,13 +16,16 @@ public class PushNotificationService {
         deviceType,
         deviceToken,
         toPlayerId,
+        profileId,
         message,
         notificationTemplateId,
         substitutions,
         groupId,
         alertContent,
         customData,
-        profileIds
+        profileIds,
+        startDateUTC,
+        minutesFromNow
     }
 
     private BrainCloudClient _client;
@@ -89,14 +92,14 @@ public class PushNotificationService {
      * Sends a simple push notification based on the passed in message.
      * NOTE: It is possible to send a push notification to oneself.
      *
-     * @param toPlayerId The braincloud playerId of the user to receive the notification
+     * @param toProfileId The braincloud profileId of the user to receive the notification
      * @param message Text of the push notification
      * @param callback The method to be invoked when the server response is received
      */
-    public void sendSimplePushNotification(String toPlayerId, String message, IServerCallback callback) {
+    public void sendSimplePushNotification(String toProfileId, String message, IServerCallback callback) {
         try {
             JSONObject data = new JSONObject();
-            data.put(Parameter.toPlayerId.name(), toPlayerId);
+            data.put(Parameter.toPlayerId.name(), toProfileId);
             data.put(Parameter.message.name(), message);
 
             ServerCall sc = new ServerCall(ServiceName.pushNotification, ServiceOperation.SEND_SIMPLE, data, callback);
@@ -109,12 +112,12 @@ public class PushNotificationService {
      * Sends a notification to a user based on a brainCloud portal configured notification template.
      * NOTE: It is possible to send a push notification to oneself.
      *
-     * @param toPlayerId The braincloud playerId of the user to receive the notification
+     * @param toProfileId The braincloud profileId of the user to receive the notification
      * @param notificationTemplateId Id of the notification template
      * @param callback The method to be invoked when the server response is received
      */
-    public void sendRichPushNotification(String toPlayerId, int notificationTemplateId, IServerCallback callback) {
-        sendRichPushNotificationWithParams(toPlayerId, notificationTemplateId, null, callback);
+    public void sendRichPushNotification(String toProfileId, int notificationTemplateId, IServerCallback callback) {
+        sendRichPushNotificationWithParams(toProfileId, notificationTemplateId, null, callback);
     }
 
     /**
@@ -123,15 +126,15 @@ public class PushNotificationService {
      * See the Portal documentation for more info.
      * NOTE: It is possible to send a push notification to oneself.
      *
-     * @param toPlayerId The braincloud playerId of the user to receive the notification
+     * @param toProfileId The braincloud profileId of the user to receive the notification
      * @param notificationTemplateId Id of the notification template
      * @param substitutionJson JSON defining the substitution params to use with the template
      * @param callback The method to be invoked when the server response is received
      */
-    public void sendRichPushNotificationWithParams(String toPlayerId, int notificationTemplateId, String substitutionJson, IServerCallback callback) {
+    public void sendRichPushNotificationWithParams(String toProfileId, int notificationTemplateId, String substitutionJson, IServerCallback callback) {
         try {
             JSONObject data = new JSONObject();
-            data.put(Parameter.toPlayerId.name(), toPlayerId);
+            data.put(Parameter.toPlayerId.name(), toProfileId);
             data.put(Parameter.notificationTemplateId.name(), notificationTemplateId);
             if (StringUtil.IsOptionalParameterValid(substitutionJson)) {
                 JSONObject subJson = new JSONObject(substitutionJson);
@@ -197,17 +200,131 @@ public class PushNotificationService {
     }
 
     /**
+     * Schedules a normalized push notification to a user
+     *
+     * @param profileId The profileId of the user to receive the notification
+     * @param alertContentJson Body and title of alert
+     * @param customDataJson Optional custom data
+     * @param startTime Start time of sending the push notification
+     * @param callback The method to be invoked when the server response is received
+     */
+    public void scheduleNormalizedPushNotificationUTC(String profileId, String alertContentJson, String customDataJson,
+                                                      int startTime, IServerCallback callback) {
+        try {
+            JSONObject data = new JSONObject();
+            data.put(Parameter.profileId.name(), profileId);
+            data.put(Parameter.alertContent.name(), new JSONObject(alertContentJson));
+            if (StringUtil.IsOptionalParameterValid(customDataJson)) {
+                data.put(Parameter.customData.name(), new JSONObject(customDataJson));
+            }
+
+            data.put(Parameter.startDateUTC.name(), startTime);
+
+            ServerCall sc = new ServerCall(ServiceName.pushNotification, ServiceOperation.SCHEDULE_NORMALIZED_NOTIFICATION, data, callback);
+            _client.sendRequest(sc);
+        } catch (JSONException je) {
+            je.printStackTrace();
+        }
+    }
+
+    /**
+     * Schedules a normalized push notification to a user
+     *
+     * @param profileId The profileId of the user to receive the notification
+     * @param alertContentJson Body and title of alert
+     * @param customDataJson Optional custom data
+     * @param minutesFromNow Minutes from now to send the push notification
+     * @param callback The method to be invoked when the server response is received
+     */
+    public void scheduleNormalizedPushNotificationMinutes(String profileId, String alertContentJson, String customDataJson,
+                                                          int minutesFromNow, IServerCallback callback) {
+        try {
+            JSONObject data = new JSONObject();
+            data.put(Parameter.profileId.name(), profileId);
+            data.put(Parameter.alertContent.name(), new JSONObject(alertContentJson));
+            if (StringUtil.IsOptionalParameterValid(customDataJson)) {
+                data.put(Parameter.customData.name(), new JSONObject(customDataJson));
+            }
+
+            data.put(Parameter.minutesFromNow.name(), minutesFromNow);
+
+            ServerCall sc = new ServerCall(ServiceName.pushNotification, ServiceOperation.SCHEDULE_NORMALIZED_NOTIFICATION, data, callback);
+            _client.sendRequest(sc);
+        } catch (JSONException je) {
+            je.printStackTrace();
+        }
+    }
+
+    /**
+     * Schedules a rich push notification to a user
+     *
+     * @param profileId The profileId of the user to receive the notification
+     * @param notificationTemplateId Body and title of alert
+     * @param substitutionsJson Map of substitution positions to strings
+     * @param startTime Start time of sending the push notification
+     * @param callback The method to be invoked when the server response is received
+     */
+    public void scheduleRichPushNotificationUTC(String profileId, int notificationTemplateId, String substitutionsJson,
+                                                int startTime, IServerCallback callback) {
+        try {
+            JSONObject data = new JSONObject();
+            data.put(Parameter.profileId.name(), profileId);
+            data.put(Parameter.notificationTemplateId.name(), notificationTemplateId);
+            if (StringUtil.IsOptionalParameterValid(substitutionsJson)) {
+                data.put(Parameter.substitutions.name(), new JSONObject(substitutionsJson));
+            }
+
+            data.put(Parameter.startDateUTC.name(), startTime);
+
+            ServerCall sc = new ServerCall(ServiceName.pushNotification, ServiceOperation.SCHEDULE_RICH_NOTIFICATION, data, callback);
+            _client.sendRequest(sc);
+        } catch (JSONException je) {
+            je.printStackTrace();
+        }
+    }
+
+
+    /**
+     * Schedules a rich push notification to a user
+     *
+     * @param profileId The profileId of the user to receive the notification
+     * @param notificationTemplateId Body and title of alert
+     * @param substitutionsJson Map of substitution positions to strings
+     * @param minutesFromNow Minutes from now to send the push notification
+     * @param callback The method to be invoked when the server response is received
+     */
+    public void scheduleRichPushNotificationMinutes(String profileId, int notificationTemplateId, String substitutionsJson,
+                                                    int minutesFromNow, IServerCallback callback) {
+        try {
+            JSONObject data = new JSONObject();
+            data.put(Parameter.profileId.name(), profileId);
+            data.put(Parameter.notificationTemplateId.name(), notificationTemplateId);
+            if (StringUtil.IsOptionalParameterValid(substitutionsJson)) {
+                data.put(Parameter.substitutions.name(), new JSONObject(substitutionsJson));
+            }
+
+            data.put(Parameter.minutesFromNow.name(), minutesFromNow);
+
+            ServerCall sc = new ServerCall(ServiceName.pushNotification, ServiceOperation.SCHEDULE_RICH_NOTIFICATION, data, callback);
+            _client.sendRequest(sc);
+        } catch (JSONException je) {
+            je.printStackTrace();
+        }
+    }
+
+
+    /**
      * Sends a notification to a user consisting of alert content and custom data.
      *
-     * @param toPlayerId The playerId of the user to receive the notification
+     * @param toProfileId The profileId of the user to receive the notification
      * @param alertContentJson Body and title of alert
      * @param customDataJson Optional custom data
      * @param callback The method to be invoked when the server response is received
      */
-    public void sendNormalizedPushNotification(String toPlayerId, String alertContentJson, String customDataJson, IServerCallback callback) {
+    public void sendNormalizedPushNotification(String toProfileId, String alertContentJson, String customDataJson, IServerCallback callback) {
         try {
             JSONObject data = new JSONObject();
-            data.put(Parameter.toPlayerId.name(), toPlayerId);
+            data.put(Parameter.toPlayerId.name(), toProfileId);
             data.put(Parameter.alertContent.name(), new JSONObject(alertContentJson));
             if (StringUtil.IsOptionalParameterValid(customDataJson)) {
                 data.put(Parameter.customData.name(), new JSONObject(customDataJson));

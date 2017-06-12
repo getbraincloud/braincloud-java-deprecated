@@ -139,46 +139,46 @@ public class AsyncMatchService {
      * Service Name - AsyncMatch
      * Service Operation - SubmitTurn
      *
-     * @param in_ownerId Match owner identfier
-     * @param in_matchId Match identifier
-     * @param in_version Game state version to ensure turns are submitted once and in order
-     * @param in_jsonMatchState JSON string provided by the caller
-     * @param in_pushNotificationMessage Optional push notification message to send to the other party.
+     * @param ownerId Match owner identfier
+     * @param matchId Match identifier
+     * @param version Game state version to ensure turns are submitted once and in order
+     * @param jsonMatchState JSON string provided by the caller
+     * @param pushNotificationMessage Optional push notification message to send to the other party.
      *  Refer to the Push Notification functions for the syntax required.
-     * @param in_nextPlayer Optionally, force the next player player to be a specific player
-     * @param in_jsonSummary Optional JSON string that other players will see as a summary of the game when listing their games
-     * @param in_jsonStatistics Optional JSON string blob provided by the caller
+     * @param nextPlayer Optionally, force the next player player to be a specific player
+     * @param jsonSummary Optional JSON string that other players will see as a summary of the game when listing their games
+     * @param jsonStatistics Optional JSON string blob provided by the caller
      * @param callback Optional instance of IServerCallback to call when the server response is received.
      */
-    public void submitTurn(String in_ownerId, String in_matchId, BigInteger in_version, String in_jsonMatchState, String in_pushNotificationMessage,
-                           String in_nextPlayer, String in_jsonSummary, String in_jsonStatistics,
+    public void submitTurn(String ownerId, String matchId, BigInteger version, String jsonMatchState, String pushNotificationMessage,
+                           String nextPlayer, String jsonSummary, String jsonStatistics,
                            IServerCallback callback) {
         try {
             JSONObject data = new JSONObject();
 
-            data.put(Parameter.ownerId.name(), in_ownerId);
-            data.put(Parameter.matchId.name(), in_matchId);
-            data.put(Parameter.version.name(), in_version.longValue());
+            data.put(Parameter.ownerId.name(), ownerId);
+            data.put(Parameter.matchId.name(), matchId);
+            data.put(Parameter.version.name(), version.longValue());
 
-            if (StringUtil.IsOptionalParameterValid(in_jsonMatchState))
-                data.put(Parameter.matchState.name(), new JSONObject(in_jsonMatchState));
+            if (StringUtil.IsOptionalParameterValid(jsonMatchState))
+                data.put(Parameter.matchState.name(), new JSONObject(jsonMatchState));
 
-            if (StringUtil.IsOptionalParameterValid(in_jsonMatchState)) {
+            if (StringUtil.IsOptionalParameterValid(jsonMatchState)) {
                 JSONObject currPlayer = new JSONObject();
-                currPlayer.put(Parameter.currentPlayer.name(), in_nextPlayer);
+                currPlayer.put(Parameter.currentPlayer.name(), nextPlayer);
                 data.put(Parameter.status.name(), currPlayer);
             }
 
-            if (StringUtil.IsOptionalParameterValid(in_jsonMatchState)) {
-                data.put(Parameter.summary.name(), new JSONObject(in_jsonSummary));
+            if (StringUtil.IsOptionalParameterValid(jsonMatchState)) {
+                data.put(Parameter.summary.name(), new JSONObject(jsonSummary));
             }
 
-            if (StringUtil.IsOptionalParameterValid(in_jsonMatchState)) {
-                data.put(Parameter.statistics.name(), new JSONObject(in_jsonStatistics));
+            if (StringUtil.IsOptionalParameterValid(jsonMatchState)) {
+                data.put(Parameter.statistics.name(), new JSONObject(jsonStatistics));
             }
 
-            if (StringUtil.IsOptionalParameterValid(in_jsonMatchState)) {
-                data.put(Parameter.pushContent.name(), in_pushNotificationMessage);
+            if (StringUtil.IsOptionalParameterValid(jsonMatchState)) {
+                data.put(Parameter.pushContent.name(), pushNotificationMessage);
             }
 
             ServerCall sc = new ServerCall(ServiceName.asyncMatch, ServiceOperation.SUBMIT_TURN, data, callback);
@@ -194,23 +194,23 @@ public class AsyncMatchService {
      * Service Name - AsyncMatch
      * Service Operation - UpdateMatchSummary
      *
-     * @param in_ownerId Match owner identfier
-     * @param in_matchId Match identifier
-     * @param in_version Game state version to ensure turns are submitted once and in order
-     * @param in_jsonSummary JSON string that other players will see as a summary of the game when listing their games
+     * @param ownerId Match owner identfier
+     * @param matchId Match identifier
+     * @param version Game state version to ensure turns are submitted once and in order
+     * @param jsonSummary JSON string that other players will see as a summary of the game when listing their games
      * @param callback Optional instance of IServerCallback to call when the server response is received.
      */
-    public void updateMatchSummaryData(String in_ownerId, String in_matchId, BigInteger in_version, String in_jsonSummary,
+    public void updateMatchSummaryData(String ownerId, String matchId, BigInteger version, String jsonSummary,
                                        IServerCallback callback) {
         try {
             JSONObject data = new JSONObject();
 
-            data.put(Parameter.ownerId.name(), in_ownerId);
-            data.put(Parameter.matchId.name(), in_matchId);
-            data.put(Parameter.version.name(), in_version);
+            data.put(Parameter.ownerId.name(), ownerId);
+            data.put(Parameter.matchId.name(), matchId);
+            data.put(Parameter.version.name(), version);
 
-            if (StringUtil.IsOptionalParameterValid(in_jsonSummary)) {
-                data.put(Parameter.summary.name(), new JSONObject(in_jsonSummary));
+            if (StringUtil.IsOptionalParameterValid(jsonSummary)) {
+                data.put(Parameter.summary.name(), new JSONObject(jsonSummary));
             }
 
             ServerCall sc = new ServerCall(ServiceName.asyncMatch, ServiceOperation.UPDATE_SUMMARY, data, callback);
@@ -226,16 +226,16 @@ public class AsyncMatchService {
      * Service Name - AsyncMatch
      * Service Operation - Complete
      *
-     * @param in_ownerId Match owner identifier
-     * @param in_matchId Match identifier
+     * @param ownerId Match owner identifier
+     * @param matchId Match identifier
      * @param callback Optional instance of IServerCallback to call when the server response is received.
      */
-    public void completeMatch(String in_ownerId, String in_matchId, IServerCallback callback) {
+    public void completeMatch(String ownerId, String matchId, IServerCallback callback) {
         try {
             JSONObject data = new JSONObject();
 
-            data.put(Parameter.ownerId.name(), in_ownerId);
-            data.put(Parameter.matchId.name(), in_matchId);
+            data.put(Parameter.ownerId.name(), ownerId);
+            data.put(Parameter.matchId.name(), matchId);
 
             ServerCall sc = new ServerCall(ServiceName.asyncMatch, ServiceOperation.COMPLETE, data, callback);
             _client.sendRequest(sc);
@@ -250,16 +250,16 @@ public class AsyncMatchService {
      * Service Name - AsyncMatch
      * Service Operation - ReadMatch
      *
-     * @param in_ownerId   Match owner identifier
-     * @param in_matchId   Match identifier
+     * @param ownerId   Match owner identifier
+     * @param matchId   Match identifier
      * @param callback  Optional instance of IServerCallback to call when the server response is received.
      */
-    public void readMatch(String in_ownerId, String in_matchId, IServerCallback callback) {
+    public void readMatch(String ownerId, String matchId, IServerCallback callback) {
         try {
             JSONObject data = new JSONObject();
 
-            data.put(Parameter.ownerId.name(), in_ownerId);
-            data.put(Parameter.matchId.name(), in_matchId);
+            data.put(Parameter.ownerId.name(), ownerId);
+            data.put(Parameter.matchId.name(), matchId);
 
             ServerCall sc = new ServerCall(ServiceName.asyncMatch, ServiceOperation.READ_MATCH, data, callback);
             _client.sendRequest(sc);
@@ -274,16 +274,16 @@ public class AsyncMatchService {
      * Service Name - AsyncMatch
      * Service Operation - ReadMatchHistory
      *
-     * @param in_ownerId   Match owner identifier
-     * @param in_matchId   Match identifier
+     * @param ownerId   Match owner identifier
+     * @param matchId   Match identifier
      * @param callback  Optional instance of IServerCallback to call when the server response is received.
      */
-    public void readMatchHistory(String in_ownerId, String in_matchId, IServerCallback callback) {
+    public void readMatchHistory(String ownerId, String matchId, IServerCallback callback) {
         try {
             JSONObject data = new JSONObject();
 
-            data.put(Parameter.ownerId.name(), in_ownerId);
-            data.put(Parameter.matchId.name(), in_matchId);
+            data.put(Parameter.ownerId.name(), ownerId);
+            data.put(Parameter.matchId.name(), matchId);
 
             ServerCall sc = new ServerCall(ServiceName.asyncMatch, ServiceOperation.READ_MATCH_HISTORY, data, callback);
             _client.sendRequest(sc);
@@ -328,16 +328,16 @@ public class AsyncMatchService {
      * Service Name - AsyncMatch
      * Service Operation - Abandon
      *
-     * @param in_ownerId   Match owner identifier
-     * @param in_matchId   Match identifier
+     * @param ownerId   Match owner identifier
+     * @param matchId   Match identifier
      * @param callback  Optional instance of IServerCallback to call when the server response is received.
      */
-    public void abandonMatch(String in_ownerId, String in_matchId, IServerCallback callback) {
+    public void abandonMatch(String ownerId, String matchId, IServerCallback callback) {
         try {
             JSONObject data = new JSONObject();
 
-            data.put(Parameter.ownerId.name(), in_ownerId);
-            data.put(Parameter.matchId.name(), in_matchId);
+            data.put(Parameter.ownerId.name(), ownerId);
+            data.put(Parameter.matchId.name(), matchId);
 
             ServerCall sc = new ServerCall(ServiceName.asyncMatch, ServiceOperation.ABANDON, data, callback);
             _client.sendRequest(sc);
@@ -354,15 +354,15 @@ public class AsyncMatchService {
      * Service Name - AsyncMatch
      * Service Operation - Delete
      *
-     * @param in_ownerId   Match owner identifier
-     * @param in_matchId   Match identifier
+     * @param ownerId   Match owner identifier
+     * @param matchId   Match identifier
      * @param callback  Optional instance of IServerCallback to call when the server response is received.
      */
-    public void deleteMatch(String in_ownerId, String in_matchId, IServerCallback callback) {
+    public void deleteMatch(String ownerId, String matchId, IServerCallback callback) {
         try {
             JSONObject data = new JSONObject();
-            data.put(Parameter.ownerId.name(), in_ownerId);
-            data.put(Parameter.matchId.name(), in_matchId);
+            data.put(Parameter.ownerId.name(), ownerId);
+            data.put(Parameter.matchId.name(), matchId);
 
             ServerCall sc = new ServerCall(ServiceName.asyncMatch, ServiceOperation.DELETE_MATCH, data, callback);
             _client.sendRequest(sc);

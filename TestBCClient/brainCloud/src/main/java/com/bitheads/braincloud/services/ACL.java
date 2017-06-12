@@ -29,12 +29,12 @@ public class ACL {
         return _other;
     }
 
-    public void setOther(Access in_value) {
-        _other = in_value;
+    public void setOther(Access value) {
+        _other = value;
     }
 
-    public void setOther(int in_value) {
-        _other = Access.fromOrdinal(in_value);
+    public void setOther(int value) {
+        _other = Access.fromOrdinal(value);
     }
 
     public static ACL readOnlyOther() {
@@ -49,9 +49,9 @@ public class ACL {
         return acl;
     }
 
-    public static ACL createFromJson(String in_json) {
+    public static ACL createFromJson(String json) {
         try {
-            JSONObject jsonObj = new JSONObject(in_json);
+            JSONObject jsonObj = new JSONObject(json);
             return createFromJson(jsonObj);
         } catch (JSONException je) {
             je.printStackTrace();
@@ -60,24 +60,24 @@ public class ACL {
         return new ACL();
     }
 
-    public static ACL createFromJson(JSONObject in_json) {
+    public static ACL createFromJson(JSONObject json) {
         ACL acl = new ACL();
-        acl.readFromJson(in_json);
+        acl.readFromJson(json);
         return acl;
     }
 
-    public void readFromJson(String in_json) {
+    public void readFromJson(String json) {
         try {
-            JSONObject jsonObj = new JSONObject(in_json);
+            JSONObject jsonObj = new JSONObject(json);
             readFromJson(jsonObj);
         } catch (JSONException je) {
             je.printStackTrace();
         }
     }
 
-    public void readFromJson(JSONObject in_json) {
+    public void readFromJson(JSONObject json) {
         try {
-            setOther(in_json.getInt("other"));
+            setOther(json.getInt("other"));
         } catch (JSONException je) {
             je.printStackTrace();
         }

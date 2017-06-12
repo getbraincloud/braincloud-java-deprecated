@@ -16,7 +16,7 @@ public class MatchMakingService {
         minutes,
         rangeDelta,
         numMatches,
-        extraParams,
+        extraParms,
         attributes,
         playerId
     }
@@ -267,7 +267,7 @@ public class MatchMakingService {
 
             if (StringUtil.IsOptionalParameterValid(jsonExtraParms)) {
                 JSONObject jsonData = new JSONObject(jsonExtraParms);
-                data.put(Parameter.extraParams.name(), jsonData);
+                data.put(Parameter.extraParms.name(), jsonData);
             }
 
             if (StringUtil.IsOptionalParameterValid(jsonAttributes)) {

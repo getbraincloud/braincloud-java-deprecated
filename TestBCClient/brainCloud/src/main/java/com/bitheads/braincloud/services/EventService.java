@@ -42,16 +42,16 @@ public class EventService {
      * Service Name - event
      * Service Operation - SEND
      *
-     * @param toPlayerId The id of the player who is being sent the event
+     * @param toProfileId The id of the user who is being sent the event
      * @param eventType The user-defined type of the event.
      * @param jsonEventData The user-defined data for this event encoded in JSON.
      * @param callback The callback.
      */
-    public void sendEvent(String toPlayerId, String eventType, String jsonEventData, IServerCallback callback) {
+    public void sendEvent(String toProfileId, String eventType, String jsonEventData, IServerCallback callback) {
         try {
             JSONObject data = new JSONObject();
 
-            data.put(Parameter.toId.name(), toPlayerId);
+            data.put(Parameter.toId.name(), toProfileId);
             data.put(Parameter.eventType.name(), eventType);
 
             JSONObject jsonData = new JSONObject(jsonEventData);

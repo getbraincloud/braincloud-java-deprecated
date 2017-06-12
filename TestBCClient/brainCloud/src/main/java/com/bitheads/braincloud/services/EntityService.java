@@ -20,7 +20,7 @@ public class EntityService {
         maxReturn,
         where,
         orderBy,
-        targetPlayerId,
+        targetProfileId,
         version,
         data
     }
@@ -182,21 +182,41 @@ public class EntityService {
     }
 
     /**
-     * Method returns a shared entity for the given player and entity ID.
+     * @deprecated Use getSharedEntityForProfileId instead - removal after September 1 2017
+     */
+    @Deprecated
+    public void getSharedEntityForPlayerId(String profileId, String entityId, IServerCallback callback) {
+        try {
+            JSONObject data = new JSONObject();
+            data.put(Parameter.targetProfileId.name(), profileId);
+            data.put(Parameter.entityId.name(), entityId);
+
+            ServerCall sc = new ServerCall(ServiceName.entity,
+                    ServiceOperation.READ_SHARED_ENTITY, data, callback);
+            _client.sendRequest(sc);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * Method returns a shared entity for the given profile and entity ID.
      * An entity is shared if its ACL allows for the currently logged
-     * in player to read the data.
+     * in user to read the data.
      *
      * Service Name - Entity
      * Service Operation - READ_SHARED_ENTITY
      *
-     * @param playerId The the profile ID of the player who owns the entity
+     * @param profileId The the profile ID of the player who owns the entity
      * @param entityId The ID of the entity that will be retrieved
      * @param callback The method to be invoked when the server response is received
      */
-    public void getSharedEntityForPlayerId(String playerId, String entityId, IServerCallback callback) {
+    public void getSharedEntityForProfileId(String profileId, String entityId, IServerCallback callback) {
         try {
             JSONObject data = new JSONObject();
-            data.put(Parameter.targetPlayerId.name(), playerId);
+            data.put(Parameter.targetProfileId.name(), profileId);
             data.put(Parameter.entityId.name(), entityId);
 
             ServerCall sc = new ServerCall(ServiceName.entity,
@@ -209,23 +229,16 @@ public class EntityService {
     }
 
     /**
-     * Method returns all shared entities for the given player id.
-     * An entity is shared if its ACL allows for the currently logged
-     * in player to read the data.
-     *
-     * Service Name - Entity
-     * Service Operation - ReadShared
-     *
-     * @param playerId The player id to retrieve shared entities for
-     * @param callback The method to be invoked when the server response is received
+     * @deprecated Use getAppVersion instead - removal after September 1 2017
      */
-    public void getSharedEntitiesForPlayerId(String playerId,
+    @Deprecated
+    public void getSharedEntitiesForPlayerId(String profileId,
                                              IServerCallback callback) {
 
         try {
 
             JSONObject data = new JSONObject();
-            data.put(Parameter.targetPlayerId.name(), playerId);
+            data.put(Parameter.targetProfileId.name(), profileId);
 
             ServerCall sc = new ServerCall(ServiceName.entity,
                     ServiceOperation.READ_SHARED, data, callback);
@@ -237,23 +250,76 @@ public class EntityService {
     }
 
     /**
-     * Method gets list of shared entities for the specified player based on type and/or where clause
+     * Method returns all shared entities for the given profile id.
+     * An entity is shared if its ACL allows for the currently logged
+     * in user to read the data.
+     *
+     * Service Name - Entity
+     * Service Operation - ReadShared
+     *
+     * @param profileId The profile id to retrieve shared entities for
+     * @param callback The method to be invoked when the server response is received
+     */
+    public void getSharedEntitiesForProfileId(String profileId,
+                                              IServerCallback callback) {
+
+        try {
+
+            JSONObject data = new JSONObject();
+            data.put(Parameter.targetProfileId.name(), profileId);
+
+            ServerCall sc = new ServerCall(ServiceName.entity,
+                    ServiceOperation.READ_SHARED, data, callback);
+            _client.sendRequest(sc);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * @deprecated Use getSharedEntitiesListForProfileId instead - removal after September 1 2017
+     */
+    @Deprecated
+    public void getSharedEntitiesListForPlayerId(String profileId, String whereJson, String orderByJson, int maxReturn,
+                                                 IServerCallback callback) {
+        try {
+            JSONObject data = new JSONObject();
+
+            data.put(Parameter.targetProfileId.name(), profileId);
+            if (StringUtil.IsOptionalParameterValid(whereJson)) {
+                data.put(Parameter.where.name(), new JSONObject(whereJson));
+            }
+            if (StringUtil.IsOptionalParameterValid(orderByJson)) {
+                data.put(Parameter.orderBy.name(), new JSONObject(orderByJson));
+            }
+            data.put(Parameter.maxReturn.name(), maxReturn);
+
+            ServerCall serverCall = new ServerCall(ServiceName.entity,
+                    ServiceOperation.READ_SHARED_ENTITIES_LIST, data, callback);
+            BrainCloudClient.getInstance().sendRequest(serverCall);
+        } catch (JSONException ignored) {
+        }
+    }
+
+    /**
+     * Method gets list of shared entities for the specified profile based on type and/or where clause
      *
      * Service Name - Entity
      * Service Operation - READ_SHARED_ENTITIES_LIST
      *
-     * @param playerId The player ID to retrieve shared entities for
+     * @param profileId The profile ID to retrieve shared entities for
      * @param whereJson Mongo style query
      * @param orderByJson Sort order
      * @param maxReturn The maximum number of entities to return
      * @param callback The method to be invoked when the server response is received
      */
-    public void getSharedEntitiesListForPlayerId(String playerId, String whereJson, String orderByJson, int maxReturn,
-                                                 IServerCallback callback) {
+    public void getSharedEntitiesListForProfileId(String profileId, String whereJson, String orderByJson, int maxReturn,
+                                                  IServerCallback callback) {
         try {
             JSONObject data = new JSONObject();
 
-            data.put(Parameter.targetPlayerId.name(), playerId);
+            data.put(Parameter.targetProfileId.name(), profileId);
             if (StringUtil.IsOptionalParameterValid(whereJson)) {
                 data.put(Parameter.where.name(), new JSONObject(whereJson));
             }
@@ -313,19 +379,19 @@ public class EntityService {
     }
 
     /**
-     * Method updates a shared entity owned by another player. This operation results in the entity
+     * Method updates a shared entity owned by another user. This operation results in the entity
      * data being completely replaced by the passed in JSON string.
      *
      * Service Name - Entity
      * Service Operation - UpdateShared
      *
      * @param entityId The id of the entity to update
-     * @param targetPlayerId The id of the player who owns the shared entity
+     * @param targetProfileId The id of the profile who owns the shared entity
      * @param entityType The entity type as defined by the user
      * @param jsonEntityData    The entity's data as a json string.
      * @param callback The method to be invoked when the server response is received
      */
-    public void updateSharedEntity(String targetPlayerId, String entityId,
+    public void updateSharedEntity(String targetProfileId, String entityId,
                                    String entityType, String jsonEntityData, int version,
                                    IServerCallback callback) {
 
@@ -334,7 +400,7 @@ public class EntityService {
             JSONObject data = new JSONObject();
             data.put(Parameter.entityId.name(), entityId);
             data.put(Parameter.entityType.name(), entityType);
-            data.put(Parameter.targetPlayerId.name(), targetPlayerId);
+            data.put(Parameter.targetProfileId.name(), targetProfileId);
             data.put(Parameter.version.name(), version);
 
             JSONObject jsonData = new JSONObject(jsonEntityData);
@@ -526,16 +592,16 @@ public class EntityService {
      * Service Operation - INCREMENT_USER_ENTITY_DATA
      *
      * @param entityId The id of the entity to update
-     * @param targetPlayerId Profile ID of the entity owner
+     * @param targetProfileId Profile ID of the entity owner
      * @param jsonData The entity's data object
      * @param callback The callback object
      */
-    public void incrementSharedUserEntityData(String entityId, String targetPlayerId, String jsonData, IServerCallback callback) {
+    public void incrementSharedUserEntityData(String entityId, String targetProfileId, String jsonData, IServerCallback callback) {
         try {
 
             JSONObject data = new JSONObject();
             data.put(Parameter.entityId.name(), entityId);
-            data.put(Parameter.targetPlayerId.name(), targetPlayerId);
+            data.put(Parameter.targetProfileId.name(), targetProfileId);
             data.put(Parameter.data.name(), new JSONObject(jsonData));
 
             ServerCall sc = new ServerCall(ServiceName.entity,

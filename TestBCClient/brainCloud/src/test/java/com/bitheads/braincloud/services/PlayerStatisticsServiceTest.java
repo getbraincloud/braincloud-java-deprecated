@@ -19,7 +19,7 @@ public class PlayerStatisticsServiceTest extends TestFixtureBase
     {
         TestResult tr = new TestResult();
 
-        BrainCloudClient.getInstance().getPlayerStatisticsService().readAllPlayerStats(
+        BrainCloudClient.getInstance().getPlayerStatisticsService().readAllUserStats(
                 tr);
 
         tr.Run();
@@ -31,7 +31,7 @@ public class PlayerStatisticsServiceTest extends TestFixtureBase
         TestResult tr = new TestResult();
         String[] stats = {"currency", "highestScore"};
 
-        BrainCloudClient.getInstance().getPlayerStatisticsService().readPlayerStatsSubset(
+        BrainCloudClient.getInstance().getPlayerStatisticsService().readUserStatsSubset(
                 stats,
                 tr);
 
@@ -42,7 +42,7 @@ public class PlayerStatisticsServiceTest extends TestFixtureBase
     public void testReadPlayerStatisticsByCategory() throws Exception
     {
         TestResult tr = new TestResult();
-        BrainCloudClient.getInstance().getPlayerStatisticsService().readPlayerStatsForCategory("Test", tr);
+        BrainCloudClient.getInstance().getPlayerStatisticsService().readUserStatsForCategory("Test", tr);
         tr.Run();
     }
 
@@ -51,7 +51,7 @@ public class PlayerStatisticsServiceTest extends TestFixtureBase
     {
         TestResult tr = new TestResult();
 
-        BrainCloudClient.getInstance().getPlayerStatisticsService().resetAllPlayerStats(
+        BrainCloudClient.getInstance().getPlayerStatisticsService().resetAllUserStats(
                 tr);
 
         tr.Run();
@@ -65,7 +65,7 @@ public class PlayerStatisticsServiceTest extends TestFixtureBase
         JSONObject stats = new JSONObject();
         stats.put("highestScore", "RESET");
 
-        BrainCloudClient.getInstance().getPlayerStatisticsService().incrementPlayerStats(
+        BrainCloudClient.getInstance().getPlayerStatisticsService().incrementUserStats(
                 stats.toString(),
                 tr);
 

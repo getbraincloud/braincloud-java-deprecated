@@ -18,7 +18,7 @@ public class TestFixtureBase {
     static protected String m_serverUrl = "";
     static protected String m_appId = "";
     static protected String m_secret = "";
-    static protected String m_version = "";
+    static protected String m_appVersion = "";
     static protected String m_parentLevelName = "";
     static protected String m_childAppId = "";
     static protected String m_peerName = "";
@@ -27,7 +27,7 @@ public class TestFixtureBase {
     public void setUp() throws Exception {
         LoadIds();
 
-        BrainCloudClient.getInstance().initialize(m_appId, m_secret, m_version, m_serverUrl);
+        BrainCloudClient.getInstance().initialize(m_appId, m_secret, m_appVersion, m_serverUrl);
         BrainCloudClient.getInstance().enableLogging(true);
 
         if (shouldAuthenticate()) {
@@ -105,7 +105,7 @@ public class TestFixtureBase {
                     m_secret = split[1];
                     break;
                 case "version":
-                    m_version = split[1];
+                    m_appVersion = split[1];
                     break;
                 case "childAppId":
                     m_childAppId = split[1];

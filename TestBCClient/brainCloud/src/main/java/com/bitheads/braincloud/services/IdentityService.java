@@ -18,7 +18,7 @@ public class IdentityService {
         confirmAnonymous,
         authenticationToken,
         profileId,
-        gameId,
+        appId,
         forceSingleton,
         includePlayerSummaryData,
         levelName,
@@ -535,12 +535,12 @@ public class IdentityService {
      *
      * @param childProfileId The profileId of the child profile to switch to
      * If null and forceCreate is true a new profile will be created
-     * @param childGameId The appId of the child game to switch to
+     * @param childAppId The appId of the child game to switch to
      * @param forceCreate Should a new profile be created if it does not exist?
      * @param callback The method to be invoked when the server response is received
      */
-    public void switchToChildProfile(String childProfileId, String childGameId, boolean forceCreate, IServerCallback callback) {
-        switchToChildProfile(childProfileId, childGameId, forceCreate, false, callback);
+    public void switchToChildProfile(String childProfileId, String childAppId, boolean forceCreate, IServerCallback callback) {
+        switchToChildProfile(childProfileId, childAppId, forceCreate, false, callback);
     }
 
     /**
@@ -550,12 +550,12 @@ public class IdentityService {
      * Service Name - Identity
      * Service Operation - SWITCH_TO_CHILD_PROFILE
      *
-     * @param childGameId The App ID of the child game to switch to
+     * @param childAppId The id of the child app to switch to
      * @param forceCreate Should a new profile be created if it does not exist?
      * @param callback The method to be invoked when the server response is received
      */
-    public void switchToSingletonChildProfile(String childGameId, boolean forceCreate, IServerCallback callback) {
-        switchToChildProfile(null, childGameId, forceCreate, true, callback);
+    public void switchToSingletonChildProfile(String childAppId, boolean forceCreate, IServerCallback callback) {
+        switchToChildProfile(null, childAppId, forceCreate, true, callback);
     }
 
     /**
@@ -763,7 +763,7 @@ public class IdentityService {
     /*** PRIVATE Methods ***/
 
     private void switchToChildProfile(String childProfileId,
-                                      String childGameId,
+                                      String childAppId,
                                       boolean forceCreate,
                                       boolean forceSingleton,
                                       IServerCallback callback) {
@@ -772,7 +772,7 @@ public class IdentityService {
             if (StringUtil.IsOptionalParameterValid(childProfileId)) {
                 data.put(Parameter.profileId.name(), childProfileId);
             }
-            data.put(Parameter.gameId.name(), childGameId);
+            data.put(Parameter.appId.name(), childAppId);
             data.put(Parameter.forceCreate.name(), forceCreate);
             data.put(Parameter.forceSingleton.name(), forceSingleton);
 

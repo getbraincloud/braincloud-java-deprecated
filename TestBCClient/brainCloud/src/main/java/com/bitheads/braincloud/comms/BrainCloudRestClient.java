@@ -34,7 +34,7 @@ public class BrainCloudRestClient implements Runnable {
     private BrainCloudClient _client;
     private String _serverUrl;
     private String _uploadUrl;
-    private String _gameId;
+    private String _appId;
     private String _secretKey;
     private String _sessionId;
     private long _packetId;
@@ -96,11 +96,11 @@ public class BrainCloudRestClient implements Runnable {
         resetErrorCache();
     }
 
-    public void initialize(String serverUrl, String gameId, String secretKey) {
+    public void initialize(String serverUrl, String appId, String secretKey) {
         _packetId = 0;
         _expectedPacketId = NO_PACKET_EXPECTED;
         _serverUrl = serverUrl;
-        _gameId = gameId;
+        _appId = appId;
         _secretKey = secretKey;
         _sessionId = "";
         _retryCount = 0;
@@ -359,13 +359,26 @@ public class BrainCloudRestClient implements Runnable {
         }
     }
 
+    /**
+     * @deprecated Use getAppId instead - removal after September 1 2017
+     */
+    @Deprecated
     public String getGameId() {
-        return _gameId;
+        return _appId;
+    }
+
+    public String getAppId() {
+        return _appId;
     }
 
     public String getSessionId() {
         return _sessionId;
     }
+
+    public void setSessionId(String sessionId) {
+        _sessionId = sessionId;
+    }
+
 
     public long getHeartbeatInterval() {
         return _heartbeatIntervalMillis;
@@ -377,6 +390,10 @@ public class BrainCloudRestClient implements Runnable {
 
     public boolean isAuthenticated() {
         return _isAuthenticated;
+    }
+
+    public void setAuthenticated() {
+        _isAuthenticated = true;
     }
 
     public boolean isInitialized() {
@@ -743,7 +760,7 @@ public class BrainCloudRestClient implements Runnable {
         _expectedPacketId = _packetId++;
         JSONObject allMessages = new JSONObject();
         allMessages.put("messages", messages);
-        allMessages.put("gameId", _gameId);
+        allMessages.put("gameId", _appId);
         allMessages.put("sessionId", _sessionId);
         allMessages.put("packetId", _expectedPacketId);
 
@@ -901,9 +918,9 @@ public class BrainCloudRestClient implements Runnable {
                         }
                         String statusMessage = message.getString("status_message");
 
-                        if (reasonCode == ReasonCodes.PLAYER_SESSION_EXPIRED
+                        if (reasonCode == ReasonCodes.USER_SESSION_EXPIRED
                                 || reasonCode == ReasonCodes.NO_SESSION
-                                || reasonCode == ReasonCodes.PLAYER_SESSION_LOGGED_OUT) {
+                                || reasonCode == ReasonCodes.USER_SESSION_LOGGED_OUT) {
                             _isAuthenticated = false;
                             _sessionId = "";
                             _statusCodeCache = status;

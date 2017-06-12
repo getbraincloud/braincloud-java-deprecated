@@ -35,12 +35,12 @@ public class ProfanityService {
      * Service Name - Profanity
      * Service Operation - ProfanityCheck
      *
-     * @param in_text The text to check
-     * @param in_languages Optional comma delimited list of two character language codes
-     * @param in_flagEmail Optional processing of email addresses
-     * @param in_flagPhone Optional processing of phone numbers
-     * @param in_flagUrls Optional processing of urls
-     * @param in_callback The method to be invoked when the server response is received
+     * @param text The text to check
+     * @param languages Optional comma delimited list of two character language codes
+     * @param flagEmail Optional processing of email addresses
+     * @param flagPhone Optional processing of phone numbers
+     * @param flagUrls Optional processing of urls
+     * @param callback The method to be invoked when the server response is received
      *
      * Significant error codes:
      *
@@ -50,23 +50,23 @@ public class ProfanityService {
      * 40424 - WebPurify not enabled
      */
     public void profanityCheck(
-        String in_text,
-        String in_languages,
-        boolean in_flagEmail,
-        boolean in_flagPhone,
-        boolean in_flagUrls,
-        IServerCallback in_callback) {
+        String text,
+        String languages,
+        boolean flagEmail,
+        boolean flagPhone,
+        boolean flagUrls,
+        IServerCallback callback) {
         try {
             JSONObject data = new JSONObject();
-            data.put(Parameter.text.name(), in_text);
-            if (in_languages != null) {
-                data.put(Parameter.languages.name(), in_languages);
+            data.put(Parameter.text.name(), text);
+            if (languages != null) {
+                data.put(Parameter.languages.name(), languages);
             }
-            data.put(Parameter.flagEmail.name(), in_flagEmail);
-            data.put(Parameter.flagPhone.name(), in_flagPhone);
-            data.put(Parameter.flagUrls.name(), in_flagUrls);
+            data.put(Parameter.flagEmail.name(), flagEmail);
+            data.put(Parameter.flagPhone.name(), flagPhone);
+            data.put(Parameter.flagUrls.name(), flagUrls);
 
-            ServerCall sc = new ServerCall(ServiceName.profanity, ServiceOperation.PROFANITY_CHECK, data, in_callback);
+            ServerCall sc = new ServerCall(ServiceName.profanity, ServiceOperation.PROFANITY_CHECK, data, callback);
             _client.sendRequest(sc);
         } catch (JSONException je) {
             je.printStackTrace();
@@ -80,13 +80,13 @@ public class ProfanityService {
      * Service Name - Profanity
      * Service Operation - ProfanityReplaceText
      *
-     * @param in_text The text to check
-     * @param in_replaceSymbol The text to replace individual characters of profanity text with
-     * @param in_languages Optional comma delimited list of two character language codes
-     * @param in_flagEmail Optional processing of email addresses
-     * @param in_flagPhone Optional processing of phone numbers
-     * @param in_flagUrls Optional processing of urls
-     * @param in_callback The method to be invoked when the server response is received
+     * @param text The text to check
+     * @param replaceSymbol The text to replace individual characters of profanity text with
+     * @param languages Optional comma delimited list of two character language codes
+     * @param flagEmail Optional processing of email addresses
+     * @param flagPhone Optional processing of phone numbers
+     * @param flagUrls Optional processing of urls
+     * @param callback The method to be invoked when the server response is received
      *
      * Significant error codes:
      *
@@ -96,25 +96,25 @@ public class ProfanityService {
      * 40424 - WebPurify not enabled
      */
     public void profanityReplaceText(
-        String in_text,
-        String in_replaceSymbol,
-        String in_languages,
-        boolean in_flagEmail,
-        boolean in_flagPhone,
-        boolean in_flagUrls,
-        IServerCallback in_callback) {
+        String text,
+        String replaceSymbol,
+        String languages,
+        boolean flagEmail,
+        boolean flagPhone,
+        boolean flagUrls,
+        IServerCallback callback) {
         try {
             JSONObject data = new JSONObject();
-            data.put(Parameter.text.name(), in_text);
-            data.put(Parameter.replaceSymbol.name(), in_replaceSymbol);
-            if (in_languages != null) {
-                data.put(Parameter.languages.name(), in_languages);
+            data.put(Parameter.text.name(), text);
+            data.put(Parameter.replaceSymbol.name(), replaceSymbol);
+            if (languages != null) {
+                data.put(Parameter.languages.name(), languages);
             }
-            data.put(Parameter.flagEmail.name(), in_flagEmail);
-            data.put(Parameter.flagPhone.name(), in_flagPhone);
-            data.put(Parameter.flagUrls.name(), in_flagUrls);
+            data.put(Parameter.flagEmail.name(), flagEmail);
+            data.put(Parameter.flagPhone.name(), flagPhone);
+            data.put(Parameter.flagUrls.name(), flagUrls);
 
-            ServerCall sc = new ServerCall(ServiceName.profanity, ServiceOperation.PROFANITY_REPLACE_TEXT, data, in_callback);
+            ServerCall sc = new ServerCall(ServiceName.profanity, ServiceOperation.PROFANITY_REPLACE_TEXT, data, callback);
             _client.sendRequest(sc);
         } catch (JSONException je) {
             je.printStackTrace();
@@ -128,12 +128,12 @@ public class ProfanityService {
      * Service Name - Profanity
      * Service Operation - ProfanityIdentifyBadWords
      *
-     * @param in_text The text to check
-     * @param in_languages Optional comma delimited list of two character language codes
-     * @param in_flagEmail Optional processing of email addresses
-     * @param in_flagPhone Optional processing of phone numbers
-     * @param in_flagUrls Optional processing of urls
-     * @param in_callback The method to be invoked when the server response is received
+     * @param text The text to check
+     * @param languages Optional comma delimited list of two character language codes
+     * @param flagEmail Optional processing of email addresses
+     * @param flagPhone Optional processing of phone numbers
+     * @param flagUrls Optional processing of urls
+     * @param callback The method to be invoked when the server response is received
      *
      * Significant error codes:
      *
@@ -143,23 +143,23 @@ public class ProfanityService {
      * 40424 - WebPurify not enabled
      */
     void profanityIdentifyBadWords(
-        String in_text,
-        String in_languages,
-        boolean in_flagEmail,
-        boolean in_flagPhone,
-        boolean in_flagUrls,
-        IServerCallback in_callback) {
+        String text,
+        String languages,
+        boolean flagEmail,
+        boolean flagPhone,
+        boolean flagUrls,
+        IServerCallback callback) {
         try {
             JSONObject data = new JSONObject();
-            data.put(Parameter.text.name(), in_text);
-            if (in_languages != null) {
-                data.put(Parameter.languages.name(), in_languages);
+            data.put(Parameter.text.name(), text);
+            if (languages != null) {
+                data.put(Parameter.languages.name(), languages);
             }
-            data.put(Parameter.flagEmail.name(), in_flagEmail);
-            data.put(Parameter.flagPhone.name(), in_flagPhone);
-            data.put(Parameter.flagUrls.name(), in_flagUrls);
+            data.put(Parameter.flagEmail.name(), flagEmail);
+            data.put(Parameter.flagPhone.name(), flagPhone);
+            data.put(Parameter.flagUrls.name(), flagUrls);
 
-            ServerCall sc = new ServerCall(ServiceName.profanity, ServiceOperation.PROFANITY_IDENTIFY_BAD_WORDS, data, in_callback);
+            ServerCall sc = new ServerCall(ServiceName.profanity, ServiceOperation.PROFANITY_IDENTIFY_BAD_WORDS, data, callback);
             _client.sendRequest(sc);
         } catch (JSONException je) {
             je.printStackTrace();

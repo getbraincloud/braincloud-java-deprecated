@@ -1,15 +1,8 @@
 package com.bitheads.braincloud.client;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
 import android.support.test.InstrumentationRegistry;
-import android.test.*;
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
 import android.support.test.runner.AndroidJUnit4;
-import android.support.test.runner.AndroidJUnitRunner;
-import android.test.ActivityInstrumentationTestCase2;
 
 import com.bitheads.braincloud.services.TestFixtureNoAuth;
 import com.bitheads.braincloud.services.TestResult;
@@ -18,7 +11,6 @@ import com.bitheads.braincloud.services.TestResult;
 import junit.framework.Assert;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -42,7 +34,7 @@ public class BrainCloudWrapperTest extends TestFixtureNoAuth
     public void testAuthenticateAnonymous()
     {
         BrainCloudWrapper bcw = BrainCloudWrapper.getInstance();
-        bcw.initialize(m_appId, m_secret, m_version, m_serverUrl);
+        bcw.initialize(m_appId, m_secret, m_appVersion, m_serverUrl);
 
         TestResult tr = new TestResult();
         bcw.authenticateAnonymous(tr);
@@ -67,7 +59,7 @@ public class BrainCloudWrapperTest extends TestFixtureNoAuth
     public void testAuthenticateEmailPassword()
     {
         BrainCloudWrapper bcw = BrainCloudWrapper.getInstance();
-        bcw.initialize(m_appId, m_secret, m_version, m_serverUrl);
+        bcw.initialize(m_appId, m_secret, m_appVersion, m_serverUrl);
 
         String email = getUser(Users.UserA).email;
         email += "_wrapper";
@@ -83,7 +75,7 @@ public class BrainCloudWrapperTest extends TestFixtureNoAuth
     public void testAuthenticateUniversal()
     {
         BrainCloudWrapper bcw = BrainCloudWrapper.getInstance();
-        bcw.initialize(m_appId, m_secret, m_version, m_serverUrl);
+        bcw.initialize(m_appId, m_secret, m_appVersion, m_serverUrl);
 
         TestResult tr = new TestResult();
         String uid = getUser(Users.UserA).id;
@@ -98,7 +90,7 @@ public class BrainCloudWrapperTest extends TestFixtureNoAuth
     public void testReconnect()
     {
         BrainCloudWrapper bcw = BrainCloudWrapper.getInstance();
-        bcw.initialize(m_appId, m_secret, m_version, m_serverUrl);
+        bcw.initialize(m_appId, m_secret, m_appVersion, m_serverUrl);
 
         TestResult tr = new TestResult();
         String uid = getUser(Users.UserA).id;
@@ -119,7 +111,7 @@ public class BrainCloudWrapperTest extends TestFixtureNoAuth
     public void testVerifyAlwaysAllowProfileFalse()
     {
         BrainCloudWrapper bcw = BrainCloudWrapper.getInstance();
-        bcw.initialize(m_appId, m_secret, m_version, m_serverUrl);
+        bcw.initialize(m_appId, m_secret, m_appVersion, m_serverUrl);
         bcw.setAlwaysAllowProfileSwitch(false);
 
         // this forces us to create a new anonymous account

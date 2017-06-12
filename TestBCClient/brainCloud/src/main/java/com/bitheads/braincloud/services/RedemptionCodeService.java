@@ -32,22 +32,22 @@ public class RedemptionCodeService {
      * Service Name - RedemptionCode
      * Service Operation - REDEEM_CODE
      *
-     * @param in_scanCode The code to redeem
-     * @param in_codeType The type of code
-     * @param in_jsonCustomRedemptionInfo Optional - A JSON string containing custom redemption data
-     * @param in_callback The method to be invoked when the server response is received
+     * @param scanCode The code to redeem
+     * @param codeType The type of code
+     * @param jsonCustomRedemptionInfo Optional - A JSON string containing custom redemption data
+     * @param callback The method to be invoked when the server response is received
      */
-    public void redeemCode(String in_scanCode, String in_codeType, String in_jsonCustomRedemptionInfo, IServerCallback in_callback) {
+    public void redeemCode(String scanCode, String codeType, String jsonCustomRedemptionInfo, IServerCallback callback) {
         try {
             JSONObject data = new JSONObject();
-            data.put(Parameter.scanCode.name(), in_scanCode);
-            data.put(Parameter.codeType.name(), in_codeType);
-            if (StringUtil.IsOptionalParameterValid(in_jsonCustomRedemptionInfo)) {
-                JSONObject infoObj = new JSONObject(in_jsonCustomRedemptionInfo);
+            data.put(Parameter.scanCode.name(), scanCode);
+            data.put(Parameter.codeType.name(), codeType);
+            if (StringUtil.IsOptionalParameterValid(jsonCustomRedemptionInfo)) {
+                JSONObject infoObj = new JSONObject(jsonCustomRedemptionInfo);
                 data.put(Parameter.customRedemptionInfo.name(), infoObj);
             }
 
-            ServerCall sc = new ServerCall(ServiceName.redemptionCode, ServiceOperation.REDEEM_CODE, data, in_callback);
+            ServerCall sc = new ServerCall(ServiceName.redemptionCode, ServiceOperation.REDEEM_CODE, data, callback);
             _client.sendRequest(sc);
         } catch (JSONException je) {
             je.printStackTrace();
@@ -60,17 +60,17 @@ public class RedemptionCodeService {
      * Service Name - RedemptionCode
      * Service Operation - GET_REDEEMED_CODES
      *
-     * @param in_codeType Optional - The type of codes to retrieve. Returns all codes if left unspecified.
-     * @param in_callback The method to be invoked when the server response is received
+     * @param codeType Optional - The type of codes to retrieve. Returns all codes if left unspecified.
+     * @param callback The method to be invoked when the server response is received
      */
-    public void getRedeemedCodes(String in_codeType, IServerCallback in_callback) {
+    public void getRedeemedCodes(String codeType, IServerCallback callback) {
         try {
             JSONObject data = new JSONObject();
-            if (StringUtil.IsOptionalParameterValid(in_codeType)) {
-                data.put(Parameter.codeType.name(), in_codeType);
+            if (StringUtil.IsOptionalParameterValid(codeType)) {
+                data.put(Parameter.codeType.name(), codeType);
             }
 
-            ServerCall sc = new ServerCall(ServiceName.redemptionCode, ServiceOperation.GET_REDEEMED_CODES, data, in_callback);
+            ServerCall sc = new ServerCall(ServiceName.redemptionCode, ServiceOperation.GET_REDEEMED_CODES, data, callback);
             _client.sendRequest(sc);
         } catch (JSONException je) {
             je.printStackTrace();

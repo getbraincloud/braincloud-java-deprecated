@@ -74,7 +74,7 @@ public class FriendServiceTest extends TestFixtureBase
     {
         TestResult tr = new TestResult();
 
-        BrainCloudClient.getInstance().getFriendService().findPlayerByUniversalId(
+        BrainCloudClient.getInstance().getFriendService().findUserByUniversalId(
                 "search",
                 5,
                 tr);

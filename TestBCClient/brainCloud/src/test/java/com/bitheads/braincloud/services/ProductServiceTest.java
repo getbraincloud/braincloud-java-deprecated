@@ -29,6 +29,44 @@ public class ProductServiceTest extends TestFixtureBase
     }
 
     @Test
+    public void testAwardCurrency() throws Exception
+    {
+        TestResult tr = new TestResult();
+
+        BrainCloudClient.getInstance().getProductService().awardCurrency(
+                _currencytype,
+                200,
+                tr);
+
+        tr.RunExpectFail(403, ReasonCodes.CURRENCY_SECURITY_ERROR);
+    }
+
+    @Test
+    public void testConsumeCurrency() throws Exception
+    {
+        testAwardCurrency();
+        TestResult tr = new TestResult();
+
+        BrainCloudClient.getInstance().getProductService().consumeCurrency(
+                _currencytype,
+                100,
+                tr);
+
+        tr.RunExpectFail(403, ReasonCodes.CURRENCY_SECURITY_ERROR);
+    }
+
+    @Test
+    public void testResetCurrency() throws Exception
+    {
+        TestResult tr = new TestResult();
+
+        BrainCloudClient.getInstance().getProductService().resetCurrency(
+                tr);
+
+        tr.RunExpectFail(403, ReasonCodes.CURRENCY_SECURITY_ERROR);
+    }
+
+    @Test
     public void testGetSalesInventory() throws Exception
     {
         TestResult tr = new TestResult();

@@ -43,7 +43,7 @@ public class TestUser
             {
                 BrainCloudClient.getInstance().getMatchMakingService().enableMatchMaking(tr);
                 tr.Run();
-                BrainCloudClient.getInstance().getPlayerStateService().updatePlayerName(id, tr);
+                BrainCloudClient.getInstance().getPlayerStateService().updateUserName(id, tr);
                 tr.Run();
                 BrainCloudClient.getInstance().getPlayerStateService().updateContactEmail("braincloudunittest@gmail.com", tr);
                 tr.Run();
