@@ -34,6 +34,8 @@ import com.bitheads.braincloud.services.SocialLeaderboardService;
 import com.bitheads.braincloud.services.TimeService;
 import com.bitheads.braincloud.services.TournamentService;
 
+import java.util.prefs.Preferences;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -52,6 +54,9 @@ public class BrainCloudWrapper implements IServerCallback {
     private static final String _DEFAULT_URL = "https://sharedprod.braincloudservers.com/dispatcherv2";
 
     private static BrainCloudWrapper _instance = null;
+    
+    
+    private Preferences _prefs = Preferences.userNodeForPackage(com.bitheads.braincloud.client.BrainCloudWrapper.class);
 
     private boolean _alwaysAllowProfileSwitch = true;
     private IServerCallback _authenticateCallback = null;
@@ -179,7 +184,7 @@ public class BrainCloudWrapper implements IServerCallback {
      * @return The stored profile id
      */
     public String getStoredProfileId() {
-        return "";
+        return _prefs.get("profileId", "");
     }
 
     /**
@@ -188,6 +193,7 @@ public class BrainCloudWrapper implements IServerCallback {
      * @param profileId The profile id to set
      */
     public void setStoredProfileId(String profileId) {
+    	_prefs.put("profileId", profileId);
     }
 
 
@@ -204,7 +210,7 @@ public class BrainCloudWrapper implements IServerCallback {
      * @return The stored anonymous id
      */
     String getStoredAnonymousId() {
-        return "";
+    	return _prefs.get("anonymousId", "");
     }
 
     /**
@@ -213,6 +219,7 @@ public class BrainCloudWrapper implements IServerCallback {
      * @param anonymousId The anonymous id to set
      */
     public void setStoredAnonymousId(String anonymousId) {
+    	_prefs.put("anonymousId", anonymousId);
     }
 
     /**
@@ -246,10 +253,11 @@ public class BrainCloudWrapper implements IServerCallback {
 
     // these methods are not really used
     protected String getStoredAuthenticationType() {
-        return "";
+    	return _prefs.get("authenticationType", "");
     }
 
     protected void setStoredAuthenticationType(String authenticationType) {
+    	_prefs.put("authenticationType", authenticationType);
     }
 
     protected void resetStoredAuthenticationType() {
