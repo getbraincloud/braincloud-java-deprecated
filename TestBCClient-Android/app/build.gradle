@@ -1,0 +1,36 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 27
+    defaultConfig {
+        applicationId "com.braincloud.testbcclient"
+        minSdkVersion 16
+        targetSdkVersion 27
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    productFlavors {
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+
+    String supportVersion = '27.0.2'
+    implementation "com.android.support:appcompat-v7:${supportVersion}"
+    implementation "com.android.support:support-media-compat:${supportVersion}"
+    implementation "com.android.support:support-v4:${supportVersion}"
+
+    String playVersion = '11.8.0'
+    implementation "com.google.android.gms:play-services-auth:${playVersion}"
+    implementation "com.google.android.gms:play-services-base:${playVersion}"
+    implementation "com.google.android.gms:play-services-plus:${playVersion}"
+
+    api project(':brainCloud')
+}
