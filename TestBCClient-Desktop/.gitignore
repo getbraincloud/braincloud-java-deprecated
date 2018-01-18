@@ -1,2 +1,5 @@
 # IDEA IntelliJ user-specific settings
+/.idea/libraries/
+/.idea/tasks.xml
+/.idea/workspace.xml
 *.iws

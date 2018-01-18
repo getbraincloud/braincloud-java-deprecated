@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/TestBCClient-Desktop.iml" filepath="$PROJECT_DIR$/TestBCClient-Desktop.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/TestBCClient-Desktop_main.iml" filepath="$PROJECT_DIR$/.idea/modules/TestBCClient-Desktop_main.iml" group="TestBCClient-Desktop" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/TestBCClient-Desktop_test.iml" filepath="$PROJECT_DIR$/.idea/modules/TestBCClient-Desktop_test.iml" group="TestBCClient-Desktop" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/brainCloud/brainCloud.iml" filepath="$PROJECT_DIR$/.idea/modules/brainCloud/brainCloud.iml" group="brainCloud" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/brainCloud/brainCloud_main.iml" filepath="$PROJECT_DIR$/.idea/modules/brainCloud/brainCloud_main.iml" group="brainCloud" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/brainCloud/brainCloud_test.iml" filepath="$PROJECT_DIR$/.idea/modules/brainCloud/brainCloud_test.iml" group="brainCloud" />
+    </modules>
+  </component>
+</project>
