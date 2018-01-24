@@ -20,14 +20,24 @@ import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.KeyManagementException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
 public class BrainCloudRestClient implements Runnable {
+
 
     private static long NO_PACKET_EXPECTED = -1;
 
@@ -89,6 +99,14 @@ public class BrainCloudRestClient implements Runnable {
     private int _statusCodeCache;
     private int _reasonCodeCache;
     private String _statusMessageCache;
+
+    // Disable all SSL Checks. Not recommended
+    final static boolean DISABLE_SSL_CHECK = false;
+    static {
+        if(DISABLE_SSL_CHECK) {
+            disableSslCheck();
+        }
+    }
 
     public BrainCloudRestClient(BrainCloudClient client) {
         _client = client;
@@ -982,5 +1000,38 @@ public class BrainCloudRestClient implements Runnable {
         }
 
         return buffer.toString();
+    }
+
+    /**
+     * Disable all SSL Checks. Not recommended
+     */
+    private static void disableSslCheck() {
+        try
+        {
+            TrustManager[] trustAllCerts = new TrustManager[] {new X509TrustManager() {
+                public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                    return null;
+                }
+                public void checkClientTrusted(X509Certificate[] certs, String authType) { }
+                public void checkServerTrusted(X509Certificate[] certs, String authType) { }
+            }
+            };
+
+            SSLContext sc = SSLContext.getInstance("SSL");
+            sc.init(null, trustAllCerts, new java.security.SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+
+            HostnameVerifier allHostsValid = new HostnameVerifier() {
+                public boolean verify(String hostname, SSLSession session) {
+                    return true;
+                }
+            };
+
+            HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        }
     }
 }
