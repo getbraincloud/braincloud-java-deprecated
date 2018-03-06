@@ -28,7 +28,10 @@ public class IdentityService {
         languageCode,
         timeZoneOffset,
         externalAuthName,
-        peer
+        peer,
+        oldEmailAddress,
+        newEmailAddress,
+        updateContactEmail
     }
 
     private BrainCloudClient _client;
@@ -646,6 +649,33 @@ public class IdentityService {
             data.put(Parameter.authenticationToken.name(), authenticationToken);
 
             ServerCall sc = new ServerCall(ServiceName.identity, ServiceOperation.REFRESH_IDENTITY, data, callback);
+            _client.sendRequest(sc);
+        } catch (JSONException je) {
+            je.printStackTrace();
+        }
+    }
+
+    /**
+     * Allows email identity email address to be changed
+     *
+     * Service Name - identity
+     * Service Operation - CHANGE_EMAIL_IDENTITY
+     *
+     * @param oldEmailAddress Old email address
+     * @param password Password for identity
+     * @param newEmailAddress New email address
+     * @param updateContactEmail Whether to update contact email in profile
+     * @param callback The method to be invoked when the server response is received
+     */
+    public void changeEmailIdentity(String oldEmailAddress, String password, String newEmailAddress, boolean updateContactEmail, IServerCallback callback) {
+        try {
+            JSONObject data = new JSONObject();
+            data.put(Parameter.oldEmailAddress.name(), oldEmailAddress);
+            data.put(Parameter.authenticationToken.name(), password);
+            data.put(Parameter.newEmailAddress.name(), newEmailAddress);
+            data.put(Parameter.updateContactEmail.name(), updateContactEmail);
+
+            ServerCall sc = new ServerCall(ServiceName.identity, ServiceOperation.CHANGE_EMAIL_IDENTITY, data, callback);
             _client.sendRequest(sc);
         } catch (JSONException je) {
             je.printStackTrace();

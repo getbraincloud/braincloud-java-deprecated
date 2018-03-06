@@ -118,6 +118,18 @@ public class IdentityServiceTest extends TestFixtureBase {
     }
 
     @Test
+    public void testChangeEmailIdentity() throws Exception {
+        TestResult tr = new TestResult(_wrapper);
+        _wrapper.getIdentityService().changeEmailIdentity(
+                getUser(Users.UserA).email,
+                getUser(Users.UserA).password,
+                getUser(Users.UserA).email,
+                true,
+                tr);
+        tr.RunExpectFail(400, 40584);
+    }
+
+    @Test
     public void testAttachPeerProfile() throws Exception {
         TestResult tr = new TestResult(_wrapper);
 
