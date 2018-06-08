@@ -121,6 +121,36 @@ public class CommsTest extends TestFixtureNoAuth
     }
 
     @Test
+    public void testHeartBeat() throws Exception
+    {
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.getClient().getAuthenticationService().authenticateUniversal(getUser(Users.UserA).id, getUser(Users.UserA).password, true, tr);
+        tr.Run();
+
+        System.out.println("Waiting for session to timeout (It shouldn't)...");
+
+        _wrapper.getTimeService().readServerTime(tr);
+        tr.Run();
+
+        Thread.sleep(62 * 1000);
+
+        _wrapper.getTimeService().readServerTime(tr);
+        tr.Run();
+
+        _wrapper.getTimeService().readServerTime(tr);
+        tr.Run();
+
+        _wrapper.getPlayerStateService().logout(tr);
+        tr.Run();
+
+        _wrapper.getTimeService().readServerTime(tr);
+        tr.RunExpectFail(StatusCodes.FORBIDDEN, ReasonCodes.NO_SESSION);
+
+        _wrapper.getClient().resetCommunication();
+    }
+
+    @Test
     public void testErrorCallback() throws Exception
     {
         _wrapper.initialize(m_appId, m_secret, m_appVersion, m_serverUrl);
