@@ -861,7 +861,7 @@ public class BrainCloudRestClient implements Runnable {
                             _client.getAuthenticationService().setProfileId(profileId);
 
                             long sessionExpiry = data.getLong("playerSessionExpiry");
-                            _heartbeatIntervalMillis = (long)(sessionExpiry * 1000 * 0.85);
+                            _heartbeatIntervalMillis = (long)(sessionExpiry * 850);
                             _maxBundleSize = data.getInt("maxBundleMsgs");
 
                             if(data.has("maxKillCount"))
