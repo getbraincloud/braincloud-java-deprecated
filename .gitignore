@@ -38,3 +38,5 @@ captures/
 ids.txt
 
 autobuild/artifacts/
+
+.idea/
