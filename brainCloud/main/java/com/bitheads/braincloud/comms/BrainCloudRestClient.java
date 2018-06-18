@@ -872,6 +872,19 @@ public class BrainCloudRestClient implements Runnable {
                     if (status == 200) {
                         resetKillSwitch();
 
+                        // A session id or a profile id could potentially come back in any messages
+                        if (message.has("data")) {
+                            JSONObject data = message.optJSONObject("data");
+                            if (data != null) {
+                                if (data.has("sessionId")) {
+                                    _sessionId = data.getString("sessionId");
+                                }
+                                if (data.has("profileId")) {
+                                    _client.getAuthenticationService().setProfileId(data.getString("profileId"));
+                                }
+                            }
+                        }
+
                         if (sc.getServiceName().equals(ServiceName.authenticationV2)
                                 && sc.getServiceOperation().equals(ServiceOperation.AUTHENTICATE)) {
                             JSONObject data = message.getJSONObject("data");
