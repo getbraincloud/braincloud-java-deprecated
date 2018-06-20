@@ -4,6 +4,7 @@ import com.bitheads.braincloud.comms.BrainCloudRestClient;
 import com.bitheads.braincloud.comms.ServerCall;
 import com.bitheads.braincloud.services.AsyncMatchService;
 import com.bitheads.braincloud.services.AuthenticationService;
+import com.bitheads.braincloud.services.ChatService;
 import com.bitheads.braincloud.services.DataStreamService;
 import com.bitheads.braincloud.services.EntityService;
 import com.bitheads.braincloud.services.EventService;
@@ -57,6 +58,7 @@ public class BrainCloudClient {
 
     private AuthenticationService _authenticationService = new AuthenticationService(this);
     private AsyncMatchService _asyncMatchService = new AsyncMatchService(this);
+    private ChatService _chatService = new ChatService(this);
     private DataStreamService _dataStreamService = new DataStreamService(this);
     private EntityService _entityService = new EntityService(this);
     private EventService _eventService = new EventService(this);
@@ -655,6 +657,10 @@ public class BrainCloudClient {
 
     public AsyncMatchService getAsyncMatchService() {
         return _asyncMatchService;
+    }
+
+    public ChatService getChatService() {
+        return _chatService;
     }
 
     public DataStreamService getDataStreamService() {

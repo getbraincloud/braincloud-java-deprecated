@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import com.bitheads.braincloud.services.AsyncMatchService;
 import com.bitheads.braincloud.services.AuthenticationService;
+import com.bitheads.braincloud.services.ChatService;
 import com.bitheads.braincloud.services.DataStreamService;
 import com.bitheads.braincloud.services.EntityService;
 import com.bitheads.braincloud.services.EventService;
@@ -562,6 +563,10 @@ public class BrainCloudWrapper implements IServerCallback {
     // brainCloud Services
     public AsyncMatchService getAsyncMatchService() {
         return _client.getAsyncMatchService();
+    }
+
+    public ChatService getChatService() {
+        return _client.getChatService();
     }
 
     public DataStreamService getDataStreamService() {

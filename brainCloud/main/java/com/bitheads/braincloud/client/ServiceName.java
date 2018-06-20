@@ -6,6 +6,7 @@ package com.bitheads.braincloud.client;
 public enum ServiceName {
     asyncMatch,
     authenticationV2,
+    chat,
     dataStream,
     entity,
     file,
