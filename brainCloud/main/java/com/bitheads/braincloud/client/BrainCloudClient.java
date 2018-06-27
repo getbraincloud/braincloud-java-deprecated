@@ -1,6 +1,8 @@
 package com.bitheads.braincloud.client;
 
+import com.bitheads.braincloud.client.IRTTCallback;
 import com.bitheads.braincloud.comms.BrainCloudRestClient;
+import com.bitheads.braincloud.comms.RTTComms;
 import com.bitheads.braincloud.comms.ServerCall;
 import com.bitheads.braincloud.services.AsyncMatchService;
 import com.bitheads.braincloud.services.AuthenticationService;
@@ -27,6 +29,7 @@ import com.bitheads.braincloud.services.ProductService;
 import com.bitheads.braincloud.services.ProfanityService;
 import com.bitheads.braincloud.services.PushNotificationService;
 import com.bitheads.braincloud.services.RedemptionCodeService;
+import com.bitheads.braincloud.services.RTTRegistrationService;
 import com.bitheads.braincloud.services.S3HandlingService;
 import com.bitheads.braincloud.services.ScriptService;
 import com.bitheads.braincloud.services.SocialLeaderboardService;
@@ -55,6 +58,7 @@ public class BrainCloudClient {
     private final static String BRAINCLOUD_VERSION = "3.8.0";
 
     private BrainCloudRestClient _restClient;
+    private RTTComms _rttComms;
 
     private AuthenticationService _authenticationService = new AuthenticationService(this);
     private AsyncMatchService _asyncMatchService = new AsyncMatchService(this);
@@ -81,6 +85,7 @@ public class BrainCloudClient {
     private ProfanityService _profanityService = new ProfanityService(this);
     private PushNotificationService _pushNotificationService = new PushNotificationService(this);
     private RedemptionCodeService _redemptionCodeService = new RedemptionCodeService(this);
+    private RTTRegistrationService _rttService = new RTTRegistrationService(this);
     private S3HandlingService _s3HandlingService = new S3HandlingService(this);
     private ScriptService _scriptService = new ScriptService(this);
     private SocialLeaderboardService _socialLeaderboardService = new SocialLeaderboardService(this);
@@ -93,6 +98,7 @@ public class BrainCloudClient {
 
     public BrainCloudClient() {
         _restClient = new BrainCloudRestClient(this);
+        _rttComms = new RTTComms(this);
     }
 
     /**
@@ -116,6 +122,10 @@ public class BrainCloudClient {
 
     public BrainCloudRestClient getRestClient() {
         return _restClient;
+    }
+
+    public RTTComms getRTTComms() {
+        return _rttComms;
     }
 
     /**
@@ -196,6 +206,7 @@ public class BrainCloudClient {
     }
 
     public void resetCommunication() {
+        _rttComms.disableRealTimeEvents();
         _restClient.resetCommunication();
     }
 
@@ -204,6 +215,7 @@ public class BrainCloudClient {
      */
     public void runCallbacks() {
         _restClient.runCallbacks();
+        _rttComms.runCallbacks();
     }
 
     /**
@@ -224,6 +236,7 @@ public class BrainCloudClient {
 
     public void enableLogging(boolean shouldEnable) {
         _restClient.enableLogging(shouldEnable);
+        _rttComms.enableLogging(shouldEnable);
     }
 
     /**
@@ -638,6 +651,31 @@ public class BrainCloudClient {
     }
 
     /**
+     * Enables Real Time event for this session.
+     * Real Time events are disabled by default. Usually events
+     * need to be polled using GET_EVENTS. By enabling this, events will
+     * be received instantly when they happen through a TCP connection to an Event Server.
+     *
+     * This function will first call requestClientConnection, then connect to the address
+     *
+     * @param callback The callback.
+     * @param useWebSocket Use web sockets instead of TCP for the internal connections. Default is false
+     */
+    public void enableRealTimeEvents(IRTTCallback callback, boolean useWebSocket) {
+        _rttComms.enableRealTimeEvents(callback, useWebSocket);
+    }
+    public void enableRealTimeEvents(IRTTCallback callback) {
+        enableRealTimeEvents(callback, false);
+    }
+
+    /**
+     * Disables Real Time event for this session.
+     */
+    public void disableRealTimeEvents() {
+        _rttComms.disableRealTimeEvents();
+    }
+
+    /**
      * Sets the language code sent to brainCloud when a user authenticates.
      * If the language is set to a non-ISO 639-1 standard value the app default will be used instead.
      * Will override any auto detected language.
@@ -749,6 +787,10 @@ public class BrainCloudClient {
 
     public RedemptionCodeService getRedemptionCodeService() {
         return _redemptionCodeService;
+    }
+
+    public RTTRegistrationService getRTTService() {
+        return _rttService;
     }
 
     public S3HandlingService getS3HandlingService() {

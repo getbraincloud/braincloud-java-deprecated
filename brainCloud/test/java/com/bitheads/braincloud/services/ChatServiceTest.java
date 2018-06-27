@@ -1,15 +1,9 @@
 package com.bitheads.braincloud.services;
 
-import com.bitheads.braincloud.client.AuthenticationType;
-import com.bitheads.braincloud.client.BrainCloudClient;
 import com.bitheads.braincloud.client.ReasonCodes;
 import com.bitheads.braincloud.client.StatusCodes;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
-
-import java.util.ArrayList;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

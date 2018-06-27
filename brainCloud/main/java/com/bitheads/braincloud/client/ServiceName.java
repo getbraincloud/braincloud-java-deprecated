@@ -30,6 +30,7 @@ public enum ServiceName {
     profanity,
     pushNotification,
     redemptionCode,
+    rttRegistration,
     s3Handling,
     script,
     leaderboard,

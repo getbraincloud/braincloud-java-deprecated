@@ -5,7 +5,6 @@ import com.bitheads.braincloud.client.IServerCallback;
 import com.bitheads.braincloud.client.ServiceName;
 import com.bitheads.braincloud.client.ServiceOperation;
 import com.bitheads.braincloud.services.AsyncMatchService;
-import com.bitheads.braincloud.services.AuthenticationService;
 import com.bitheads.braincloud.services.ChatService;
 import com.bitheads.braincloud.services.DataStreamService;
 import com.bitheads.braincloud.services.EntityService;
@@ -29,6 +28,7 @@ import com.bitheads.braincloud.services.ProductService;
 import com.bitheads.braincloud.services.ProfanityService;
 import com.bitheads.braincloud.services.PushNotificationService;
 import com.bitheads.braincloud.services.RedemptionCodeService;
+import com.bitheads.braincloud.services.RTTRegistrationService;
 import com.bitheads.braincloud.services.S3HandlingService;
 import com.bitheads.braincloud.services.ScriptService;
 import com.bitheads.braincloud.services.SocialLeaderboardService;
@@ -506,7 +506,6 @@ public class BrainCloudWrapper implements IServerCallback {
         }
     }
 
-
     // brainCloud Services
     public AsyncMatchService getAsyncMatchService() {
         return _client.getAsyncMatchService();
@@ -604,6 +603,10 @@ public class BrainCloudWrapper implements IServerCallback {
         return _client.getRedemptionCodeService();
     }
 
+    public RTTRegistrationService getRTTService() {
+        return _client.getRTTService();
+    }
+
     public S3HandlingService getS3HandlingService() {
         return _client.getS3HandlingService();
     }
@@ -623,5 +626,4 @@ public class BrainCloudWrapper implements IServerCallback {
     public TournamentService getTournamentService() {
         return _client.getTournamentService();
     }
-
 }
