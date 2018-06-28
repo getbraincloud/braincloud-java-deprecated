@@ -123,8 +123,8 @@ public class RTTComms implements IServerCallback {
     private String _appId;
     private String _sessionId;
     private String _profileId;
-    private String _rttSecret;
 
+    private JSONObject _auth;
     private JSONObject _endpoint;
     
     private Socket _socket = null;
@@ -217,7 +217,7 @@ public class RTTComms implements IServerCallback {
         jsonData.put("appId", _appId);
         jsonData.put("profileId", _profileId);
         jsonData.put("sessionId", _sessionId);
-        jsonData.put("X-RTT-SECRET", _rttSecret);
+        jsonData.put("auth", _auth);
         json.put("data", jsonData);
 
         return json;
@@ -566,7 +566,7 @@ public class RTTComms implements IServerCallback {
                         return;
                     }
 
-                    _rttSecret = data.getJSONObject("auth").getString("X-RTT-SECRET");
+                    _auth = data.getJSONObject("auth");
 
                     if (_useWebSocket) {
                         connectWebSocket();

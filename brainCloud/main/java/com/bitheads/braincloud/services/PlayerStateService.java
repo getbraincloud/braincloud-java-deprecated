@@ -182,7 +182,7 @@ public class PlayerStateService {
     }
 
     /**
-     * @deprecated Use updateUserName() instead - Removal after September 1 2017
+     * @deprecated Use updateName() instead - Removal after September 1 2017
      */
     public void updatePlayerName(String name,
                                  IServerCallback callback) {
@@ -190,7 +190,7 @@ public class PlayerStateService {
     }
 
     /**
-     * @deprecated Use updateUserName() instead - Removal after September 1 2017
+     * @deprecated Use updateName() instead - Removal after September 1 2017
      */
     public void updateUserName(String name,
                                IServerCallback callback) {
