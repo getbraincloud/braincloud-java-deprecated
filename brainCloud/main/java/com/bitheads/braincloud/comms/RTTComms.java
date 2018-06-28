@@ -208,16 +208,23 @@ public class RTTComms implements IServerCallback {
         }
     }
 
-    private JSONObject buildConnectionRequest() throws Exception {
+    private JSONObject buildConnectionRequest(String protocol) throws Exception {
         // Send connection request
         JSONObject json = new JSONObject();
         json.put("operation", "CONNECT");
+        json.put("service", "rtt");
+
+        JSONObject system = new JSONObject();
+        system.put("protocol", protocol);
+        system.put("platform", "JAVA");
+        system.put("browser", "none");
 
         JSONObject jsonData = new JSONObject();
         jsonData.put("appId", _appId);
         jsonData.put("profileId", _profileId);
         jsonData.put("sessionId", _sessionId);
         jsonData.put("auth", _auth);
+        jsonData.put("system", system);
         json.put("data", jsonData);
 
         return json;
@@ -227,13 +234,13 @@ public class RTTComms implements IServerCallback {
         // Start receiving thread
         startReceiving(in);
 
-        if (!send(buildConnectionRequest())) {
+        if (!send(buildConnectionRequest("tcp"))) {
             failedToConnect();
         }
     }
 
     private void onWSConnected() throws Exception {
-        sendWS(buildConnectionRequest());
+        sendWS(buildConnectionRequest("ws"));
     }
 
 //    private byte[] buildLenEncodedMessage(String message) {
@@ -470,10 +477,11 @@ public class RTTComms implements IServerCallback {
 
             switch (service) {
                 case "evs":
-                    processEvsEvent(jsonData);
+                case "rtt":
+                    processRttEvent(jsonData);
                     break;
-                case "event":
-                    processEventEvent(jsonData);
+                case "chat":
+                    processChatEvent(jsonData);
                     break;
             }
         } 
@@ -485,7 +493,7 @@ public class RTTComms implements IServerCallback {
         }
     }
 
-    private void processEvsEvent(JSONObject json) throws JSONException {
+    private void processRttEvent(JSONObject json) throws JSONException {
     // RTT RECV: {"service":"evs","operation":"CONNECT","data":{"profileId":"5c5d3fa7-e2b0-4e20-86db-c436707f026b","appId":"22682","sessionId":"5i563v03r7n44v5p289jh9rk16"}}
         String operation = json.getString("operation");
         switch (operation) {
@@ -498,11 +506,14 @@ public class RTTComms implements IServerCallback {
         }
     }
 
-    private void processEventEvent(JSONObject json) throws JSONException {
-    //RTT RECV: {"service":"event","operation":"GET_EVENTS","data":{"eventData":{"message":"jabba jabba"},"createdAt":1526067390102,"fromPlayerId":"5c5d3fa7-e2b0-4e20-86db-c436707f026b","toPlayerId":"5c5d3fa7-e2b0-4e20-86db-c436707f026b","eventType":"PrivateMessage","evId":"5af5f0bee925af17b54374e5"}}                case "EVENT": {
+    private void processChatEvent(JSONObject json) throws JSONException {
+    //RTT RECV: {"service":"chat","operation":"INCOMING","data":{"eventData":{"message":"jabba jabba"},"createdAt":1526067390102,"fromPlayerId":"5c5d3fa7-e2b0-4e20-86db-c436707f026b","toPlayerId":"5c5d3fa7-e2b0-4e20-86db-c436707f026b","eventType":"PrivateMessage","evId":"5af5f0bee925af17b54374e5"}}                case "EVENT": {
+    //RTT RECV: {"service":"chat","operation":"INCOMING","data":{"date":1530206606506,"ver":1,"msgId":"783465782531552","from":{"id":"ad83a20e-657f-419f-aa17-952a9a377763","name":"User Name","pic":null},"chId":"22682:gl:perfTest","seq":75744,"content":{"plain":"Chat Message","rich":{}}}}
         String operation = json.getString("operation");
         switch (operation) {
-        case "GET_EVENTS":
+        case "DELETE":
+        case "INCOMING":
+        case "UPDATE":
             synchronized(_callbackEventQueue) {
                 _callbackEventQueue.add(new CallbackEvent(CallbackType.Event, json.getJSONObject("data")));
             }
