@@ -602,8 +602,8 @@ public class BrainCloudWrapper implements IServerCallback {
         return _client.getRedemptionCodeService();
     }
 
-    public RTTRegistrationService getRTTService() {
-        return _client.getRTTService();
+    public RTTRegistrationService getRTTRegistrationService() {
+        return _client.getRTTRegistrationService();
     }
 
     public S3HandlingService getS3HandlingService() {

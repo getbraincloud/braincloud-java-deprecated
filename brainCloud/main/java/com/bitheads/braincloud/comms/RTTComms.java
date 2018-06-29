@@ -150,7 +150,7 @@ public class RTTComms implements IServerCallback {
         AuthenticationService authenticationService = _client.getAuthenticationService();
         _profileId = authenticationService.getProfileId();
 
-        _client.getRTTService().requestClientConnection(this);
+        _client.getRTTRegistrationService().requestClientConnection(this);
     }
 
     public void disableRealTimeEvents() {

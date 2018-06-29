@@ -789,7 +789,7 @@ public class BrainCloudClient {
         return _redemptionCodeService;
     }
 
-    public RTTRegistrationService getRTTService() {
+    public RTTRegistrationService getRTTRegistrationService() {
         return _rttService;
     }
 
