@@ -484,7 +484,7 @@ public class RTTComms implements IServerCallback {
                     processChatEvent(jsonData);
                     break;
             }
-        } 
+        }
         catch (Exception e) {
             synchronized(_callbackEventQueue) {
                 _callbackEventQueue.add(new CallbackEvent(CallbackType.Error, "Bad message: " + message));

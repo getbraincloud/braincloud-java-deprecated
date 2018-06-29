@@ -55,8 +55,7 @@ public class BrainCloudWrapper implements IServerCallback {
     private static final String _DEFAULT_URL = "https://sharedprod.braincloudservers.com/dispatcherv2";
 
     private static BrainCloudWrapper _instance = null;
-    
-    
+
     private Preferences _prefs = Preferences.userNodeForPackage(com.bitheads.braincloud.client.BrainCloudWrapper.class);
 
     private boolean _alwaysAllowProfileSwitch = true;
@@ -87,6 +86,7 @@ public class BrainCloudWrapper implements IServerCallback {
     public BrainCloudWrapper(String wrapperName) {
         _wrapperName = wrapperName;
         _client = new BrainCloudClient();
+        _prefs = Preferences.userRoot().node(getSaveName());
     }
 
     /**
@@ -165,7 +165,6 @@ public class BrainCloudWrapper implements IServerCallback {
         // send our IDs to brainCloud
         getClient().initializeIdentity(profileIdToAuthenticateWith, anonymousId);
     }
-
 
     /**
      * Combines the wrapperName and the _SHARED_PREFERENCES to create a unique save name
