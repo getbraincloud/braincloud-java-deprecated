@@ -291,19 +291,30 @@ public class RTTComms implements IServerCallback {
 
         boolean sslEnabled = _endpoint.getBoolean("ssl");
 
-        String scheme = sslEnabled ? "https://" : "http://";
-        String uri = new StringBuilder(scheme)
+        String scheme = sslEnabled ? "wss://" : "ws://";
+        StringBuilder uri = new StringBuilder(scheme)
                 .append(_endpoint.getString("host"))
                 .append(':')
-                .append(_endpoint.getInt("port"))
-                .toString();
+                .append(_endpoint.getInt("port"));
+
+        if (_auth != null) {
+            char separator = '?';
+
+            for (String key : _auth.keySet()) {
+                uri.append(separator)
+                        .append(key)
+                        .append('=')
+                        .append(_auth.getString(key));
+                if (separator == '?') separator = '&';
+            }
+        }
 
         if (_loggingEnabled) {
             System.out.println("RTT WS: Connecting " + uri);
         }
         
         try {
-            _webSocketClient = new WSClient(uri);
+            _webSocketClient = new WSClient(uri.toString());
 
             if (sslEnabled) {
                 setupSSL();
@@ -399,7 +410,7 @@ public class RTTComms implements IServerCallback {
         _webSocketClient.setSocket(factory.createSocket());
     }
 
-	private void disconnect() {
+    private void disconnect() {
         _isConnected = false;
 
         try {
@@ -619,26 +630,26 @@ public class RTTComms implements IServerCallback {
         }
     }
 
-	private JSONObject getEndpointForType(JSONArray endpoints, String type, boolean wantSsl) throws JSONException {
+    private JSONObject getEndpointForType(JSONArray endpoints, String type, boolean wantSsl) throws JSONException {
 
-		for (int i = 0; i < endpoints.length(); ++i) {
-			JSONObject endpoint = endpoints.getJSONObject(i);
-			String protocol = endpoint.getString("protocol");
-			if (protocol.equals(type)) {
-				if (wantSsl) {
-					if (endpoint.getBoolean("ssl")) {
-						return endpoint;
-					}
-				}
-				else {
-					return endpoint;
-				}
-			}
-		}
-		return null;
-	}
+        for (int i = 0; i < endpoints.length(); ++i) {
+            JSONObject endpoint = endpoints.getJSONObject(i);
+            String protocol = endpoint.getString("protocol");
+            if (protocol.equals(type)) {
+                if (wantSsl) {
+                    if (endpoint.getBoolean("ssl")) {
+                        return endpoint;
+                    }
+                }
+                else {
+                    return endpoint;
+                }
+            }
+        }
+        return null;
+    }
 
-	@Override
+    @Override
     public void serverError(ServiceName serviceName, ServiceOperation serviceOperation, int statusCode, int reasonCode, String jsonError) {
         _callback.rttError(jsonError);
     }
