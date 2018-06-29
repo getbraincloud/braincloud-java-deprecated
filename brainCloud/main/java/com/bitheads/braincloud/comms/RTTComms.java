@@ -602,11 +602,11 @@ public class RTTComms implements IServerCallback {
         if (_useWebSocket) {
             //   1st choice: websocket + ssl
             //   2nd: websocket
-            JSONObject endpoint = getEndpointForType(endpoints, "http", true);
+            JSONObject endpoint = getEndpointForType(endpoints, "ws", true);
             if (endpoint != null) {
                 return endpoint;
             }
-            return getEndpointForType(endpoints, "http", false);
+            return getEndpointForType(endpoints, "ws", false);
         }
         else {
             //   1st choice: tcp
