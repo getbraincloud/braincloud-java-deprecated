@@ -1,6 +1,7 @@
 package com.bitheads.braincloud.client;
 
 import com.bitheads.braincloud.client.IRTTCallback;
+import com.bitheads.braincloud.client.IRTTConnectCallback;
 import com.bitheads.braincloud.comms.BrainCloudRestClient;
 import com.bitheads.braincloud.comms.RTTComms;
 import com.bitheads.braincloud.comms.ServerCall;
@@ -206,7 +207,7 @@ public class BrainCloudClient {
     }
 
     public void resetCommunication() {
-        _rttComms.disableRealTimeEvents();
+        _rttComms.disableRTT();
         _restClient.resetCommunication();
     }
 
@@ -659,20 +660,20 @@ public class BrainCloudClient {
      * This function will first call requestClientConnection, then connect to the address
      *
      * @param callback The callback.
-     * @param useWebSocket Use web sockets instead of TCP for the internal connections. Default is false
+     * @param useWebSocket Use web sockets instead of TCP for the internal connections. Default is true
      */
-    public void enableRealTimeEvents(IRTTCallback callback, boolean useWebSocket) {
-        _rttComms.enableRealTimeEvents(callback, useWebSocket);
+    public void enableRTT(IRTTConnectCallback callback, boolean useWebSocket) {
+        _rttComms.enableRTT(callback, useWebSocket);
     }
-    public void enableRealTimeEvents(IRTTCallback callback) {
-        enableRealTimeEvents(callback, false);
+    public void enableRTT(IRTTConnectCallback callback) {
+        enableRTT(callback, true);
     }
 
     /**
      * Disables Real Time event for this session.
      */
-    public void disableRealTimeEvents() {
-        _rttComms.disableRealTimeEvents();
+    public void disableRTT() {
+        _rttComms.disableRTT();
     }
 
     /**
@@ -683,6 +684,65 @@ public class BrainCloudClient {
      */
     public void overrideLanguageCode(String languageCode) {
         _languageCode = languageCode;
+    }
+
+    /**
+     * Listen to real time events.
+     * 
+     * Notes: RTT must be enabled for this app, and enableRTT must have been successfully called.
+     * Only one event callback can be registered at a time. Calling this a second time will override the previous callback.
+     */
+    public void registerRTTEventCallback(IRTTCallback callback) {
+        _rttComms.registerRTTCallback(ServiceName.event.toString(), callback);
+    }
+    public void deregisterRTTEventCallback() {
+        _rttComms.deregisterRTTCallback(ServiceName.event.toString());
+    }
+
+    /**
+     * Listen to real time chat messages.
+     * 
+     * Notes: RTT must be enabled for this app, and enableRTT must have been successfully called.
+     * Only one chat callback can be registered at a time. Calling this a second time will override the previous callback.
+     */
+    public void registerRTTChatCallback(IRTTCallback callback) {
+        _rttComms.registerRTTCallback(ServiceName.chat.toString(), callback);
+    }
+    public void deregisterRTTChatCallback() {
+        _rttComms.deregisterRTTCallback(ServiceName.chat.toString());
+    }
+
+    /**
+     * Listen to real time messaging.
+     * 
+     * Notes: RTT must be enabled for this app, and enableRTT must have been successfully called.
+     * Only one messaging callback can be registered at a time. Calling this a second time will override the previous callback.
+     */
+    public void registerRTTMessagingCallback(IRTTCallback callback) {
+        _rttComms.registerRTTCallback(ServiceName.messaging.toString(), callback);
+    }
+    public void deregisterRTTMessagingCallback() {
+        _rttComms.deregisterRTTCallback(ServiceName.messaging.toString());
+    }
+
+    /**
+     * Listen to real time lobby events.
+     * 
+     * Notes: RTT must be enabled for this app, and enableRTT must have been successfully called.
+     * Only one lobby callback can be registered at a time. Calling this a second time will override the previous callback.
+     */
+    public void registerRTTLobbyCallback(IRTTCallback callback) {
+        _rttComms.registerRTTCallback(ServiceName.lobby.toString(), callback);
+    }
+    public void deregisterRTTLobbyCallback() {
+        _rttComms.deregisterRTTCallback(ServiceName.lobby.toString());
+    }
+
+    /**
+     * Clear all set RTT callbacks
+     */
+    public void deregisterAllCallbacks() {
+        _rttComms.deregisterAllCallbacks();
     }
 
     public double getTimeZoneOffset() {
