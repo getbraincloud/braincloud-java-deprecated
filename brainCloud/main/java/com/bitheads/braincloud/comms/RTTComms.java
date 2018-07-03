@@ -10,6 +10,7 @@ import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
@@ -24,6 +25,7 @@ import org.json.JSONObject;
 
 import com.bitheads.braincloud.client.BrainCloudClient;
 import com.bitheads.braincloud.client.IRTTCallback;
+import com.bitheads.braincloud.client.IRTTConnectCallback;
 import com.bitheads.braincloud.client.IServerCallback;
 import com.bitheads.braincloud.client.ServiceName;
 import com.bitheads.braincloud.client.ServiceOperation;
@@ -31,28 +33,27 @@ import com.bitheads.braincloud.services.AuthenticationService;
 
 public class RTTComms implements IServerCallback {
 
-    enum CallbackType {
-        Connected,
-        Error,
+    enum RTTCallbackType {
+        ConnectSuccess,
+        ConnectFailure,
         Event
     }
 
-    // TODO: Use inheritance...
-    private class CallbackEvent {
-        public CallbackType _type;
+    private class RTTCallback {
+        public RTTCallbackType _type;
         public String _message;
         public JSONObject _json;
 
-        CallbackEvent(CallbackType type) {
+        RTTCallback(RTTCallbackType type) {
             _type = type;
         }
 
-        CallbackEvent(CallbackType type, String message) {
+        RTTCallback(RTTCallbackType type, String message) {
             _type = type;
             _message = message;
         }
 
-        CallbackEvent(CallbackType type, JSONObject json) {
+        RTTCallback(RTTCallbackType type, JSONObject json) {
             _type = type;
             _json = json;
         }
@@ -103,7 +104,7 @@ public class RTTComms implements IServerCallback {
         public void onClose(int code, String reason, boolean remote) {
             System.out.println("RTT WS onClose: " + reason + ", code: " + Integer.toString(code) + ", remote: " + Boolean.toString(remote));
             synchronized(_callbackEventQueue) {
-                _callbackEventQueue.add(new CallbackEvent(CallbackType.Error, "webSocket onClose: " + reason));
+                _callbackEventQueue.add(new RTTCallback(RTTCallbackType.ConnectFailure, "webSocket onClose: " + reason));
             }
         }
 
@@ -111,14 +112,15 @@ public class RTTComms implements IServerCallback {
         public void onError(Exception e) {
             e.printStackTrace();
             synchronized(_callbackEventQueue) {
-                _callbackEventQueue.add(new CallbackEvent(CallbackType.Error, "webSocket onError"));
+                _callbackEventQueue.add(new RTTCallback(RTTCallbackType.ConnectFailure, "webSocket onError"));
             }
         }
     }
 
     private BrainCloudClient _client;
     private boolean _loggingEnabled = false;
-    private IRTTCallback _callback = null;
+    private IRTTConnectCallback _connectCallback = null;
+    private HashMap<String, IRTTCallback> _callbacks = new HashMap<String, IRTTCallback>();
 
     private String _appId;
     private String _sessionId;
@@ -133,14 +135,14 @@ public class RTTComms implements IServerCallback {
     private boolean _useWebSocket = false;
     private WSClient _webSocketClient;
 
-    private ArrayList<CallbackEvent> _callbackEventQueue = new ArrayList<CallbackEvent>();
+    private ArrayList<RTTCallback> _callbackEventQueue = new ArrayList<RTTCallback>();
 
     public RTTComms(BrainCloudClient client) {
         _client = client;
     }
 
-    public void enableRealTimeEvents(IRTTCallback callback, boolean useWebSocket) {
-        _callback = callback;
+    public void enableRTT(IRTTConnectCallback callback, boolean useWebSocket) {
+        _connectCallback = callback;
         _useWebSocket = useWebSocket;
 
         BrainCloudRestClient restClient = _client.getRestClient();
@@ -153,7 +155,7 @@ public class RTTComms implements IServerCallback {
         _client.getRTTRegistrationService().requestClientConnection(this);
     }
 
-    public void disableRealTimeEvents() {
+    public void disableRTT() {
         if (_webSocketClient != null) {
             _webSocketClient.close();
             _webSocketClient = null;
@@ -171,18 +173,21 @@ public class RTTComms implements IServerCallback {
     public void runCallbacks() {
         synchronized(_callbackEventQueue) {
             while (!_callbackEventQueue.isEmpty()) {
-                CallbackEvent callbackEvent = _callbackEventQueue.remove(0);
-                switch (callbackEvent._type) {
-                    case Connected: {
-                        _callback.rttConnected();
+                RTTCallback rttCallback = _callbackEventQueue.remove(0);
+                switch (rttCallback._type) {
+                    case ConnectSuccess: {
+                        _connectCallback.rttConnectSuccess();
                         break;
                     }
-                    case Error: {
-                        _callback.rttError(callbackEvent._message);
+                    case ConnectFailure: {
+                        _connectCallback.rttConnectFailure(rttCallback._message);
                         break;
                     }
                     case Event: {
-                        _callback.rttEvent(callbackEvent._json);
+                        String serviceName = rttCallback._json.getString("service");
+                        if (_callbacks.containsKey(serviceName)) {
+                            _callbacks.get(serviceName).rttCallback(rttCallback._json);
+                        }
                         break;
                     }
                 }
@@ -202,7 +207,7 @@ public class RTTComms implements IServerCallback {
             } catch (JSONException e) {
                 // We tried
             }
-            _callbackEventQueue.add(new CallbackEvent(CallbackType.Error, 
+            _callbackEventQueue.add(new RTTCallback(RTTCallbackType.ConnectFailure, 
                     "Failed to connect to RTT Event server: " + host + ":" + 
                     Integer.toString(port)));
         }
@@ -217,7 +222,6 @@ public class RTTComms implements IServerCallback {
         JSONObject system = new JSONObject();
         system.put("protocol", protocol);
         system.put("platform", "JAVA");
-        system.put("browser", "none");
 
         JSONObject jsonData = new JSONObject();
         jsonData.put("appId", _appId);
@@ -454,7 +458,7 @@ public class RTTComms implements IServerCallback {
             String message = jsonData.toString();
 
             if (_loggingEnabled) {
-                System.out.println("RTT WS SEND: " + message);
+                System.out.println("RTT SEND: " + message);
             }
 
             _webSocketClient.send(/*buildLenEncodedMessage*/(message));
@@ -474,61 +478,38 @@ public class RTTComms implements IServerCallback {
 
         try {
             JSONObject jsonData = new JSONObject(message);
-//            int status = jsonData.getInt("status");
-//
-//            if (status != 200) {
-//                synchronized(_callbackEventQueue) {
-//                    _callbackEventQueue.add(new CallbackEvent(CallbackType.Error, message));
-//                }
-//                disconnect();
-//                return;
-//            }
-
             String service = jsonData.getString("service");
 
             switch (service) {
                 case "evs":
                 case "rtt":
-                    processRttEvent(jsonData);
+                    processRttMessage(jsonData);
                     break;
-                case "chat":
-                    processChatEvent(jsonData);
+                default: {
+                    synchronized(_callbackEventQueue) {
+                        _callbackEventQueue.add(new RTTCallback(RTTCallbackType.Event, jsonData));
+                    }
                     break;
+                }
             }
         }
         catch (Exception e) {
             synchronized(_callbackEventQueue) {
-                _callbackEventQueue.add(new CallbackEvent(CallbackType.Error, "Bad message: " + message));
+                _callbackEventQueue.add(new RTTCallback(RTTCallbackType.ConnectFailure, "Bad message: " + message));
             }
             throw(e);
         }
     }
 
-    private void processRttEvent(JSONObject json) throws JSONException {
-    // RTT RECV: {"service":"evs","operation":"CONNECT","data":{"profileId":"5c5d3fa7-e2b0-4e20-86db-c436707f026b","appId":"22682","sessionId":"5i563v03r7n44v5p289jh9rk16"}}
+    private void processRttMessage(JSONObject json) throws JSONException {
         String operation = json.getString("operation");
         switch (operation) {
             case "CONNECT": {
                 synchronized(_callbackEventQueue) {
-                    _callbackEventQueue.add(new CallbackEvent(CallbackType.Connected));
+                    _callbackEventQueue.add(new RTTCallback(RTTCallbackType.ConnectSuccess));
                 }
                 break;
             }
-        }
-    }
-
-    private void processChatEvent(JSONObject json) throws JSONException {
-    //RTT RECV: {"service":"chat","operation":"INCOMING","data":{"eventData":{"message":"jabba jabba"},"createdAt":1526067390102,"fromPlayerId":"5c5d3fa7-e2b0-4e20-86db-c436707f026b","toPlayerId":"5c5d3fa7-e2b0-4e20-86db-c436707f026b","eventType":"PrivateMessage","evId":"5af5f0bee925af17b54374e5"}}                case "EVENT": {
-    //RTT RECV: {"service":"chat","operation":"INCOMING","data":{"date":1530206606506,"ver":1,"msgId":"783465782531552","from":{"id":"ad83a20e-657f-419f-aa17-952a9a377763","name":"User Name","pic":null},"chId":"22682:gl:perfTest","seq":75744,"content":{"plain":"Chat Message","rich":{}}}}
-        String operation = json.getString("operation");
-        switch (operation) {
-        case "DELETE":
-        case "INCOMING":
-        case "UPDATE":
-            synchronized(_callbackEventQueue) {
-                _callbackEventQueue.add(new CallbackEvent(CallbackType.Event, json.getJSONObject("data")));
-            }
-            break;
         }
     }
 
@@ -584,7 +565,7 @@ public class RTTComms implements IServerCallback {
                     JSONObject data = jsonData.getJSONObject("data");
                     _endpoint = getEndpointToUse(data.getJSONArray("endpoints"));
                     if (_endpoint == null) {
-                        _callback.rttError("No endpoint available");
+                        _connectCallback.rttConnectFailure("No endpoint available");
                         return;
                     }
 
@@ -598,7 +579,7 @@ public class RTTComms implements IServerCallback {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    _callback.rttError("Failed to establish connection");
+                    _connectCallback.rttConnectFailure("Failed to establish connection");
                     return;
                 }
             }
@@ -651,6 +632,18 @@ public class RTTComms implements IServerCallback {
 
     @Override
     public void serverError(ServiceName serviceName, ServiceOperation serviceOperation, int statusCode, int reasonCode, String jsonError) {
-        _callback.rttError(jsonError);
+        _connectCallback.rttConnectFailure(jsonError);
+    }
+
+    public void registerRTTCallback(String serviceName, IRTTCallback callback) {
+        _callbacks.put(serviceName, callback);
+    }
+
+    public void deregisterRTTCallback(String serviceName) {
+        _callbacks.remove(serviceName);
+    }
+
+    public void deregisterAllCallbacks() {
+        _callbacks.clear();
     }
 }
