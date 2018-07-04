@@ -135,6 +135,9 @@ public class RTTComms implements IServerCallback {
     private boolean _useWebSocket = false;
     private WSClient _webSocketClient;
 
+    private int _heartbeatSeconds = 30;
+    private long _lastHeartbeatTime = 0;
+
     private ArrayList<RTTCallback> _callbackEventQueue = new ArrayList<RTTCallback>();
 
     public RTTComms(BrainCloudClient client) {
@@ -191,6 +194,17 @@ public class RTTComms implements IServerCallback {
                         break;
                     }
                 }
+            }
+        }
+
+        // Heartbeat
+        if (_isConnected) {
+            if (System.currentTimeMillis() - _lastHeartbeatTime >= _heartbeatSeconds * 1000) {
+                _lastHeartbeatTime = System.currentTimeMillis();
+                JSONObject json = new JSONObject();
+                json.put("operation", "HEARTBEAT");
+                json.put("service", "rtt");
+                sendWS(json);        
             }
         }
     }
@@ -274,6 +288,7 @@ public class RTTComms implements IServerCallback {
                 int port = _endpoint.getInt("port");
                 _socket = new Socket(serverIP, port);
                 _isConnected = true;
+                _lastHeartbeatTime = System.currentTimeMillis();
 
                 if (_loggingEnabled) {
                     System.out.println("RTT TCP: connected");
@@ -505,6 +520,8 @@ public class RTTComms implements IServerCallback {
         String operation = json.getString("operation");
         switch (operation) {
             case "CONNECT": {
+                _isConnected = true;
+                _heartbeatSeconds = json.getJSONObject("data").getInt("heartbeatSeconds");
                 synchronized(_callbackEventQueue) {
                     _callbackEventQueue.add(new RTTCallback(RTTCallbackType.ConnectSuccess));
                 }

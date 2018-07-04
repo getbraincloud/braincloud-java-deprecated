@@ -17,6 +17,7 @@ import com.bitheads.braincloud.services.GlobalEntityService;
 import com.bitheads.braincloud.services.GlobalStatisticsService;
 import com.bitheads.braincloud.services.GroupService;
 import com.bitheads.braincloud.services.IdentityService;
+import com.bitheads.braincloud.services.LobbyService;
 import com.bitheads.braincloud.services.MailService;
 import com.bitheads.braincloud.services.MatchMakingService;
 import com.bitheads.braincloud.services.OneWayMatchService;
@@ -512,6 +513,10 @@ public class BrainCloudWrapper implements IServerCallback {
 
     public ChatService getChatService() {
         return _client.getChatService();
+    }
+
+    public LobbyService getLobbyService() {
+        return _client.getLobbyService();
     }
 
     public DataStreamService getDataStreamService() {

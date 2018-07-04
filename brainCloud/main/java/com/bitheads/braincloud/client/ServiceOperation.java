@@ -306,4 +306,8 @@ public enum ServiceOperation {
 
     //rtt
     REQUEST_CLIENT_CONNECTION,
+
+    //lobby
+    FIND_LOBBY,
+    FIND_OR_CREATE_LOBBY
 }
