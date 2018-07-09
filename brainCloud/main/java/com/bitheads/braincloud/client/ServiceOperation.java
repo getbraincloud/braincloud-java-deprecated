@@ -309,5 +309,6 @@ public enum ServiceOperation {
 
     //lobby
     FIND_LOBBY,
-    FIND_OR_CREATE_LOBBY
+    FIND_OR_CREATE_LOBBY,
+    RUN_MATCHMAKER
 }

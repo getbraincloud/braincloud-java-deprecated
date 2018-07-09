@@ -36,6 +36,17 @@ public class LobbyService {
         _client = client;
     }
 
+    public void runMatchmaker(IServerCallback callback) {
+        try {
+            JSONObject data = new JSONObject();
+            ServerCall sc = new ServerCall(ServiceName.lobby,
+                    ServiceOperation.RUN_MATCHMAKER, data, callback);
+            _client.sendRequest(sc);
+        } catch (JSONException je) {
+            je.printStackTrace();
+        }
+    }
+
     public void findOrCreateLobby(String lobbyType, int rating, int maxSteps, String algoJson, String filterJson, ArrayList<String> otherUserCxIds, String settingsJson, Boolean isReady, String extraJson, String teamCode, IServerCallback callback) {
         try {
             JSONObject data = new JSONObject();
