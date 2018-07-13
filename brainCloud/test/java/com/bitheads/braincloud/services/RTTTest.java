@@ -43,6 +43,44 @@ public class RTTTest extends TestFixtureBase
         tr.Run();
     }
 
+    @Test
+    public void testChatCallback() throws Exception {
+        String channelId;
+        String msgId = "";
+
+        // Enable RTT
+        {
+            RTTConnectionTestResult tr = new RTTConnectionTestResult(_wrapper);
+            _wrapper.getClient().enableRTT(tr, false);
+            tr.Run();
+        }
+
+        // Get channel id
+        {
+            TestResult tr = new TestResult(_wrapper);
+            _wrapper.getChatService().getChannelId("gl", "valid", tr);
+            tr.Run();
+            channelId = tr.m_response.getJSONObject("data").getString("channelId");
+        }
+
+        // Connect to the channel
+        {
+            TestResult tr = new TestResult(_wrapper);
+            _wrapper.getChatService().channelConnect(channelId, 50, tr);
+            tr.Run();
+        }
+
+        // Post chat message
+        synchronized(msgId)
+        {
+            TestResult tr = new TestResult(_wrapper);
+            _wrapper.getChatService().postChatMessage(channelId, "Java RTT test message", null, true, tr);
+            tr.Run();
+        }
+
+        // Wait for the message
+    }
+
     public class RTTConnectionTestResult implements IRTTConnectCallback {
         private boolean m_result = false;
         private boolean m_done = false;
