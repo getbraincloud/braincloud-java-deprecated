@@ -18,6 +18,7 @@ import com.bitheads.braincloud.services.GlobalStatisticsService;
 import com.bitheads.braincloud.services.GroupService;
 import com.bitheads.braincloud.services.IdentityService;
 import com.bitheads.braincloud.services.MailService;
+import com.bitheads.braincloud.services.MessagingService;
 import com.bitheads.braincloud.services.MatchMakingService;
 import com.bitheads.braincloud.services.OneWayMatchService;
 import com.bitheads.braincloud.services.PlaybackStreamService;
@@ -565,6 +566,10 @@ public class BrainCloudWrapper implements IServerCallback {
         return _client.getAsyncMatchService();
     }
 
+    public AuthenticationService getAuthenticationService() {
+        return _client.getAuthenticationService();
+    }
+
     public ChatService getChatService() {
         return _client.getChatService();
     }
@@ -615,6 +620,10 @@ public class BrainCloudWrapper implements IServerCallback {
 
     public MailService getMailService() {
         return _client.getMailService();
+    }
+
+    public MessagingService getMessagingService() {
+        return _client.getMessagingService();
     }
 
     public MatchMakingService getMatchMakingService() {
@@ -676,5 +685,4 @@ public class BrainCloudWrapper implements IServerCallback {
     public TournamentService getTournamentService() {
         return _client.getTournamentService();
     }
-
 }
