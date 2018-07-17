@@ -53,7 +53,7 @@ android {
 }
 
 dependencies {
-    api 'org.java_websocket:Java-WebSocket:1.3.8'
+    api 'org.java-websocket:Java-WebSocket:1.3.8'
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.json:json:20171018'
