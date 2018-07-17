@@ -21,6 +21,7 @@ import com.bitheads.braincloud.services.GroupService;
 import com.bitheads.braincloud.services.IdentityService;
 import com.bitheads.braincloud.services.LobbyService;
 import com.bitheads.braincloud.services.MailService;
+import com.bitheads.braincloud.services.MessagingService;
 import com.bitheads.braincloud.services.MatchMakingService;
 import com.bitheads.braincloud.services.OneWayMatchService;
 import com.bitheads.braincloud.services.PlaybackStreamService;
@@ -78,6 +79,7 @@ public class BrainCloudClient {
     private IdentityService _identityService = new IdentityService(this);
     private LobbyService _lobbyService = new LobbyService(this);
     private MailService _mailService = new MailService(this);
+    private MessagingService _messagingService = new MessagingService(this);
     private MatchMakingService _matchMakingService = new MatchMakingService(this);
     private OneWayMatchService _oneWayMatchService = new OneWayMatchService(this);
     private PlaybackStreamService _playbackStreamService = new PlaybackStreamService(this);
@@ -813,6 +815,10 @@ public class BrainCloudClient {
 
     public MailService getMailService() {
         return _mailService;
+    }
+
+    public MessagingService getMessagingService() {
+        return _messagingService;
     }
 
     public MatchMakingService getMatchMakingService() {
