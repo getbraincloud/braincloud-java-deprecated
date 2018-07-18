@@ -11,6 +11,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
@@ -187,9 +188,14 @@ public class RTTComms implements IServerCallback {
                         break;
                     }
                     case Event: {
-                        String serviceName = rttCallback._json.getString("service");
-                        if (_callbacks.containsKey(serviceName)) {
-                            _callbacks.get(serviceName).rttCallback(rttCallback._json);
+                        try {
+                            String serviceName = rttCallback._json.getString("service");
+                            if (_callbacks.containsKey(serviceName)) {
+                                _callbacks.get(serviceName).rttCallback(rttCallback._json);
+                            }
+                        }
+                        catch (Exception e) {
+                            e.printStackTrace();
                         }
                         break;
                     }
@@ -201,10 +207,15 @@ public class RTTComms implements IServerCallback {
         if (_isConnected) {
             if (System.currentTimeMillis() - _lastHeartbeatTime >= _heartbeatSeconds * 1000) {
                 _lastHeartbeatTime = System.currentTimeMillis();
-                JSONObject json = new JSONObject();
-                json.put("operation", "HEARTBEAT");
-                json.put("service", "rtt");
-                sendWS(json);        
+                try {
+                    JSONObject json = new JSONObject();
+                    json.put("operation", "HEARTBEAT");
+                    json.put("service", "rtt");
+                    sendWS(json);
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -277,29 +288,32 @@ public class RTTComms implements IServerCallback {
 //    }
 
     private void connect() {
-        Thread connectionThread = new Thread(() -> {
-            try {
-                if (_loggingEnabled) {
-                    System.out.println("RTT TCP: Connecting...");
+        Thread connectionThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (_loggingEnabled) {
+                        System.out.println("RTT TCP: Connecting...");
+                    }
+
+                    // Create socket
+                    InetAddress serverIP = InetAddress.getByName(_endpoint.getString("host"));
+                    int port = _endpoint.getInt("port");
+                    _socket = new Socket(serverIP, port);
+                    _isConnected = true;
+                    _lastHeartbeatTime = System.currentTimeMillis();
+
+                    if (_loggingEnabled) {
+                        System.out.println("RTT TCP: connected");
+                    }
+
+                    onSocketConnected(null);
+                    
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    failedToConnect();
+                    return;
                 }
-
-                // Create socket
-                InetAddress serverIP = InetAddress.getByName(_endpoint.getString("host"));
-                int port = _endpoint.getInt("port");
-                _socket = new Socket(serverIP, port);
-                _isConnected = true;
-                _lastHeartbeatTime = System.currentTimeMillis();
-
-                if (_loggingEnabled) {
-                    System.out.println("RTT TCP: connected");
-                }
-
-                onSocketConnected(null);
-                
-            } catch (Exception e) {
-                e.printStackTrace();
-                failedToConnect();
-                return;
             }
         });
 
@@ -319,7 +333,10 @@ public class RTTComms implements IServerCallback {
         if (_auth != null) {
             char separator = '?';
 
-            for (String key : _auth.keySet()) {
+            Iterator<String> it = _auth.keys();
+            while(it.hasNext()) {
+                String key = (String)it.next();
+                
                 uri.append(separator)
                         .append(key)
                         .append('=')
@@ -531,34 +548,39 @@ public class RTTComms implements IServerCallback {
     }
 
     private void startReceiving(DataInputStream in_in) {
-        Thread receiveThread = new Thread(() -> {
-            DataInputStream in;
-            try {
-                if (in_in != null) {
-                    in = in_in;
-                } else {
-                    in = new DataInputStream(_socket.getInputStream());
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                _isConnected = false;
-                return;
-            }
-            while (_isConnected) {
+        final DataInputStream capture_in_in = in_in;
+        
+        Thread receiveThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                DataInputStream in;
                 try {
-                    int len = in.readInt();
-
-                    byte[] bytes = new byte[len];
-                    in.readFully(bytes);
-                    String message = new String(bytes);
-
-                    onRecv(message);
+                    if (capture_in_in != null) {
+                        in = capture_in_in;
+                    } else {
+                        in = new DataInputStream(_socket.getInputStream());
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    break;
+                    _isConnected = false;
+                    return;
                 }
+                while (_isConnected) {
+                    try {
+                        int len = in.readInt();
+
+                        byte[] bytes = new byte[len];
+                        in.readFully(bytes);
+                        String message = new String(bytes);
+
+                        onRecv(message);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        break;
+                    }
+                }
+                disconnect();
             }
-            disconnect();
         });
 
         receiveThread.start();

@@ -58,7 +58,7 @@ public class MessagingServiceTest extends TestFixtureBase
         String profileId = _wrapper.getAuthenticationService().getProfileId();
 
         _wrapper.getMessagingService().getMessagesPage("{\"pagination\":{\"rowsPerPage\":10,\"pageNumber\":1},\"searchCriteria\":{\"$or\":[{\"message.message.from\":" + profileId + "},{\"message.message.to\":" + profileId + "}]},\"sortCriteria\":{\"mbCr\": 1,\"mbUp\": -1}}", tr);
-        tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.MESSAGE_NOT_FOUND);
+        tr.Run();
     }
 
     @Test
