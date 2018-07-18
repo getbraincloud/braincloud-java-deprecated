@@ -17,6 +17,7 @@ import com.bitheads.braincloud.services.GlobalEntityService;
 import com.bitheads.braincloud.services.GlobalStatisticsService;
 import com.bitheads.braincloud.services.GroupService;
 import com.bitheads.braincloud.services.IdentityService;
+import com.bitheads.braincloud.services.LobbyService;
 import com.bitheads.braincloud.services.MailService;
 import com.bitheads.braincloud.services.MessagingService;
 import com.bitheads.braincloud.services.MatchMakingService;
@@ -29,6 +30,7 @@ import com.bitheads.braincloud.services.ProductService;
 import com.bitheads.braincloud.services.ProfanityService;
 import com.bitheads.braincloud.services.PushNotificationService;
 import com.bitheads.braincloud.services.RedemptionCodeService;
+import com.bitheads.braincloud.services.RTTRegistrationService;
 import com.bitheads.braincloud.services.S3HandlingService;
 import com.bitheads.braincloud.services.ScriptService;
 import com.bitheads.braincloud.services.SocialLeaderboardService;
@@ -618,6 +620,10 @@ public class BrainCloudWrapper implements IServerCallback {
         return _client.getIdentityService();
     }
 
+    public LobbyService getLobbyService() {
+        return _client.getLobbyService();
+    }
+
     public MailService getMailService() {
         return _client.getMailService();
     }
@@ -664,6 +670,10 @@ public class BrainCloudWrapper implements IServerCallback {
 
     public RedemptionCodeService getRedemptionCodeService() {
         return _client.getRedemptionCodeService();
+    }
+
+    public RTTRegistrationService getRTTRegistrationService() {
+        return _client.getRTTRegistrationService();
     }
 
     public S3HandlingService getS3HandlingService() {

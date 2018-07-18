@@ -95,6 +95,11 @@ public class ChatServiceTest extends TestFixtureBase
     public void updateChatMessage() throws Exception {
         TestResult tr = new TestResult(_wrapper);
 
+        _wrapper.getChatService().postChatMessage(_channelId, "Hello World!", null, true, tr);
+        tr.Run();
+        _msgId = tr.m_response.getJSONObject("data").getString("msgId");
+        _msgVersion = 1;
+
         _wrapper.getChatService().updateChatMessage(_channelId, _msgId, _msgVersion, "Hello World! edited", null, tr);
         tr.Run();
 
@@ -107,10 +112,10 @@ public class ChatServiceTest extends TestFixtureBase
     }
 
     @Test
-    public void getRecentMessages() throws Exception {
+    public void getRecentChatMessages() throws Exception {
         TestResult tr = new TestResult(_wrapper);
 
-        _wrapper.getChatService().getRecentMessages(_channelId, 50, tr);
+        _wrapper.getChatService().getRecentChatMessages(_channelId, 50, tr);
         tr.Run();
 
         // Verify that our message is present in the history

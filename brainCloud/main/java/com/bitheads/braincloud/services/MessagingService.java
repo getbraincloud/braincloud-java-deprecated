@@ -68,15 +68,11 @@ public class MessagingService {
      * @param callback The method to be invoked when the server response is received
      */
     public void getMessageboxes(IServerCallback callback) {
-        try {
-            JSONObject data = new JSONObject();
+        JSONObject data = new JSONObject();
 
-            ServerCall sc = new ServerCall(ServiceName.messaging,
-                    ServiceOperation.GET_MESSAGE_BOXES, data, callback);
-            _client.sendRequest(sc);
-        } catch (JSONException je) {
-            je.printStackTrace();
-        }
+        ServerCall sc = new ServerCall(ServiceName.messaging,
+                ServiceOperation.GET_MESSAGE_BOXES, data, callback);
+        _client.sendRequest(sc);
     }
 
     /**
@@ -88,15 +84,11 @@ public class MessagingService {
      * @param callback The method to be invoked when the server response is received
      */
     public void getMessageCounts(IServerCallback callback) {
-        try {
-            JSONObject data = new JSONObject();
+        JSONObject data = new JSONObject();
 
-            ServerCall sc = new ServerCall(ServiceName.messaging,
-                    ServiceOperation.GET_MESSAGE_COUNTS, data, callback);
-            _client.sendRequest(sc);
-        } catch (JSONException je) {
-            je.printStackTrace();
-        }
+        ServerCall sc = new ServerCall(ServiceName.messaging,
+                ServiceOperation.GET_MESSAGE_COUNTS, data, callback);
+        _client.sendRequest(sc);
     }
 
     /**

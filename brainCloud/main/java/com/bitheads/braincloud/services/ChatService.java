@@ -182,20 +182,20 @@ public class ChatService {
      * Get a list of <maxReturn> messages from history of channel <channelId>.
      *
      * Service Name - Chat
-     * Service Operation - getRecentMessages
+     * Service Operation - GET_RECENT_CHAT_MESSAGES
      *
      * @param channelId Id of the channel to receive the info from.
      * @param maxReturn Maximum message count to return.
      * @param callback The method to be invoked when the server response is received.
      */
-    public void getRecentMessages(String channelId, int maxReturn, IServerCallback callback) {
+    public void getRecentChatMessages(String channelId, int maxReturn, IServerCallback callback) {
         try {
             JSONObject data = new JSONObject();
             data.put(Parameter.channelId.name(), channelId);
             data.put(Parameter.maxReturn.name(), maxReturn);
 
             ServerCall sc = new ServerCall(ServiceName.chat,
-                    ServiceOperation.GET_RECENT_MESSAGES, data, callback);
+                    ServiceOperation.GET_RECENT_CHAT_MESSAGES, data, callback);
             _client.sendRequest(sc);
         } catch (JSONException je) {
             je.printStackTrace();
