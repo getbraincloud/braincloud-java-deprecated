@@ -126,6 +126,7 @@ public class RTTComms implements IServerCallback {
     private String _appId;
     private String _sessionId;
     private String _profileId;
+    private String _connectionId;
 
     private JSONObject _auth;
     private JSONObject _endpoint;
@@ -168,6 +169,10 @@ public class RTTComms implements IServerCallback {
 
     public boolean getLoggingEnabled() {
         return _loggingEnabled;
+    }
+
+    public String getConnectionId() {
+        return _connectionId;
     }
 
     public void enableLogging(boolean isEnabled) {
@@ -539,8 +544,15 @@ public class RTTComms implements IServerCallback {
             case "CONNECT": {
                 _isConnected = true;
                 _heartbeatSeconds = json.getJSONObject("data").getInt("heartbeatSeconds");
-                synchronized(_callbackEventQueue) {
-                    _callbackEventQueue.add(new RTTCallback(RTTCallbackType.ConnectSuccess));
+                _connectionId = json.getJSONObject("data").getString("cxId");
+                if (json.getString("service").equals("rtt")) {
+                    synchronized(_callbackEventQueue) {
+                        _callbackEventQueue.add(new RTTCallback(RTTCallbackType.ConnectSuccess));
+                    }
+                } else {
+                    synchronized(_callbackEventQueue) {
+                        _callbackEventQueue.add(new RTTCallback(RTTCallbackType.ConnectFailure));
+                    }
                 }
                 break;
             }
