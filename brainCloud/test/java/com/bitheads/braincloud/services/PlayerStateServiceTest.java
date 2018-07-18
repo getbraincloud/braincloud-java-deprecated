@@ -110,7 +110,7 @@ public class PlayerStateServiceTest extends TestFixtureBase
     {
         TestResult tr = new TestResult(_wrapper);
 
-        _wrapper.getPlayerStateService().updateUserName(
+        _wrapper.getPlayerStateService().updateName(
                 "ABC",
                 tr);
 
@@ -122,7 +122,7 @@ public class PlayerStateServiceTest extends TestFixtureBase
     {
         TestResult tr = new TestResult(_wrapper);
 
-        _wrapper.getPlayerStateService().updateUserName(
+        _wrapper.getPlayerStateService().updateName(
                 "\uD83D\uDE0A \uD83D\uDE0A \uD83D\uDE0A",
                 tr);
 

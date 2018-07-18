@@ -25,6 +25,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -352,7 +353,7 @@ public class BrainCloudRestClient implements Runnable {
 
     public void setPacketTimeoutsToDefault() {
         _packetTimeouts = new ArrayList<>();
-        _packetTimeouts.add(10);
+        _packetTimeouts.add(15);
         _packetTimeouts.add(10);
         _packetTimeouts.add(10);
     }
@@ -479,7 +480,7 @@ public class BrainCloudRestClient implements Runnable {
             return _authenticationTimeoutMillis;
         }
 
-        return _packetTimeouts.get(retryAttempt >= _packetTimeouts.size() ? _packetTimeouts.size() - 1 : retryAttempt) * 1000;
+        return _packetTimeouts.get((retryAttempt >= _packetTimeouts.size()) ? (_packetTimeouts.size() - 1) : retryAttempt) * 1000;
     }
 
     private int getMaxSendAttempts() {
@@ -524,19 +525,22 @@ public class BrainCloudRestClient implements Runnable {
                             fakeErrorResponse(_statusCodeCache, _reasonCodeCache, _statusMessageCache);
                         } else {
                             _retryCount = 0;
+                            _expectedPacketId = _packetId++;
                             for (; ; ) {
-                                // do this before as retry count will be incremented inside sendBundle()
-                                long timeoutMillis = System.currentTimeMillis() + getRetryTimeoutMillis(_retryCount);
-
+                                long timeoutTimeMs = getRetryTimeoutMillis(_retryCount);
+                                long startTime = System.currentTimeMillis();
+                                
                                 if (sendBundle()) {
                                     break;
                                 }
 
-                                long endMillis = System.currentTimeMillis();
-                                if (endMillis < timeoutMillis) {
+                                ++_retryCount;
+
+                                long endTime = System.currentTimeMillis();
+                                if (endTime < startTime + timeoutTimeMs) {
                                     try {
-                                        Thread.sleep(timeoutMillis - endMillis);
-                                    } catch (InterruptedException e) {
+                                        Thread.sleep((startTime + timeoutTimeMs) - endTime);
+                                    } catch (Exception e) {
                                         e.printStackTrace();
                                     }
                                 }
@@ -662,9 +666,28 @@ public class BrainCloudRestClient implements Runnable {
         }
     }
 
+    /** Returns true if the max retry count was reached. false should attempt a retry */
+    private boolean onTimeout() {
+        if (_retryCount < getMaxSendAttempts()) {
+            // allow retry of this packet
+            return false;
+        }
+
+        if (_cacheMessagesOnNetworkError) {
+            _networkErrorMessageQueue.clear();
+            _networkErrorMessageQueue.addAll(_bundleQueue);
+            _networkErrorCallbackReadyToBeSent = true;
+            _blockingQueue = true;
+        }
+
+        fillWithError(StatusCodes.CLIENT_NETWORK_ERROR, ReasonCodes.CLIENT_NETWORK_ERROR_TIMEOUT, "timeout");
+        return true;
+    }
+
     private boolean sendBundle() {
+        HttpURLConnection connection = null;
         try {
-            HttpURLConnection connection = (HttpURLConnection) new URL(_serverUrl).openConnection();
+            connection = (HttpURLConnection) new URL(_serverUrl).openConnection();
             connection.setConnectTimeout(getRetryTimeoutMillis(_retryCount));
             connection.setReadTimeout(getRetryTimeoutMillis(_retryCount));
             connection.setDoOutput(true);
@@ -688,7 +711,7 @@ public class BrainCloudRestClient implements Runnable {
             if (_loggingEnabled) {
                 try {
                     JSONObject jlog = new JSONObject(body);
-                    LogString("OUTGOING" + (_retryCount > 0 ? " retry(" + _retryCount + "): " : ": ") + jlog.toString(2));
+                    LogString("OUTGOING" + (_retryCount > 0 ? " retry(" + _retryCount + "): " : ": ") + jlog.toString(2) + ", t: " + new Date().toString());
                 } catch (JSONException e) {
                     // should never happen
                     e.printStackTrace();
@@ -718,29 +741,16 @@ public class BrainCloudRestClient implements Runnable {
             if (_loggingEnabled) {
                 try {
                     JSONObject jlog = new JSONObject(responseBody);
-                    LogString("INCOMING (" + connection.getResponseCode() + "): " + jlog.toString(2));
+                    LogString("INCOMING (" + connection.getResponseCode() + "): " + jlog.toString(2) + ", t: " + new Date().toString());
                 } catch (JSONException e) {
                     // in case we get a non-json response from the server
-                    LogString("INCOMING (" + connection.getResponseCode() + "): " + responseBody);
+                    LogString("INCOMING (" + connection.getResponseCode() + "): " + responseBody + ", t: " + new Date().toString());
                 }
             }
 
             // non-200 status, retry
             if (connection.getResponseCode() != HttpURLConnection.HTTP_OK || responseBody.length() == 0) {
-                _retryCount++;
-                if (_retryCount < getMaxSendAttempts()) {
-                    // allow retry of this packet
-                    return false;
-                }
-
-                if (_cacheMessagesOnNetworkError) {
-                    _networkErrorMessageQueue.clear();
-                    _networkErrorMessageQueue.addAll(_bundleQueue);
-                    _networkErrorCallbackReadyToBeSent = true;
-                    _blockingQueue = true;
-                }
-                fillWithError(StatusCodes.CLIENT_NETWORK_ERROR, ReasonCodes.CLIENT_NETWORK_ERROR_TIMEOUT, responseBody);
-                return true;
+                return onTimeout();
             }
 
             JSONObject root;
@@ -756,7 +766,20 @@ public class BrainCloudRestClient implements Runnable {
 
             handleBundle(root);
             _bundleQueue.clear();
+        } catch (java.net.SocketTimeoutException e) {
+            LogString("TIMEOUT t: " + new Date().toString());
+            return onTimeout();
         } catch (Exception e) {
+            int status_code = 0;
+            try {
+                status_code = connection != null ? connection.getResponseCode() : 0;
+                if (status_code == 503) {
+                    return onTimeout();
+                }
+            } catch(Exception e2) {
+                e2.printStackTrace();
+            }
+
             e.printStackTrace();
             if (_cacheMessagesOnNetworkError) {
                 _networkErrorMessageQueue.clear();
@@ -777,7 +800,6 @@ public class BrainCloudRestClient implements Runnable {
             messages.put(serverCall.getPayload());
         }
 
-        _expectedPacketId = _packetId++;
         JSONObject allMessages = new JSONObject();
         allMessages.put("messages", messages);
         allMessages.put("gameId", _appId);
@@ -850,6 +872,19 @@ public class BrainCloudRestClient implements Runnable {
                     if (status == 200) {
                         resetKillSwitch();
 
+                        // A session id or a profile id could potentially come back in any messages
+                        if (message.has("data")) {
+                            JSONObject data = message.optJSONObject("data");
+                            if (data != null) {
+                                if (data.has("sessionId")) {
+                                    _sessionId = data.getString("sessionId");
+                                }
+                                if (data.has("profileId")) {
+                                    _client.getAuthenticationService().setProfileId(data.getString("profileId"));
+                                }
+                            }
+                        }
+
                         if (sc.getServiceName().equals(ServiceName.authenticationV2)
                                 && sc.getServiceOperation().equals(ServiceOperation.AUTHENTICATE)) {
                             JSONObject data = message.getJSONObject("data");
@@ -861,7 +896,7 @@ public class BrainCloudRestClient implements Runnable {
                             _client.getAuthenticationService().setProfileId(profileId);
 
                             long sessionExpiry = data.getLong("playerSessionExpiry");
-                            _heartbeatIntervalMillis = (long)(sessionExpiry * 1000 * 0.85);
+                            _heartbeatIntervalMillis = (long)(sessionExpiry * 850);
                             _maxBundleSize = data.getInt("maxBundleMsgs");
 
                             if(data.has("maxKillCount"))

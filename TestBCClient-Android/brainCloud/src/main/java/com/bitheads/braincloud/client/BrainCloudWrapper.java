@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import com.bitheads.braincloud.services.AsyncMatchService;
 import com.bitheads.braincloud.services.AuthenticationService;
+import com.bitheads.braincloud.services.ChatService;
 import com.bitheads.braincloud.services.DataStreamService;
 import com.bitheads.braincloud.services.EntityService;
 import com.bitheads.braincloud.services.EventService;
@@ -16,7 +17,9 @@ import com.bitheads.braincloud.services.GlobalEntityService;
 import com.bitheads.braincloud.services.GlobalStatisticsService;
 import com.bitheads.braincloud.services.GroupService;
 import com.bitheads.braincloud.services.IdentityService;
+import com.bitheads.braincloud.services.LobbyService;
 import com.bitheads.braincloud.services.MailService;
+import com.bitheads.braincloud.services.MessagingService;
 import com.bitheads.braincloud.services.MatchMakingService;
 import com.bitheads.braincloud.services.OneWayMatchService;
 import com.bitheads.braincloud.services.PlaybackStreamService;
@@ -27,6 +30,7 @@ import com.bitheads.braincloud.services.ProductService;
 import com.bitheads.braincloud.services.ProfanityService;
 import com.bitheads.braincloud.services.PushNotificationService;
 import com.bitheads.braincloud.services.RedemptionCodeService;
+import com.bitheads.braincloud.services.RTTRegistrationService;
 import com.bitheads.braincloud.services.S3HandlingService;
 import com.bitheads.braincloud.services.ScriptService;
 import com.bitheads.braincloud.services.SocialLeaderboardService;
@@ -564,6 +568,14 @@ public class BrainCloudWrapper implements IServerCallback {
         return _client.getAsyncMatchService();
     }
 
+    public AuthenticationService getAuthenticationService() {
+        return _client.getAuthenticationService();
+    }
+
+    public ChatService getChatService() {
+        return _client.getChatService();
+    }
+
     public DataStreamService getDataStreamService() {
         return _client.getDataStreamService();
     }
@@ -608,8 +620,16 @@ public class BrainCloudWrapper implements IServerCallback {
         return _client.getIdentityService();
     }
 
+    public LobbyService getLobbyService() {
+        return _client.getLobbyService();
+    }
+
     public MailService getMailService() {
         return _client.getMailService();
+    }
+
+    public MessagingService getMessagingService() {
+        return _client.getMessagingService();
     }
 
     public MatchMakingService getMatchMakingService() {
@@ -652,6 +672,10 @@ public class BrainCloudWrapper implements IServerCallback {
         return _client.getRedemptionCodeService();
     }
 
+    public RTTRegistrationService getRTTRegistrationService() {
+        return _client.getRTTRegistrationService();
+    }
+
     public S3HandlingService getS3HandlingService() {
         return _client.getS3HandlingService();
     }
@@ -671,5 +695,4 @@ public class BrainCloudWrapper implements IServerCallback {
     public TournamentService getTournamentService() {
         return _client.getTournamentService();
     }
-
 }

@@ -11,6 +11,9 @@
 # Generated files
 bin/
 gen/
+.project
+.settings/
+.classpath
 
 # Gradle files
 .gradle/
@@ -35,3 +38,5 @@ captures/
 ids.txt
 
 autobuild/artifacts/
+
+.idea/

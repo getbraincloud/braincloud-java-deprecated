@@ -6,6 +6,7 @@ import com.bitheads.braincloud.client.ServiceName;
 import com.bitheads.braincloud.client.ServiceOperation;
 import com.bitheads.braincloud.services.AsyncMatchService;
 import com.bitheads.braincloud.services.AuthenticationService;
+import com.bitheads.braincloud.services.ChatService;
 import com.bitheads.braincloud.services.DataStreamService;
 import com.bitheads.braincloud.services.EntityService;
 import com.bitheads.braincloud.services.EventService;
@@ -17,7 +18,9 @@ import com.bitheads.braincloud.services.GlobalEntityService;
 import com.bitheads.braincloud.services.GlobalStatisticsService;
 import com.bitheads.braincloud.services.GroupService;
 import com.bitheads.braincloud.services.IdentityService;
+import com.bitheads.braincloud.services.LobbyService;
 import com.bitheads.braincloud.services.MailService;
+import com.bitheads.braincloud.services.MessagingService;
 import com.bitheads.braincloud.services.MatchMakingService;
 import com.bitheads.braincloud.services.OneWayMatchService;
 import com.bitheads.braincloud.services.PlaybackStreamService;
@@ -28,6 +31,7 @@ import com.bitheads.braincloud.services.ProductService;
 import com.bitheads.braincloud.services.ProfanityService;
 import com.bitheads.braincloud.services.PushNotificationService;
 import com.bitheads.braincloud.services.RedemptionCodeService;
+import com.bitheads.braincloud.services.RTTRegistrationService;
 import com.bitheads.braincloud.services.S3HandlingService;
 import com.bitheads.braincloud.services.ScriptService;
 import com.bitheads.braincloud.services.SocialLeaderboardService;
@@ -54,8 +58,7 @@ public class BrainCloudWrapper implements IServerCallback {
     private static final String _DEFAULT_URL = "https://sharedprod.braincloudservers.com/dispatcherv2";
 
     private static BrainCloudWrapper _instance = null;
-    
-    
+
     private Preferences _prefs = Preferences.userNodeForPackage(com.bitheads.braincloud.client.BrainCloudWrapper.class);
 
     private boolean _alwaysAllowProfileSwitch = true;
@@ -86,6 +89,7 @@ public class BrainCloudWrapper implements IServerCallback {
     public BrainCloudWrapper(String wrapperName) {
         _wrapperName = wrapperName;
         _client = new BrainCloudClient();
+        _prefs = Preferences.userRoot().node(getSaveName());
     }
 
     /**
@@ -164,7 +168,6 @@ public class BrainCloudWrapper implements IServerCallback {
         // send our IDs to brainCloud
         getClient().initializeIdentity(profileIdToAuthenticateWith, anonymousId);
     }
-
 
     /**
      * Combines the wrapperName and the _SHARED_PREFERENCES to create a unique save name
@@ -505,10 +508,21 @@ public class BrainCloudWrapper implements IServerCallback {
         }
     }
 
-
     // brainCloud Services
     public AsyncMatchService getAsyncMatchService() {
         return _client.getAsyncMatchService();
+    }
+
+    public AuthenticationService getAuthenticationService() {
+        return _client.getAuthenticationService();
+    }
+
+    public ChatService getChatService() {
+        return _client.getChatService();
+    }
+
+    public LobbyService getLobbyService() {
+        return _client.getLobbyService();
     }
 
     public DataStreamService getDataStreamService() {
@@ -559,6 +573,10 @@ public class BrainCloudWrapper implements IServerCallback {
         return _client.getMailService();
     }
 
+    public MessagingService getMessagingService() {
+        return _client.getMessagingService();
+    }
+
     public MatchMakingService getMatchMakingService() {
         return _client.getMatchMakingService();
     }
@@ -599,6 +617,10 @@ public class BrainCloudWrapper implements IServerCallback {
         return _client.getRedemptionCodeService();
     }
 
+    public RTTRegistrationService getRTTRegistrationService() {
+        return _client.getRTTRegistrationService();
+    }
+
     public S3HandlingService getS3HandlingService() {
         return _client.getS3HandlingService();
     }
@@ -618,5 +640,4 @@ public class BrainCloudWrapper implements IServerCallback {
     public TournamentService getTournamentService() {
         return _client.getTournamentService();
     }
-
 }
