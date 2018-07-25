@@ -633,6 +633,10 @@ public class BrainCloudClient {
         return _countryCode;
     }
 
+    public String getRTTConnectionId() {
+        return _rttComms.getConnectionId();
+    }
+
     /**
      * Sets the country code sent to brainCloud when a user authenticates.
      * Will override any auto detected country.
