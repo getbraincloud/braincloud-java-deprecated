@@ -16,6 +16,7 @@ public class TournamentServiceTest extends TestFixtureBase {
 
     private String _tournamentCode = "testTournament";
     private String _leaderboardId = "testTournamentLeaderboard";
+    private String _divSetId = "testDivisionSetID";
     private boolean _didJoin;
 
     @After
@@ -36,6 +37,33 @@ public class TournamentServiceTest extends TestFixtureBase {
                 tr);
 
         tr.RunExpectFail(400, ReasonCodes.VIEWING_REWARD_FOR_NON_PROCESSED_TOURNAMENTS);
+    }
+
+    @Test
+    public void getDivisionInfo() throws Exception {
+        joinTestDivision();
+
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.getTournamentService().getDivisionInfo(
+            _divSetId,
+            tr
+        );
+        tr.Run();
+
+        leaveTestDivision();
+    }
+
+    @Test
+    public void getMyDivisions() throws Exception {
+        joinTestDivision();
+        
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.getTournamentService().getMyDivisions(tr);
+        tr.Run();
+
+        leaveTestDivision();
     }
 
     @Test
@@ -147,6 +175,32 @@ public class TournamentServiceTest extends TestFixtureBase {
         TestResult tr = new TestResult(_wrapper);
 
         _wrapper.getTournamentService().leaveTournament(
+                _leaderboardId,
+                tr);
+
+        tr.Run();
+
+        _didJoin = false;
+    }
+
+    private void joinTestDivision() throws Exception {
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.getTournamentService().joinDivision(
+                _divSetId,
+                _tournamentCode,
+                0,
+                tr);
+
+        tr.Run();
+        _didJoin = true;
+    }
+
+    
+    private void leaveTestDivision() {
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.getTournamentService().leaveDivisionInstance(
                 _leaderboardId,
                 tr);
 
