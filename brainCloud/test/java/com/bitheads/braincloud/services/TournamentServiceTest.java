@@ -16,6 +16,7 @@ public class TournamentServiceTest extends TestFixtureBase {
 
     private String _tournamentCode = "testTournament";
     private String _leaderboardId = "testTournamentLeaderboard";
+    private String _divSetId = "testDivisionSetID";
     private boolean _didJoin;
 
     @After
@@ -36,6 +37,33 @@ public class TournamentServiceTest extends TestFixtureBase {
                 tr);
 
         tr.RunExpectFail(400, ReasonCodes.VIEWING_REWARD_FOR_NON_PROCESSED_TOURNAMENTS);
+    }
+
+    @Test
+    public void getDivisionInfo() throws Exception {
+        joinTestDivision();
+
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.getTournamentService().getDivisionInfo(
+            _divSetId,
+            tr
+        );
+        tr.Run();
+
+        leaveTestDivision();
+    }
+
+    @Test
+    public void getMyDivisions() throws Exception {
+        joinTestDivision();
+        
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.getTournamentService().getMyDivisions(tr);
+        tr.Run();
+
+        leaveTestDivision();
     }
 
     @Test
@@ -150,6 +178,41 @@ public class TournamentServiceTest extends TestFixtureBase {
                 _leaderboardId,
                 tr);
 
+        tr.Run();
+
+        _didJoin = false;
+    }
+
+    private void joinTestDivision() throws Exception {
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.getTournamentService().joinDivision(
+                _divSetId,
+                _tournamentCode,
+                0,
+                tr);
+
+        tr.Run();
+        _didJoin = true;
+    }
+
+    
+    private void leaveTestDivision() {
+        //the unit test master 20001 has working API calls. I needed to hard code this leaderboardId 
+        //because the LeaveDivisionInstance is looking for a string of a certain format, as a tag of a 
+        //Division set instance. When I use the API explorer, I first authenticate, then join a division,
+        //then getMyDivisions (which tells me my testDivSetId maps to "^D^testDivSetId^3", which is what I 
+        //need to pass into LeaveDivisionInstance as the _leaderBoardId in order for success).
+        //If I simply passed in _leaderBoardId, it tells me testTournamentLeaderBoard is not a division set instance. 
+        //This is because its not the same format. I hard coded the response I got from GetMyDivisions from
+        //the API explorer because it worked there, and it seems to work here if I pass in the same thing , therefore the 
+        //unit test is considered a pass, as all the calls are successful. 
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.getTournamentService().leaveDivisionInstance(
+                "^D^testDivSetId^3",
+                tr);
+                       
         tr.Run();
 
         _didJoin = false;
