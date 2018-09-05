@@ -25,11 +25,11 @@ public class AuthenticationService {
         gameId,
         forceCreate,
         releasePlatform,
-        version,
+        clientLibVersion,
         externalAuthName,
         profileId,
         anonymousId,
-        upgradeAppId,
+        gameVersion,
         countryCode,
         languageCode,
         timeZoneOffset
@@ -272,8 +272,8 @@ public class AuthenticationService {
             message.put(Parameter.anonymousId.name(), _anonymousId);
             message.put(Parameter.gameId.name(), _client.getAppId());
             message.put(Parameter.releasePlatform.name(), _client.getReleasePlatform());
-            message.put(Parameter.upgradeAppId.name(), _client.getAppVersion());
-            message.put(Parameter.version.name(), _client.getBrainCloudVersion());
+            message.put(Parameter.gameVersion.name(), _client.getAppVersion());
+            message.put(Parameter.clientLibVersion.name(), _client.getBrainCloudVersion());
 
             if (StringUtil.IsOptionalParameterValid(externalAuthName)) {
                 message.put(Parameter.externalAuthName.name(), externalAuthName);
