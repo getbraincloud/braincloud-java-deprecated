@@ -3,8 +3,11 @@ package com.bitheads.braincloud.services;
 import java.util.Arrays;
 import java.util.ArrayList;
 
+import org.json.JSONObject;
+
 import com.bitheads.braincloud.client.BrainCloudClient;
 import com.bitheads.braincloud.client.Platform;
+import com.bitheads.braincloud.client.ReasonCodes;
 
 import org.junit.Test;
 
@@ -25,7 +28,7 @@ public class PresenceServiceTest extends TestFixtureBase
     {
         TestResult tr = new TestResult(_wrapper);
         _wrapper.getPresenceService().getPresenceOfFriends(
-            "Test",
+            "aaa-bbb-ccc",
             true,
             tr
         );
@@ -41,7 +44,7 @@ public class PresenceServiceTest extends TestFixtureBase
             true,
             tr
         );
-        tr.Run();
+        tr.RunExpectFail(400, ReasonCodes.INVALID_GROUP_ID);
     }
 
     @Test
@@ -81,7 +84,7 @@ public class PresenceServiceTest extends TestFixtureBase
             true,
             tr
         );
-        tr.Run();
+        tr.RunExpectFail(400, ReasonCodes.INVALID_GROUP_ID);
     }
 
     @Test
@@ -108,7 +111,7 @@ public class PresenceServiceTest extends TestFixtureBase
             true,
             tr
         );
-        tr.Run();
+        tr.RunExpectFail(400, ReasonCodes.PRESENCE_NOT_INITIALIZED);
     }
 
     @Test
@@ -118,17 +121,19 @@ public class PresenceServiceTest extends TestFixtureBase
         _wrapper.getPresenceService().stopListening(
             tr
         );
-        tr.Run();
+        tr.RunExpectFail(400, ReasonCodes.PRESENCE_NOT_INITIALIZED);
     }
 
     @Test
     public void testUpdateActivity() throws Exception
     {
+        JSONObject jsonActivity = new JSONObject();
+
         TestResult tr = new TestResult(_wrapper);
         _wrapper.getPresenceService().updateActivity(
-            "Test",
+            "{ \"LOCATION\": \"POKER_TABLE\", \"STATUS\": \"PLAYING_GAME\"}",
             tr
         );
-        tr.Run();
+        tr.RunExpectFail(400, ReasonCodes.PRESENCE_NOT_INITIALIZED);
     }
 }

@@ -16,13 +16,13 @@ public class PresenceService
 {
 	private enum Parameter
 	{
-		in_platform,
-		in_includeOffline,
-		in_groupId,
-		in_profileIds,
-		in_bidirectional,
-		in_visible,
-		in_jsonActivity
+		platform,
+		includeOffline,
+		groupId,
+		profileIds,
+		bidirectional,
+		visible,
+		activity
 	}
 
 	private BrainCloudClient _client;
@@ -40,9 +40,9 @@ public class PresenceService
 	*
 	* @param callback The method to be invoked when the server response is received
 	*/
-	public void forcePush(IServerCallback in_callback)
+	public void forcePush(IServerCallback callback)
 	{
-		ServerCall sc = new ServerCall(ServiceName.presence, ServiceOperation.FORCE_PUSH, null, in_callback);
+		ServerCall sc = new ServerCall(ServiceName.presence, ServiceOperation.FORCE_PUSH, null, callback);
 		_client.sendRequest(sc);	
 	}
 
@@ -51,14 +51,14 @@ public class PresenceService
 	* "brainCloud", or "facebook". Will not include offline profiles
 	* unless <includeOffline> is set to true.
 	*/
-	public void getPresenceOfFriends(String in_platform, boolean in_includeOffline, IServerCallback in_callback)
+	public void getPresenceOfFriends(String platform, boolean includeOffline, IServerCallback callback)
 	{
 		try {
 			JSONObject data = new JSONObject();
-			data.put(Parameter.in_platform.name(), in_platform);
-			data.put(Parameter.in_includeOffline.name(), in_includeOffline);
+			data.put(Parameter.platform.name(), platform);
+			data.put(Parameter.includeOffline.name(), includeOffline);
 
-			ServerCall sc = new ServerCall(ServiceName.presence, ServiceOperation.GET_PRESENCE_OF_FRIENDS, data, in_callback);
+			ServerCall sc = new ServerCall(ServiceName.presence, ServiceOperation.GET_PRESENCE_OF_FRIENDS, data, callback);
 			_client.sendRequest(sc);	
 		} catch (JSONException je) {
 			je.printStackTrace();
@@ -69,14 +69,14 @@ public class PresenceService
 	* Gets the presence data for the given <groupId>. Will not include
 	* offline profiles unless <includeOffline> is set to true.
 	*/
-	public void getPresenceOfGroup(String in_groupId, boolean in_includeOffline, IServerCallback in_callback)
+	public void getPresenceOfGroup(String groupId, boolean includeOffline, IServerCallback callback)
 	{
 		try {
 			JSONObject data = new JSONObject();
-			data.put(Parameter.in_groupId.name(), in_groupId);
-			data.put(Parameter.in_includeOffline.name(), in_includeOffline);
+			data.put(Parameter.groupId.name(), groupId);
+			data.put(Parameter.includeOffline.name(), includeOffline);
 
-			ServerCall sc = new ServerCall(ServiceName.presence, ServiceOperation.GET_PRESENCE_OF_GROUP, data, in_callback);
+			ServerCall sc = new ServerCall(ServiceName.presence, ServiceOperation.GET_PRESENCE_OF_GROUP, data, callback);
 			_client.sendRequest(sc);	
 		} catch (JSONException je) {
 			je.printStackTrace();
@@ -87,14 +87,14 @@ public class PresenceService
 	* Gets the presence data for the given <profileIds>. Will not include
 	* offline profiles unless <includeOffline> is set to true.
 	*/
-	public void getPresenceOfUsers(ArrayList<String> in_profileIds, boolean in_includeOffline, IServerCallback in_callback)
+	public void getPresenceOfUsers(ArrayList<String> profileIds, boolean includeOffline, IServerCallback callback)
 	{
 		try {
 			JSONObject data = new JSONObject();
-			data.put(Parameter.in_profileIds.name(), in_profileIds);
-			data.put(Parameter.in_includeOffline.name(), in_includeOffline);
+			data.put(Parameter.profileIds.name(), profileIds);
+			data.put(Parameter.includeOffline.name(), includeOffline);
 
-			ServerCall sc = new ServerCall(ServiceName.presence, ServiceOperation.GET_PRESENCE_OF_USERS, data, in_callback);
+			ServerCall sc = new ServerCall(ServiceName.presence, ServiceOperation.GET_PRESENCE_OF_USERS, data, callback);
 			_client.sendRequest(sc);	
 		} catch (JSONException je) {
 			je.printStackTrace();
@@ -107,14 +107,14 @@ public class PresenceService
 	* If <bidirectional> is set to true, then also registers the targeted
 	* users for presence updates from the caller.
 	*/
-	public void registerListenersForFriends(String in_platform, boolean in_bidirectional, IServerCallback in_callback)
+	public void registerListenersForFriends(String platform, boolean bidirectional, IServerCallback callback)
 	{
 		try {
 			JSONObject data = new JSONObject();
-			data.put(Parameter.in_platform.name(), in_platform);
-			data.put(Parameter.in_bidirectional.name(), in_bidirectional);
+			data.put(Parameter.platform.name(), platform);
+			data.put(Parameter.bidirectional.name(), bidirectional);
 
-			ServerCall sc = new ServerCall(ServiceName.presence, ServiceOperation.REGISTER_LISTENER_FOR_FRIENDS, data, in_callback);
+			ServerCall sc = new ServerCall(ServiceName.presence, ServiceOperation.REGISTER_LISTENERS_FOR_FRIENDS, data, callback);
 			_client.sendRequest(sc);	
 		} catch (JSONException je) {
 			je.printStackTrace();
@@ -127,14 +127,14 @@ public class PresenceService
 	* <bidirectional> is set to true, then also registers the targeted
 	* users for presence updates from the caller.
 	*/
-	public void registerListenersForGroup(String in_groupId, boolean in_bidirectional, IServerCallback in_callback)
+	public void registerListenersForGroup(String groupId, boolean bidirectional, IServerCallback callback)
 	{
 		try {
 			JSONObject data = new JSONObject();
-			data.put(Parameter.in_groupId.name(), in_groupId);
-			data.put(Parameter.in_bidirectional.name(), in_bidirectional);
+			data.put(Parameter.groupId.name(), groupId);
+			data.put(Parameter.bidirectional.name(), bidirectional);
 
-			ServerCall sc = new ServerCall(ServiceName.presence, ServiceOperation.REGISTER_LISTENER_FOR_GROUP, data, in_callback);
+			ServerCall sc = new ServerCall(ServiceName.presence, ServiceOperation.REGISTER_LISTENERS_FOR_GROUP, data, callback);
 			_client.sendRequest(sc);	
 		} catch (JSONException je) {
 			je.printStackTrace();
@@ -146,14 +146,14 @@ public class PresenceService
 	* <profileIds>. If <bidirectional> is set to true, then also registers
 	* the targeted users for presence updates from the caller.
 	*/
-	public void registerListenersForProfiles(ArrayList<String> in_profileIds, boolean in_bidirectional, IServerCallback in_callback)
+	public void registerListenersForProfiles(ArrayList<String> profileIds, boolean bidirectional, IServerCallback callback)
 	{
 		try {
 			JSONObject data = new JSONObject();
-			data.put(Parameter.in_profileIds.name(), in_profileIds);
-			data.put(Parameter.in_bidirectional.name(), in_bidirectional);
+			data.put(Parameter.profileIds.name(), profileIds);
+			data.put(Parameter.bidirectional.name(), bidirectional);
 
-			ServerCall sc = new ServerCall(ServiceName.presence, ServiceOperation.REGISTER_LISTENER_FOR_PROFILES, data, in_callback);
+			ServerCall sc = new ServerCall(ServiceName.presence, ServiceOperation.REGISTER_LISTENERS_FOR_PROFILES, data, callback);
 			_client.sendRequest(sc);	
 		} catch (JSONException je) {
 			je.printStackTrace();
@@ -163,13 +163,13 @@ public class PresenceService
 	/**
 	* Update the presence data visible field for the caller.
 	*/
-	public void setVisibility(boolean in_visible, IServerCallback in_callback)
+	public void setVisibility(boolean visible, IServerCallback callback)
 	{
 		try {
 			JSONObject data = new JSONObject();
-			data.put(Parameter.in_visible.name(), in_visible);
+			data.put(Parameter.visible.name(), visible);
 
-			ServerCall sc = new ServerCall(ServiceName.presence, ServiceOperation.SET_VISIBILITY, data, in_callback);
+			ServerCall sc = new ServerCall(ServiceName.presence, ServiceOperation.SET_VISIBILITY, data, callback);
 			_client.sendRequest(sc);	
 		} catch (JSONException je) {
 			je.printStackTrace();
@@ -181,22 +181,24 @@ public class PresenceService
 	* affect the broadcasting of *their* presence updates to other
 	* listeners.
 	*/
-	public void stopListening(IServerCallback in_callback)
+	public void stopListening(IServerCallback callback)
 	{
-		ServerCall sc = new ServerCall(ServiceName.presence, ServiceOperation.STOP_LISTENING, null, in_callback);
+		ServerCall sc = new ServerCall(ServiceName.presence, ServiceOperation.STOP_LISTENING, null, callback);
 		_client.sendRequest(sc);
 	}
 
 	/**
 	* Update the presence data activity field for the caller.
 	*/
-	public void updateActivity(String in_jsonActivity, IServerCallback in_callback)
+	public void updateActivity(String activity, IServerCallback callback)
 	{
 		try {
-			JSONObject data = new JSONObject();
-			data.put(Parameter.in_jsonActivity.name(), in_jsonActivity);
 
-			ServerCall sc = new ServerCall(ServiceName.presence, ServiceOperation.UPDATE_ACTIVITY, data, in_callback);
+ 			JSONObject data = new JSONObject();
+			JSONObject jsonDataObj = new JSONObject(activity);
+			data.put(Parameter.activity.name(), jsonDataObj);
+
+			ServerCall sc = new ServerCall(ServiceName.presence, ServiceOperation.UPDATE_ACTIVITY, data, callback);
 			_client.sendRequest(sc);	
 		} catch (JSONException je) {
 			je.printStackTrace();
