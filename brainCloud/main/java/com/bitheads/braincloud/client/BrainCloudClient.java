@@ -28,6 +28,7 @@ import com.bitheads.braincloud.services.PlaybackStreamService;
 import com.bitheads.braincloud.services.PlayerStateService;
 import com.bitheads.braincloud.services.PlayerStatisticsEventService;
 import com.bitheads.braincloud.services.PlayerStatisticsService;
+import com.bitheads.braincloud.services.PresenceService;
 import com.bitheads.braincloud.services.ProductService;
 import com.bitheads.braincloud.services.ProfanityService;
 import com.bitheads.braincloud.services.PushNotificationService;
@@ -86,6 +87,7 @@ public class BrainCloudClient {
     private PlayerStateService _playerStateService = new PlayerStateService(this);
     private PlayerStatisticsService _playerStatisticsService = new PlayerStatisticsService(this);
     private PlayerStatisticsEventService _playerStatisticsEventService = new PlayerStatisticsEventService(this);
+    private PresenceService _presenceService = new PresenceService(this);
     private ProductService _productService = new ProductService(this);
     private ProfanityService _profanityService = new ProfanityService(this);
     private PushNotificationService _pushNotificationService = new PushNotificationService(this);
@@ -847,6 +849,11 @@ public class BrainCloudClient {
 
     public PlayerStatisticsEventService getPlayerStatisticsEventService() {
         return _playerStatisticsEventService;
+    }
+
+    public PresenceService getPresenceService()
+    {
+        return _presenceService;
     }
 
     public ProductService getProductService() {

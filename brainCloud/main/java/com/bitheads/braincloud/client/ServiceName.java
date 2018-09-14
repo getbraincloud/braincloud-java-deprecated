@@ -28,6 +28,7 @@ public enum ServiceName {
     playerState,
     playerStatistics,
     playerStatisticsEvent,
+    presence,
     product,
     profanity,
     pushNotification,
