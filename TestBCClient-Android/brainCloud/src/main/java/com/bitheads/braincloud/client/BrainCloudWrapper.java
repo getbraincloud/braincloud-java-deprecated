@@ -3,6 +3,7 @@ package com.bitheads.braincloud.client;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.bitheads.braincloud.services.AppStoreService;
 import com.bitheads.braincloud.services.AsyncMatchService;
 import com.bitheads.braincloud.services.AuthenticationService;
 import com.bitheads.braincloud.services.ChatService;
@@ -37,6 +38,7 @@ import com.bitheads.braincloud.services.ScriptService;
 import com.bitheads.braincloud.services.SocialLeaderboardService;
 import com.bitheads.braincloud.services.TimeService;
 import com.bitheads.braincloud.services.TournamentService;
+import com.bitheads.braincloud.services.VirtualCurrencyService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -565,6 +567,10 @@ public class BrainCloudWrapper implements IServerCallback {
 
 
     // brainCloud Services
+    public AppStoreService getAppStoreService() {
+        return _client.getAppStoreService();
+    }
+
     public AsyncMatchService getAsyncMatchService() {
         return _client.getAsyncMatchService();
     }
@@ -663,6 +669,10 @@ public class BrainCloudWrapper implements IServerCallback {
 
     public ProductService getProductService() {
         return _client.getProductService();
+    }
+
+    public VirtualCurrencyService getVirtualCurrencyService() {
+        return _client.getVirtualCurrencyService();
     }
 
     public ProfanityService getProfanityService() {

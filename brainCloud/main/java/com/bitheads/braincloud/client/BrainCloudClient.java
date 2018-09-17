@@ -5,6 +5,7 @@ import com.bitheads.braincloud.client.IRTTConnectCallback;
 import com.bitheads.braincloud.comms.BrainCloudRestClient;
 import com.bitheads.braincloud.comms.RTTComms;
 import com.bitheads.braincloud.comms.ServerCall;
+import com.bitheads.braincloud.services.AppStoreService;
 import com.bitheads.braincloud.services.AsyncMatchService;
 import com.bitheads.braincloud.services.AuthenticationService;
 import com.bitheads.braincloud.services.ChatService;
@@ -39,6 +40,7 @@ import com.bitheads.braincloud.services.ScriptService;
 import com.bitheads.braincloud.services.SocialLeaderboardService;
 import com.bitheads.braincloud.services.TimeService;
 import com.bitheads.braincloud.services.TournamentService;
+import com.bitheads.braincloud.services.VirtualCurrencyService;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -59,11 +61,12 @@ public class BrainCloudClient {
     private double _timeZoneOffset;
 
 
-    private final static String BRAINCLOUD_VERSION = "3.8.0";
+    private final static String BRAINCLOUD_VERSION = "3.9.0";
 
     private BrainCloudRestClient _restClient;
     private RTTComms _rttComms;
 
+    private AppStoreService _appStoreService = new AppStoreService(this);
     private AuthenticationService _authenticationService = new AuthenticationService(this);
     private AsyncMatchService _asyncMatchService = new AsyncMatchService(this);
     private ChatService _chatService = new ChatService(this);
@@ -98,6 +101,7 @@ public class BrainCloudClient {
     private SocialLeaderboardService _socialLeaderboardService = new SocialLeaderboardService(this);
     private TimeService _timeService = new TimeService(this);
     private TournamentService _tournamentService = new TournamentService(this);
+    private VirtualCurrencyService _virtualCurrencyService = new VirtualCurrencyService(this);
 
     private static BrainCloudClient instance = null;
 
@@ -759,6 +763,10 @@ public class BrainCloudClient {
         return _timeZoneOffset;
     }
 
+    public AppStoreService getAppStoreService() {
+        return _appStoreService;
+    }
+
     public AuthenticationService getAuthenticationService() {
         return _authenticationService;
     }
@@ -858,6 +866,10 @@ public class BrainCloudClient {
 
     public ProductService getProductService() {
         return _productService;
+    }
+
+    public VirtualCurrencyService getVirtualCurrencyService() {
+        return _virtualCurrencyService;
     }
 
     public ProfanityService getProfanityService() {
