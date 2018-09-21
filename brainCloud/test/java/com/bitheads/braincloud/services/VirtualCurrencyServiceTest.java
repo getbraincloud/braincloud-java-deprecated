@@ -36,4 +36,20 @@ public class VirtualCurrencyServiceTest extends TestFixtureBase
         _wrapper.getVirtualCurrencyService().getPeerCurrency("_invalid_id_", "_invalid_peer_code_", tr);
         tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.PROFILE_PEER_NOT_FOUND);
     }
+
+    @Test
+    public void testAwardCurrency() throws Exception {
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.getVirtualCurrencyService().awardCurrency("credits", 100, tr);
+        tr.RunExpectFail(StatusCodes.FORBIDDEN, ReasonCodes.CURRENCY_SECURITY_ERROR);
+    }
+
+    @Test
+    public void testConsumeCurrency() throws Exception {
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.getVirtualCurrencyService().consumeCurrency("credits", 100, tr);
+        tr.RunExpectFail(StatusCodes.FORBIDDEN, ReasonCodes.CURRENCY_SECURITY_ERROR);
+    }
 }
