@@ -34,6 +34,20 @@ public class SocialLeaderboardServiceTest extends TestFixtureBase
     }
 
     @Test
+    public void testGetSocialLeaderboardByVersion() throws Exception
+    {
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.getSocialLeaderboardService().getSocialLeaderboardByVersion(
+                _globalLeaderboardId,
+                true,
+                0,
+                tr);
+
+        tr.Run();
+    }
+
+    @Test
     public void testGetMultiSocialLeaderboard() throws Exception
     {
         postScoreToDynamicLeaderboard();
@@ -282,6 +296,40 @@ public class SocialLeaderboardServiceTest extends TestFixtureBase
     }
 
     @Test
+    public void testGetGroupSocialLeaderboardByVersion() throws Exception
+    {
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.getGroupService().createGroup(
+                "testGroup",
+                "test",
+                false,
+                new GroupACL(GroupACL.Access.ReadWrite, GroupACL.Access.ReadWrite),
+                Helpers.createJsonPair("testInc", 123),
+                Helpers.createJsonPair("test", "test"),
+                Helpers.createJsonPair("test", "test"),
+                tr);
+
+        tr.Run();
+
+        JSONObject data = tr.m_response.getJSONObject("data");
+        String groupId = data.getString("groupId");
+
+        _wrapper.getSocialLeaderboardService().getGroupSocialLeaderboardByVersion(
+                _socialLeaderboardId,
+                groupId,
+                0,
+                tr);
+        tr.Run();
+
+        _wrapper.getGroupService().deleteGroup(
+                groupId,
+                -1,
+                tr);
+        tr.Run();
+    }
+
+    @Test
     public void testGetPlayersSocialLeaderboard() throws Exception
     {
         TestResult tr = new TestResult(_wrapper);
@@ -289,6 +337,20 @@ public class SocialLeaderboardServiceTest extends TestFixtureBase
         _wrapper.getSocialLeaderboardService().getPlayersSocialLeaderboard(
                 _socialLeaderboardId,
                 new String[] { getUser(Users.UserA).profileId, getUser(Users.UserB).profileId },
+                tr);
+
+        tr.Run();
+    }
+
+    @Test
+    public void testGetPlayersSocialLeaderboardByVersion() throws Exception
+    {
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.getSocialLeaderboardService().getPlayersSocialLeaderboardByVersion(
+                _socialLeaderboardId,
+                new String[] { getUser(Users.UserA).profileId, getUser(Users.UserB).profileId },
+                0,
                 tr);
 
         tr.Run();
