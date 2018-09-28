@@ -778,30 +778,6 @@ public class GroupService {
     }
 
     /**
-     * Set a group's access conditions.
-     *
-     * Service Name - group
-     * Service Operation - UPDATE_GROUP_ACL
-     *
-     * @param groupId ID of the group.
-     * @param acl The group's access control list. A null ACL implies default
-     * @param callback The method to be invoked when the server response is received
-     */
-    public void updateGroupAcl(String groupId, int acl, IServerCallback callback) {
-        try {
-            JSONObject data = new JSONObject();
-            data.put(Parameter.groupId.name(), groupId);
-            data.put(Parameter.acl.name(), acl);
-
-            ServerCall sc = new ServerCall(ServiceName.group,
-                    ServiceOperation.UPDATE_GROUP_ACL, data, callback);
-            _client.sendRequest(sc);
-        } catch (JSONException je) {
-            je.printStackTrace();
-        }
-    }
-
-    /**
      * Updates a group's data.
      *
      * Service Name - group

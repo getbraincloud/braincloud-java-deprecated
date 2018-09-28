@@ -506,22 +506,6 @@ public class GroupServiceTest extends TestFixtureBase {
         logout();
     }
 
-    @Test
-    public void testUpdateGroupAcl() throws Exception {
-        authenticate(Users.UserA);
-        createGroup();
-
-        TestResult tr = new TestResult(_wrapper);
-        _wrapper.getGroupService().updateGroupAcl(
-                _groupId,
-                1,
-                tr);
-        tr.Run();
-
-        deleteGroup();
-        logout();
-    }
-
 
     @Test
     public void testUpdateGroupData() throws Exception {
