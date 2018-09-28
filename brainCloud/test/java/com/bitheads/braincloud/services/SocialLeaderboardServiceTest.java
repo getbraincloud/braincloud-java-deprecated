@@ -1,6 +1,7 @@
 package com.bitheads.braincloud.services;
 
 import com.bitheads.braincloud.client.BrainCloudClient;
+import com.bitheads.braincloud.client.ReasonCodes;
 import com.bitheads.braincloud.client.StatusCodes;
 
 import org.json.JSONObject;
@@ -300,33 +301,12 @@ public class SocialLeaderboardServiceTest extends TestFixtureBase
     {
         TestResult tr = new TestResult(_wrapper);
 
-        _wrapper.getGroupService().createGroup(
-                "testGroup",
-                "test",
-                false,
-                new GroupACL(GroupACL.Access.ReadWrite, GroupACL.Access.ReadWrite),
-                Helpers.createJsonPair("testInc", 123),
-                Helpers.createJsonPair("test", "test"),
-                Helpers.createJsonPair("test", "test"),
-                tr);
-
-        tr.Run();
-
-        JSONObject data = tr.m_response.getJSONObject("data");
-        String groupId = data.getString("groupId");
-
         _wrapper.getSocialLeaderboardService().getGroupSocialLeaderboardByVersion(
                 _socialLeaderboardId,
-                groupId,
+                "_invalid_",
                 0,
                 tr);
-        tr.Run();
-
-        _wrapper.getGroupService().deleteGroup(
-                groupId,
-                -1,
-                tr);
-        tr.Run();
+        tr.RunExpectFail(400, ReasonCodes.MISSING_RECORD);
     }
 
     @Test
@@ -349,6 +329,7 @@ public class SocialLeaderboardServiceTest extends TestFixtureBase
 
         _wrapper.getSocialLeaderboardService().getPlayersSocialLeaderboardByVersion(
                 _socialLeaderboardId,
+
                 new String[] { getUser(Users.UserA).profileId, getUser(Users.UserB).profileId },
                 0,
                 tr);
