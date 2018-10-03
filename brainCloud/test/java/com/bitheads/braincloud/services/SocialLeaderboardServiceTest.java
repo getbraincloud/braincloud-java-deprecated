@@ -1,6 +1,7 @@
 package com.bitheads.braincloud.services;
 
 import com.bitheads.braincloud.client.BrainCloudClient;
+import com.bitheads.braincloud.client.ReasonCodes;
 import com.bitheads.braincloud.client.StatusCodes;
 
 import org.json.JSONObject;
@@ -28,6 +29,20 @@ public class SocialLeaderboardServiceTest extends TestFixtureBase
         _wrapper.getSocialLeaderboardService().getSocialLeaderboard(
                 _globalLeaderboardId,
                 true,
+                tr);
+
+        tr.Run();
+    }
+
+    @Test
+    public void testGetSocialLeaderboardByVersion() throws Exception
+    {
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.getSocialLeaderboardService().getSocialLeaderboardByVersion(
+                _globalLeaderboardId,
+                true,
+                0,
                 tr);
 
         tr.Run();
@@ -282,6 +297,19 @@ public class SocialLeaderboardServiceTest extends TestFixtureBase
     }
 
     @Test
+    public void testGetGroupSocialLeaderboardByVersion() throws Exception
+    {
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.getSocialLeaderboardService().getGroupSocialLeaderboardByVersion(
+                _socialLeaderboardId,
+                "_invalid_",
+                0,
+                tr);
+        tr.RunExpectFail(400, ReasonCodes.MISSING_RECORD);
+    }
+
+    @Test
     public void testGetPlayersSocialLeaderboard() throws Exception
     {
         TestResult tr = new TestResult(_wrapper);
@@ -289,6 +317,21 @@ public class SocialLeaderboardServiceTest extends TestFixtureBase
         _wrapper.getSocialLeaderboardService().getPlayersSocialLeaderboard(
                 _socialLeaderboardId,
                 new String[] { getUser(Users.UserA).profileId, getUser(Users.UserB).profileId },
+                tr);
+
+        tr.Run();
+    }
+
+    @Test
+    public void testGetPlayersSocialLeaderboardByVersion() throws Exception
+    {
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.getSocialLeaderboardService().getPlayersSocialLeaderboardByVersion(
+                _socialLeaderboardId,
+
+                new String[] { getUser(Users.UserA).profileId, getUser(Users.UserB).profileId },
+                0,
                 tr);
 
         tr.Run();

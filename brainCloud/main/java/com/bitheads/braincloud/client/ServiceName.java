@@ -4,6 +4,7 @@ package com.bitheads.braincloud.client;
  * Created by prestonjennings on 15-09-01.
  */
 public enum ServiceName {
+    appStore,
     asyncMatch,
     authenticationV2,
     chat,
@@ -28,6 +29,7 @@ public enum ServiceName {
     playerState,
     playerStatistics,
     playerStatisticsEvent,
+    presence,
     product,
     profanity,
     pushNotification,
@@ -37,5 +39,6 @@ public enum ServiceName {
     script,
     leaderboard,
     time,
-    tournament
+    tournament,
+    virtualCurrency
 }

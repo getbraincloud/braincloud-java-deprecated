@@ -4,6 +4,7 @@ import com.bitheads.braincloud.client.BrainCloudClient;
 import com.bitheads.braincloud.client.IServerCallback;
 import com.bitheads.braincloud.client.ServiceName;
 import com.bitheads.braincloud.client.ServiceOperation;
+import com.bitheads.braincloud.services.AppStoreService;
 import com.bitheads.braincloud.services.AsyncMatchService;
 import com.bitheads.braincloud.services.AuthenticationService;
 import com.bitheads.braincloud.services.ChatService;
@@ -27,6 +28,7 @@ import com.bitheads.braincloud.services.PlaybackStreamService;
 import com.bitheads.braincloud.services.PlayerStateService;
 import com.bitheads.braincloud.services.PlayerStatisticsEventService;
 import com.bitheads.braincloud.services.PlayerStatisticsService;
+import com.bitheads.braincloud.services.PresenceService;
 import com.bitheads.braincloud.services.ProductService;
 import com.bitheads.braincloud.services.ProfanityService;
 import com.bitheads.braincloud.services.PushNotificationService;
@@ -37,6 +39,7 @@ import com.bitheads.braincloud.services.ScriptService;
 import com.bitheads.braincloud.services.SocialLeaderboardService;
 import com.bitheads.braincloud.services.TimeService;
 import com.bitheads.braincloud.services.TournamentService;
+import com.bitheads.braincloud.services.VirtualCurrencyService;
 
 import java.util.prefs.Preferences;
 
@@ -509,6 +512,10 @@ public class BrainCloudWrapper implements IServerCallback {
     }
 
     // brainCloud Services
+    public AppStoreService getAppStoreService() {
+        return _client.getAppStoreService();
+    }
+
     public AsyncMatchService getAsyncMatchService() {
         return _client.getAsyncMatchService();
     }
@@ -601,8 +608,17 @@ public class BrainCloudWrapper implements IServerCallback {
         return _client.getPlayerStatisticsEventService();
     }
 
+    public PresenceService getPresenceService()
+    {
+        return _client.getPresenceService();
+    }
+
     public ProductService getProductService() {
         return _client.getProductService();
+    }
+
+    public VirtualCurrencyService getVirtualCurrencyService() {
+        return _client.getVirtualCurrencyService();
     }
 
     public ProfanityService getProfanityService() {
