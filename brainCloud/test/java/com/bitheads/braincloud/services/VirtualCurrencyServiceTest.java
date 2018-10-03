@@ -42,7 +42,7 @@ public class VirtualCurrencyServiceTest extends TestFixtureBase
         TestResult tr = new TestResult(_wrapper);
 
         _wrapper.getVirtualCurrencyService().awardCurrency("credits", 100, tr);
-        tr.RunExpectFail(StatusCodes.FORBIDDEN, ReasonCodes.CURRENCY_SECURITY_ERROR);
+        tr.Run();
     }
 
     @Test
@@ -50,6 +50,6 @@ public class VirtualCurrencyServiceTest extends TestFixtureBase
         TestResult tr = new TestResult(_wrapper);
 
         _wrapper.getVirtualCurrencyService().consumeCurrency("credits", 100, tr);
-        tr.RunExpectFail(StatusCodes.FORBIDDEN, ReasonCodes.CURRENCY_SECURITY_ERROR);
+        tr.Run();
     }
 }
