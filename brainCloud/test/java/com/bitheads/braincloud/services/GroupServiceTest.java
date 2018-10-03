@@ -506,7 +506,7 @@ public class GroupServiceTest extends TestFixtureBase {
         logout();
     }
 
-
+    
     @Test
     public void testUpdateGroupData() throws Exception {
         authenticate(Users.UserA);
