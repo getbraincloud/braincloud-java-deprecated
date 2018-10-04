@@ -43,6 +43,7 @@ import com.bitheads.braincloud.services.TournamentService;
 import com.bitheads.braincloud.services.VirtualCurrencyService;
 
 import java.util.ArrayList;
+import java.util.Dictionary;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -155,9 +156,66 @@ public class BrainCloudClient {
     }
 
     /**
+     * Method initializes the BrainCloudClient.
+     *
+     * @param defaultAppId
+     *            The app id
+     * @param appIdSecretMap 
+     *            The map of appId to secret
+     * @param appVersion
+     *            The app version (e.g. "1.0.0").
+     */
+    public void initializeWithApps(String defaultAppId, Dictionary<String, String> appIdSecretMap, string appVersion)
+    {
+        initializeWithApps(DEFAULT_SERVER_URL, defaultAppId, appIdSecretMap, appVersion);
+    }
+
+    /**
+     * Method initializes the BrainCloudClient.
+     *
+     * @param serverUrl
+     *            
+     * @param defaultAppId
+     *            The app id
+     * @param appIdSecretMap 
+     *            The map of appId to secret
+     * @param appVersion
+     *            The app version (e.g. "1.0.0").
+     */
+    public void initializeWithApps(String serverUrl, String defaultAppId, Dictionary<String, String> appIdSecretMap, String appVersion)
+    {
+        initializeHelper(serverUrl, appIdSecretMap, defaultAppId, appVersion);
+
+        _rttComms.initializeWithApps(serverUrl, defaultAppId, appIdSecretMap, appVersion);
+
+        initialized = true;
+    }
+
+    /**
+     * Method initializes the BrainCloudClient.
+     *
+     * @param serverUrl
+     *            
+     * @param secretKey
+     *            The app id
+     * @param appId
+     *            The map of appId to secret
+     * @param appVersion
+     *            The app version (e.g. "1.0.0").
+     */
+    public void initialize(String serverURL, String secretKey, String appId, String secretKey)
+    {
+        initializeHelper(serverURL, secretKey, appId, appVersion);
+        //set up braincloud which does the message handling
+        _comms.initialize(serverURL, appId, secretKey);
+
+        initialized = true;
+    }
+
+    /**
      * Initializes the brainCloud client with your app information. This method
      * must be called before any API method is invoked.
-     *
+     * 
      * @param appId
      *            The app id
      * @param secretKey
@@ -165,9 +223,10 @@ public class BrainCloudClient {
      * @param appVersion
      *            The app version (e.g. "1.0.0").
      * @param serverUrl
-     *              The server url (e.g. "https://sharedprod.braincloudservers.com").
+     *            The server url (e.g. "https://sharedprod.braincloudservers.com").
      */
-    public void initialize(String appId, String secretKey, String appVersion, String serverUrl) {
+    private void initializeHelper(String serverURL, String secretKey, String appId, String appVersion)
+    {
         String error = null;
         if (isNullOrEmpty(serverUrl))
             error = "serverUrl was null or empty";
