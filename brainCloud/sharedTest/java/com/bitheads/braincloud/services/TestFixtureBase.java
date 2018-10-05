@@ -22,6 +22,7 @@ public class TestFixtureBase {
     static protected String m_appVersion = "";
     static protected String m_parentLevelName = "";
     static protected String m_childAppId = "";
+    static protected String m_childSecret = "";
     static protected String m_peerName = "";
 
     public static BrainCloudWrapper _wrapper;
@@ -32,11 +33,15 @@ public class TestFixtureBase {
 
         LoadIds();
 
-        _wrapper = new BrainCloudWrapper();
-        _wrapper.initialize(m_appId, m_secret, m_appVersion, m_serverUrl);
+        _wrapper = new BrainCloudWrapper()
+
+        Dictionary<String, String> secretMap;
+        secretMap[m_appId] = m_secret;
+        secretMap[m_childAppId] = m_childSecret;
+
+        _wrapper.inializeWithApps(m_serverUrl, m_appId, secretMap, m_appVersion);
         _wrapper.getClient().enableLogging(true);
         _client = _wrapper.getClient();
-
 
         if (shouldAuthenticate()) {
             TestResult tr = new TestResult(_wrapper);
@@ -121,6 +126,9 @@ public class TestFixtureBase {
                     break;
                 case "childAppId":
                     m_childAppId = split[1];
+                    break;
+                case "childSecret":
+                    m_childSecret = split[1];
                     break;
                 case "parentLevelName":
                     m_parentLevelName = split[1];
