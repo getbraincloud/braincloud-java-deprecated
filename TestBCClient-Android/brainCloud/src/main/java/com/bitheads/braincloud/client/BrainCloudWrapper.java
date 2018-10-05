@@ -68,6 +68,11 @@ public class BrainCloudWrapper implements IServerCallback {
     private BrainCloudClient _client = null;
     private String _wrapperName = "";
 
+    private String _lastUrl = "";
+    private String _lastSecretKey = "";
+    private String _lastGameId = "";
+    private String _lastGameVersion = "";
+
     /**
      * Returns a singleton instance of the BrainCloudClient, if this is the BrainCloudWrapper Singleton.
      * Otherwise, return an instance of the BrainCloudClient, if this is an instance of the BrainCloudWrapper.
@@ -183,6 +188,45 @@ public class BrainCloudWrapper implements IServerCallback {
      */
     public void initialize(String appId, String secretKey, String appVersion) {
         getClient().initialize(appId, secretKey, appVersion);
+    }
+
+    // private void initializeWithApps(String url, String defaultAppId, Dictionary<String, String> secretMap, String version, String companyName, String appName)
+    // {
+    //     if(_client == null)
+    //     {
+    //         _client = new BrainCloudClient();
+    //     }
+
+    //     //find the secret key matching the app id
+    //     String defaultSecretKey;
+    //     for(String s : secretMap)
+    //     {
+    //         if(s.equals(defaultAppId))
+    //         {
+    //             defaultSecretKey = secretMap[defaultAppId];
+    //         }
+    //     }
+
+    //     _client->initializeWithApps(url, defaultAppId, secretMap, version);
+
+    //     //SaveDataHelper::getInstance()->iinitialize(camponayName, appName);
+    // } 
+
+    public void InitWithApps()
+    {
+
+    }
+
+    public void InitWithApps(String url, String defaultAppId, Dictionary<String, String> appIdSecretMap, String version)
+    {
+        _lastUrl = url;
+        _lastSecretKey = defaultSecretKey;
+        _lastGameId = defaultAppId;
+        _lastGameVersion = version;
+
+        getClient().initializeWithApps(url, defaultAppId, appIdSecretMap, version);
+
+        //loaddata()
     }
 
     protected void initializeIdentity(boolean isAnonymousAuth) {

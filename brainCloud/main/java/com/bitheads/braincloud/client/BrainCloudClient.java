@@ -152,7 +152,28 @@ public class BrainCloudClient {
      *            The app version (e.g. "1.0.0").
      */
     public void initialize(String appId, String secretKey, String appVersion) {
-        initialize(appId, secretKey, appVersion, DEFAULT_SERVER_URL);
+        initialize(DEFAULT_SERVER_URL, appId, secretKey, appVersion);
+    }
+
+    /**
+     * Method initializes the BrainCloudClient.
+     *
+     * @param serverUrl
+     *            
+     * @param secretKey
+     *            The app id
+     * @param appId
+     *            The map of appId to secret
+     * @param appVersion
+     *            The app version (e.g. "1.0.0").
+     */
+    public void initialize(String serverURL, String secretKey, String appId, String appVersion)
+    {
+        initializeHelper(serverURL, secretKey, appId, appVersion);
+        //set up braincloud which does the message handling
+        _comms.initialize(serverURL, appId, secretKey);
+
+        initialized = true;
     }
 
     /**
@@ -187,27 +208,6 @@ public class BrainCloudClient {
         initializeHelper(serverUrl, appIdSecretMap, defaultAppId, appVersion);
 
         _rttComms.initializeWithApps(serverUrl, defaultAppId, appIdSecretMap, appVersion);
-
-        initialized = true;
-    }
-
-    /**
-     * Method initializes the BrainCloudClient.
-     *
-     * @param serverUrl
-     *            
-     * @param secretKey
-     *            The app id
-     * @param appId
-     *            The map of appId to secret
-     * @param appVersion
-     *            The app version (e.g. "1.0.0").
-     */
-    public void initialize(String serverURL, String secretKey, String appId, String secretKey)
-    {
-        initializeHelper(serverURL, secretKey, appId, appVersion);
-        //set up braincloud which does the message handling
-        _comms.initialize(serverURL, appId, secretKey);
 
         initialized = true;
     }
