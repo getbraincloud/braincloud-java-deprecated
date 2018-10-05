@@ -167,7 +167,7 @@ public class BrainCloudClient {
      * @param appVersion
      *            The app version (e.g. "1.0.0").
      */
-    public void initialize(String serverURL, String secretKey, String appId, String appVersion)
+    public void initialize(String serverURL, String appId, String secretKey, String appVersion)
     {
         initializeHelper(serverURL, secretKey, appId, appVersion);
         //set up braincloud which does the message handling
@@ -186,7 +186,7 @@ public class BrainCloudClient {
      * @param appVersion
      *            The app version (e.g. "1.0.0").
      */
-    public void initializeWithApps(String defaultAppId, Dictionary<String, String> appIdSecretMap, string appVersion)
+    public void initializeWithApps(String defaultAppId, Dictionary<String, String> appIdSecretMap, String appVersion)
     {
         initializeWithApps(DEFAULT_SERVER_URL, defaultAppId, appIdSecretMap, appVersion);
     }
@@ -205,9 +205,9 @@ public class BrainCloudClient {
      */
     public void initializeWithApps(String serverUrl, String defaultAppId, Dictionary<String, String> appIdSecretMap, String appVersion)
     {
-        initializeHelper(serverUrl, appIdSecretMap, defaultAppId, appVersion);
+        initializeHelper(serverUrl, defaultAppId, appIdSecretMap[defaultAppId], appVersion);
 
-        _rttComms.initializeWithApps(serverUrl, defaultAppId, appIdSecretMap, appVersion);
+        _comms.initializeWithApps(serverUrl, defaultAppId, appIdSecretMap);
 
         initialized = true;
     }
@@ -225,7 +225,7 @@ public class BrainCloudClient {
      * @param serverUrl
      *            The server url (e.g. "https://sharedprod.braincloudservers.com").
      */
-    private void initializeHelper(String serverURL, String secretKey, String appId, String appVersion)
+    private void initializeHelper(String serverURL, String appId, String secretKey, String appVersion)
     {
         String error = null;
         if (isNullOrEmpty(serverUrl))
