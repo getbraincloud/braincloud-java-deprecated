@@ -897,6 +897,14 @@ public class BrainCloudRestClient implements Runnable {
                                 if (data.has("profileId")) {
                                     _client.getAuthenticationService().setProfileId(data.getString("profileId"));
                                 }
+                                if (data.has("switchToAppId"))
+                                {
+                                    _secretKey = "MISSING";
+                                    if(_secretMap.containsKey("switchToAppId"))
+                                    {
+                                        _secretKey = _secretMap.get(_appId);
+                                    }
+                                }
                             }
                         }
 

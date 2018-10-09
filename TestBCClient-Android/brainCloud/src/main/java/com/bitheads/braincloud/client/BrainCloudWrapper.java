@@ -69,11 +69,6 @@ public class BrainCloudWrapper implements IServerCallback {
     private BrainCloudClient _client = null;
     private String _wrapperName = "";
 
-    private String _lastUrl = "";
-    private String _lastSecretKey = "";
-    private String _lastGameId = "";
-    private String _lastGameVersion = "";
-
     /**
      * Returns a singleton instance of the BrainCloudClient, if this is the BrainCloudWrapper Singleton.
      * Otherwise, return an instance of the BrainCloudClient, if this is an instance of the BrainCloudWrapper.
@@ -203,11 +198,6 @@ public class BrainCloudWrapper implements IServerCallback {
         {
             secretKey = secretMap.get(defaultAppId);
         }
-
-        _lastUrl = url;
-        _lastSecretKey = secretKey;
-        _lastGameId = defaultAppId;
-        _lastGameVersion = version;
 
         getClient().initializeWithApps(url, defaultAppId, secretMap, version);
     } 
