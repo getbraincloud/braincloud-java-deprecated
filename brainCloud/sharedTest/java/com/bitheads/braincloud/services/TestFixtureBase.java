@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Map;
 
 public class TestFixtureBase {
     static protected String m_serverUrl = "";
@@ -35,7 +36,7 @@ public class TestFixtureBase {
 
         _wrapper = new BrainCloudWrapper()
 
-        Dictionary<String, String> secretMap;
+        Map<String, String> secretMap;
         secretMap[m_appId] = m_secret;
         secretMap[m_childAppId] = m_childSecret;
 

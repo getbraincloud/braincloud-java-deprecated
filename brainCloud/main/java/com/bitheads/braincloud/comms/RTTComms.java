@@ -12,6 +12,7 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
@@ -124,25 +125,8 @@ public class RTTComms implements IServerCallback {
     private HashMap<String, IRTTCallback> _callbacks = new HashMap<String, IRTTCallback>();
 
     private String _appId;
-    public getAppId() { return _appId; }
-
-    private Dictionary<String, String> _appIdSecretMap;
-    public getAppIdSecretMap(){ return _appIdSecretMap; }
-   
+    private Map<String, String> _secretMap;
     private String _secretKey;
-    public getSecretKey()
-    {
-        for (String s : _appIdSecretMap)
-        {
-            if(s.equals(_appId))
-            {
-                return _appIdSecretMap[_appId];
-            }
-        } 
-        
-        return "No secret defined for '" + _appId + "'";
-    }
-
 
     private String _sessionId;
     private String _profileId;

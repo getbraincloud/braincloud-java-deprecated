@@ -43,7 +43,7 @@ import com.bitheads.braincloud.services.TournamentService;
 import com.bitheads.braincloud.services.VirtualCurrencyService;
 
 import java.util.ArrayList;
-import java.util.Dictionary;
+import java.util.Map;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -169,7 +169,36 @@ public class BrainCloudClient {
      */
     public void initialize(String serverURL, String appId, String secretKey, String appVersion)
     {
-        initializeHelper(serverURL, secretKey, appId, appVersion);
+        String error = null;
+        if (isNullOrEmpty(serverURL))
+            error = "serverUrl was null or empty";
+        else if (isNullOrEmpty(secretKey))
+            error = "secretKey was null or empty";
+        else if (isNullOrEmpty(appId))
+            error = "appId was null or empty";
+        else if (isNullOrEmpty(appVersion))
+            error = "appVersion was null or empty";
+
+        if (error != null) {
+            System.out.println("ERROR | Failed to initialize brainCloud - " + error);
+            return;
+        }
+
+        _appId = appId;
+        _appVersion = appVersion;
+        _releasePlatform = Platform.GooglePlayAndroid;
+
+        Locale locale = Locale.getDefault();
+        if (_countryCode == null || _countryCode.isEmpty()) _countryCode = locale.getCountry();
+        if (_languageCode == null || _languageCode.isEmpty()) _languageCode = locale.getLanguage();
+
+        TimeZone timeZone = TimeZone.getDefault();
+        _timeZoneOffset = ((double) timeZone.getRawOffset()) / (1000.0 * 60.0 * 60.0);
+
+        _restClient.initialize(
+                serverURL.endsWith("/dispatcherv2") ? serverURL : serverURL + "/dispatcherv2",
+                appId, secretKey);
+
         //set up braincloud which does the message handling
         _comms.initialize(serverURL, appId, secretKey);
 
@@ -186,9 +215,9 @@ public class BrainCloudClient {
      * @param appVersion
      *            The app version (e.g. "1.0.0").
      */
-    public void initializeWithApps(String defaultAppId, Dictionary<String, String> appIdSecretMap, String appVersion)
+    public void initializeWithApps(String appId, Map<String, String> secretMap, String appVersion)
     {
-        initializeWithApps(DEFAULT_SERVER_URL, defaultAppId, appIdSecretMap, appVersion);
+        initializeWithApps(DEFAULT_SERVER_URL, appId, secretMap, appVersion);
     }
 
     /**
@@ -203,40 +232,18 @@ public class BrainCloudClient {
      * @param appVersion
      *            The app version (e.g. "1.0.0").
      */
-    public void initializeWithApps(String serverUrl, String defaultAppId, Dictionary<String, String> appIdSecretMap, String appVersion)
+    public void initializeWithApps(String serverUrl, String appId, Map<String, String> secretMap, String appVersion)
     {
-        initializeHelper(serverUrl, defaultAppId, appIdSecretMap[defaultAppId], appVersion);
 
-        _comms.initializeWithApps(serverUrl, defaultAppId, appIdSecretMap);
-
-        initialized = true;
-    }
-
-    /**
-     * Initializes the brainCloud client with your app information. This method
-     * must be called before any API method is invoked.
-     * 
-     * @param appId
-     *            The app id
-     * @param secretKey
-     *            The app secret
-     * @param appVersion
-     *            The app version (e.g. "1.0.0").
-     * @param serverUrl
-     *            The server url (e.g. "https://sharedprod.braincloudservers.com").
-     */
-    private void initializeHelper(String serverURL, String appId, String secretKey, String appVersion)
-    {
         String error = null;
         if (isNullOrEmpty(serverUrl))
             error = "serverUrl was null or empty";
-        else if (isNullOrEmpty(secretKey))
+        else if (isNullOrEmpty(secretMap.get(appId)))
             error = "secretKey was null or empty";
         else if (isNullOrEmpty(appId))
             error = "appId was null or empty";
         else if (isNullOrEmpty(appVersion))
             error = "appVersion was null or empty";
-
 
         if (error != null) {
             System.out.println("ERROR | Failed to initialize brainCloud - " + error);
@@ -256,7 +263,12 @@ public class BrainCloudClient {
 
         _restClient.initialize(
                 serverUrl.endsWith("/dispatcherv2") ? serverUrl : serverUrl + "/dispatcherv2",
-                appId, secretKey);
+                appId, secretMap.get(appId));
+
+        //set up braincloud which does the message handling
+        _comms.initializeWithApps(serverUrl, appId, secretMap);
+
+        initialized = true;
     }
 
     private static boolean isNullOrEmpty(String param) {

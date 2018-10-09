@@ -42,6 +42,7 @@ import com.bitheads.braincloud.services.TournamentService;
 import com.bitheads.braincloud.services.VirtualCurrencyService;
 
 import java.util.prefs.Preferences;
+import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -153,7 +154,7 @@ public class BrainCloudWrapper implements IServerCallback {
         getClient().initialize(appId, secretKey, appVersion, serverUrl);
     }
 
-    private void initializeWithApps(String url, String defaultAppId, Dictionary<String, String> secretMap, String version, String companyName, String appName)
+    private void initializeWithApps(String url, String defaultAppId, Map<String, String> secretMap, String version, String companyName, String appName)
     {
         if(_client == null)
         {
@@ -161,22 +162,18 @@ public class BrainCloudWrapper implements IServerCallback {
         }
 
         //find the secret key matching the app id
-        String defaultSecretKey = "";
-        for(String s : secretMap)
+        String secretKey = "MISSING";
+        if(secretMap.containsKey(defaultAppId))
         {
-            if(s.equals(defaultAppId))
-            {
-                defaultSecretKey = secretMap[defaultAppId];
-                break;
-            }
+            secretKey = secretMap.get(defaultAppId);
         }
 
         _lastUrl = url;
-        _lastSecretKey = defaultSecretKey;
+        _lastSecretKey = secretKey;
         _lastGameId = defaultAppId;
         _lastGameVersion = version;
 
-        getClient().initializeWithApps(url, defaultAppId, appIdSecretMap, version);
+        getClient().initializeWithApps(url, defaultAppId, secretMap, version);
     } 
 
     protected void initializeIdentity(boolean isAnonymousAuth) {

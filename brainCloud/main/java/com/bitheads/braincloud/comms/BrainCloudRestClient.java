@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.Map;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -47,7 +48,7 @@ public class BrainCloudRestClient implements Runnable {
     private String _uploadUrl;
     private String _appId;
     private String _secretKey;
-    private Dictionary<String, String> _secretMap;
+    private Map<String, String> _secretMap;
     private String _sessionId;
     private long _packetId;
     private long _expectedPacketId;
@@ -122,7 +123,7 @@ public class BrainCloudRestClient implements Runnable {
         _serverUrl = serverUrl;
         _appId = appId;
         _secretKey = secretKey;
-        _secretMap[appId] = _secretKey;
+        _secretMap.put(appId, secretKey);
         _sessionId = "";
         _retryCount = 0;
         _isInitialized = true;
@@ -139,20 +140,13 @@ public class BrainCloudRestClient implements Runnable {
 
     public void initializeWithApps(String serverUrl, String appId, String secretMap) {
 
-        _secretMap = secretMap;
-
         String secretKey = "MISSING";
-        for(String s : secretMap)
+        if(_secretMap.containsKey(appId))
         {
-            if(s.equals(defaultAppId))
-            {
-                secretKey = secretMap[defaultAppId];
-                break;
-            }
+            secretKey = _secretMap.get(appId);
         }
 
         initialize(serverUrl, appId, secretKey);
-
     }
 
     public void addToQueue(ServerCall serverCall) {
