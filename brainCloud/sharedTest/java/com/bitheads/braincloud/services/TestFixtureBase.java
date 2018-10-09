@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.Map;
@@ -36,14 +37,14 @@ public class TestFixtureBase {
         LoadIds();
 
         _wrapper = new BrainCloudWrapper();
+        _client = _wrapper.getClient();
 
+        m_secretMap = new HashMap<String, String>();
         m_secretMap.put(m_appId, m_secret);
         m_secretMap.put(m_childAppId, m_childSecret);
 
-        //_wrapper.getClient().initializeWithApps(m_serverUrl, m_appId, m_secretMap, m_appVersion);
-        _wrapper.getClient().initialize(m_serverUrl, m_appId, m_secret, m_appVersion);
-        _wrapper.getClient().enableLogging(true);
-        _client = _wrapper.getClient();
+        _client.initializeWithApps(m_serverUrl, m_appId, m_secretMap, m_appVersion);
+        _client.enableLogging(true);
 
         if (shouldAuthenticate()) {
             TestResult tr = new TestResult(_wrapper);

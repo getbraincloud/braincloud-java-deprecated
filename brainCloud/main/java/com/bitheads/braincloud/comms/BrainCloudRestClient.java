@@ -26,6 +26,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -48,7 +49,7 @@ public class BrainCloudRestClient implements Runnable {
     private String _uploadUrl;
     private String _appId;
     private String _secretKey;
-    private Map<String, String> _secretMap;
+    private Map<String, String> _secretMap = new HashMap<String, String>();
     private String _sessionId;
     private long _packetId;
     private long _expectedPacketId;

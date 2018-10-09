@@ -158,7 +158,7 @@ public class BrainCloudClient {
     /**
      * Method initializes the BrainCloudClient.
      *
-     * @param serverUrl
+     * @param serverURL
      *            
      * @param secretKey
      *            The app id
@@ -203,9 +203,9 @@ public class BrainCloudClient {
     /**
      * Method initializes the BrainCloudClient.
      *
-     * @param defaultAppId
+     * @param appId
      *            The app id
-     * @param appIdSecretMap 
+     * @param secretMap
      *            The map of appId to secret
      * @param appVersion
      *            The app version (e.g. "1.0.0").
@@ -220,9 +220,9 @@ public class BrainCloudClient {
      *
      * @param serverUrl
      *            
-     * @param defaultAppId
+     * @param appId
      *            The app id
-     * @param appIdSecretMap 
+     * @param secretMap
      *            The map of appId to secret
      * @param appVersion
      *            The app version (e.g. "1.0.0").
