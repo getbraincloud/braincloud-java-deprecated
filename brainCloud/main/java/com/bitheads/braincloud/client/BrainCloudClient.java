@@ -198,11 +198,6 @@ public class BrainCloudClient {
         _restClient.initialize(
                 serverURL.endsWith("/dispatcherv2") ? serverURL : serverURL + "/dispatcherv2",
                 appId, secretKey);
-
-        //set up braincloud which does the message handling
-        _comms.initialize(serverURL, appId, secretKey);
-
-        initialized = true;
     }
 
     /**
@@ -264,11 +259,6 @@ public class BrainCloudClient {
         _restClient.initialize(
                 serverUrl.endsWith("/dispatcherv2") ? serverUrl : serverUrl + "/dispatcherv2",
                 appId, secretMap.get(appId));
-
-        //set up braincloud which does the message handling
-        _comms.initializeWithApps(serverUrl, appId, secretMap);
-
-        initialized = true;
     }
 
     private static boolean isNullOrEmpty(String param) {

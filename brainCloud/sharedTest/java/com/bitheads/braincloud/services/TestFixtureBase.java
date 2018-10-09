@@ -20,6 +20,7 @@ public class TestFixtureBase {
     static protected String m_serverUrl = "";
     static protected String m_appId = "";
     static protected String m_secret = "";
+    static protected Map<String, String> m_secretMap;
     static protected String m_appVersion = "";
     static protected String m_parentLevelName = "";
     static protected String m_childAppId = "";
@@ -34,13 +35,13 @@ public class TestFixtureBase {
 
         LoadIds();
 
-        _wrapper = new BrainCloudWrapper()
+        _wrapper = new BrainCloudWrapper();
 
-        Map<String, String> secretMap;
-        secretMap[m_appId] = m_secret;
-        secretMap[m_childAppId] = m_childSecret;
+        m_secretMap.put(m_appId, m_secret);
+        m_secretMap.put(m_childAppId, m_childSecret);
 
-        _wrapper.inializeWithApps(m_serverUrl, m_appId, secretMap, m_appVersion);
+        //_wrapper.getClient().initializeWithApps(m_serverUrl, m_appId, m_secretMap, m_appVersion);
+        _wrapper.getClient().initialize(m_serverUrl, m_appId, m_secret, m_appVersion);
         _wrapper.getClient().enableLogging(true);
         _client = _wrapper.getClient();
 
