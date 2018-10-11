@@ -21,13 +21,13 @@ public class TestFixtureBase {
     static protected String m_serverUrl = "";
     static protected String m_appId = "";
     static protected String m_secret = "";
-    static protected Map<String, String> m_secretMap;
     static protected String m_appVersion = "";
     static protected String m_parentLevelName = "";
     static protected String m_childAppId = "";
     static protected String m_childSecret = "";
     static protected String m_peerName = "";
 
+    static protected Map<String, String> m_secretMap;
     public static BrainCloudWrapper _wrapper;
     public static BrainCloudClient _client;
 
@@ -41,6 +41,12 @@ public class TestFixtureBase {
 
         m_secretMap = new HashMap<String, String>();
         m_secretMap.put(m_appId, m_secret);
+        //in the case the ids is not updated
+        if(m_childSecret == "undefined")
+        {
+            //hard code the secret from the child app on internal
+            m_childSecret = "f8cec1cf-2f95-4989-910c-8caf598f83db";
+        }
         m_secretMap.put(m_childAppId, m_childSecret);
 
         _client.initializeWithApps(m_serverUrl, m_appId, m_secretMap, m_appVersion);

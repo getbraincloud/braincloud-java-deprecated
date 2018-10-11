@@ -256,9 +256,9 @@ public class BrainCloudClient {
         TimeZone timeZone = TimeZone.getDefault();
         _timeZoneOffset = ((double) timeZone.getRawOffset()) / (1000.0 * 60.0 * 60.0);
 
-        _restClient.initialize(
+        _restClient.initializeWithApps(
                 serverUrl.endsWith("/dispatcherv2") ? serverUrl : serverUrl + "/dispatcherv2",
-                appId, secretMap.get(appId));
+                appId, secretMap);
     }
 
     private static boolean isNullOrEmpty(String param) {

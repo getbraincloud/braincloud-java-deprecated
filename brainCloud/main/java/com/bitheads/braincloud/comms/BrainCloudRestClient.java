@@ -124,6 +124,7 @@ public class BrainCloudRestClient implements Runnable {
         _serverUrl = serverUrl;
         _appId = appId;
         _secretKey = secretKey;
+        _secretMap = new HashMap<String, String>();
         _secretMap.put(appId, secretKey);
         _sessionId = "";
         _retryCount = 0;
@@ -139,15 +140,14 @@ public class BrainCloudRestClient implements Runnable {
         }
     }
 
-    public void initializeWithApps(String serverUrl, String appId, String secretMap) {
+    public void initializeWithApps(String serverUrl, String appId, Map<String, String> secretMap) {
 
-        String secretKey = "MISSING";
-        if(_secretMap.containsKey(appId))
-        {
-            secretKey = _secretMap.get(appId);
-        }
+        //clear the map
+        _secretMap.clear();
+        //update the map
+        _secretMap = secretMap;
 
-        initialize(serverUrl, appId, secretKey);
+        initialize(serverUrl, appId, secretMap[appId]);
     }
 
     public void addToQueue(ServerCall serverCall) {
@@ -899,10 +899,16 @@ public class BrainCloudRestClient implements Runnable {
                                 }
                                 if (data.has("switchToAppId"))
                                 {
+                                    LogString("Current appId: " + _appId);
+                                    _appId = data.get("switchToAppId");
+                                    LogString("Changing to appId: " + _appId);
+
                                     _secretKey = "MISSING";
-                                    if(_secretMap.containsKey("switchToAppId"))
+                                    if(_secretMap.containsKey(_appId)))
                                     {
                                         _secretKey = _secretMap.get(_appId);
+                                        LogString("found: " + _appId);
+                                        LogString("secret: " + _secretMap.get(_appId));
                                     }
                                 }
                             }
