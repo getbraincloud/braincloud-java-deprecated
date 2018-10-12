@@ -236,10 +236,10 @@ public class BrainCloudClient {
         String error = null;
         if (isNullOrEmpty(serverUrl))
             error = "serverUrl was null or empty";
-        else if (isNullOrEmpty(secretMap.get(appId)))
-            error = "secretKey was null or empty";
         else if (isNullOrEmpty(appId))
             error = "appId was null or empty";
+        else if (isNullOrEmpty(secretMap.get(appId)))
+            error = "no matching secret for appId";
         else if (isNullOrEmpty(appVersion))
             error = "appVersion was null or empty";
 

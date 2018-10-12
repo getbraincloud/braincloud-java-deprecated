@@ -159,7 +159,18 @@ public class IdentityServiceTest extends TestFixtureBase {
     }
 
     @Test
-    public void testAppSwitch() throws Exception {
+    public void testChildSwitch() throws Exception {
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.getIdentityService().switchToChildProfile(null, "20005", true, tr);
+        tr.Run();
+
+        _wrapper.getPlayerStateService().readUserState(tr);
+        tr.Run();
+    }
+
+    @Test
+    public void testParentSwitch() throws Exception {
         TestResult tr = new TestResult(_wrapper);
 
         _wrapper.getIdentityService().switchToChildProfile(null, "20005", true, tr);
@@ -168,11 +179,11 @@ public class IdentityServiceTest extends TestFixtureBase {
         _wrapper.getPlayerStateService().readUserState(tr);
         tr.Run();
 
-       // _wrapper.getIdentityService().switchToParentProfile("Master", tr);
-        //tr.Run();
+        _wrapper.getIdentityService().switchToParentProfile("Master", tr);
+        tr.Run();
 
-        //_wrapper.getPlayerStateService().readUserState(tr);
-       // tr.Run();
+        _wrapper.getPlayerStateService().readUserState(tr);
+        tr.Run();
     }
 
 }
