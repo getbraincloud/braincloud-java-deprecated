@@ -43,6 +43,7 @@ import com.bitheads.braincloud.services.TournamentService;
 import com.bitheads.braincloud.services.VirtualCurrencyService;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -57,6 +58,7 @@ public class BrainCloudClient {
     private String _appId;
     private Platform _releasePlatform;
     private String _appVersion;
+    private Map _secretMap = new HashMap();
     private String _countryCode;
     private String _languageCode;
     private double _timeZoneOffset;
@@ -186,6 +188,7 @@ public class BrainCloudClient {
 
         _appId = appId;
         _appVersion = appVersion;
+        _secretMap.put(_appId, secretKey);
         _releasePlatform = Platform.GooglePlayAndroid;
 
         Locale locale = Locale.getDefault();
@@ -247,6 +250,7 @@ public class BrainCloudClient {
 
         _appId = appId;
         _appVersion = appVersion;
+        _secretMap = secretMap;
         _releasePlatform = Platform.GooglePlayAndroid;
 
         Locale locale = Locale.getDefault();

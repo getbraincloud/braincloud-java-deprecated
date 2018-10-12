@@ -124,11 +124,10 @@ public class BrainCloudRestClient implements Runnable {
         _serverUrl = serverUrl;
         _appId = appId;
         _secretKey = secretKey;
-        _secretMap = new HashMap<String, String>();
-        _secretMap.put(appId, secretKey);
         _sessionId = "";
         _retryCount = 0;
         _isInitialized = true;
+        _secretMap.put(appId, secretKey);
 
         String suffix = "/dispatcherv2";
         _uploadUrl = _serverUrl.endsWith(suffix) ? _serverUrl.substring(0, _serverUrl.length() - suffix.length()) : _serverUrl;
@@ -147,7 +146,7 @@ public class BrainCloudRestClient implements Runnable {
         //update the map
         _secretMap = secretMap;
 
-        initialize(serverUrl, appId, secretMap[appId]);
+        initialize(serverUrl, appId, secretMap.get(appId));
     }
 
     public void addToQueue(ServerCall serverCall) {
@@ -900,11 +899,11 @@ public class BrainCloudRestClient implements Runnable {
                                 if (data.has("switchToAppId"))
                                 {
                                     LogString("Current appId: " + _appId);
-                                    _appId = data.get("switchToAppId");
+                                    _appId = data.getString("switchToAppId");
                                     LogString("Changing to appId: " + _appId);
 
                                     _secretKey = "MISSING";
-                                    if(_secretMap.containsKey(_appId)))
+                                    if(_secretMap.containsKey(_appId))
                                     {
                                         _secretKey = _secretMap.get(_appId);
                                         LogString("found: " + _appId);

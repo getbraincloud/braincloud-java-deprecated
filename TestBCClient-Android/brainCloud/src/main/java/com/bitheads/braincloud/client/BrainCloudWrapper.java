@@ -193,13 +193,7 @@ public class BrainCloudWrapper implements IServerCallback {
             _client = new BrainCloudClient();
         }
 
-        String secretKey = "MISSING";
-        if(secretMap.containsKey(appId))
-        {
-            secretKey = secretMap.get(appId);
-        }
-
-        getClient().initializeWithApps(url, appId, secretKey, version);
+        getClient().initializeWithApps(url, appId, secretMap, version);
     } 
 
     protected void initializeIdentity(boolean isAnonymousAuth) {
