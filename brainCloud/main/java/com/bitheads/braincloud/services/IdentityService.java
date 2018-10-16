@@ -19,6 +19,7 @@ public class IdentityService {
         authenticationToken,
         profileId,
         appId,
+        gameId,
         forceSingleton,
         includePlayerSummaryData,
         levelName,
@@ -802,7 +803,7 @@ public class IdentityService {
             if (StringUtil.IsOptionalParameterValid(childProfileId)) {
                 data.put(Parameter.profileId.name(), childProfileId);
             }
-            data.put(Parameter.appId.name(), childAppId);
+            data.put(Parameter.gameId.name(), childAppId);
             data.put(Parameter.forceCreate.name(), forceCreate);
             data.put(Parameter.forceSingleton.name(), forceSingleton);
 
