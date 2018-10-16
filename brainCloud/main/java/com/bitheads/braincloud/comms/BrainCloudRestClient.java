@@ -898,16 +898,12 @@ public class BrainCloudRestClient implements Runnable {
                                 }
                                 if (data.has("switchToAppId"))
                                 {
-                                    LogString("Current appId: " + _appId);
                                     _appId = data.getString("switchToAppId");
-                                    LogString("Changing to appId: " + _appId);
 
                                     _secretKey = "MISSING";
                                     if(_secretMap.containsKey(_appId))
                                     {
                                         _secretKey = _secretMap.get(_appId);
-                                        LogString("found: " + _appId);
-                                        LogString("secret: " + _secretMap.get(_appId));
                                     }
                                 }
                             }
