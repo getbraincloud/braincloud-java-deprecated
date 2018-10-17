@@ -12,8 +12,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.Map;
 
 public class TestFixtureBase {
     static protected String m_serverUrl = "";
@@ -22,8 +24,10 @@ public class TestFixtureBase {
     static protected String m_appVersion = "";
     static protected String m_parentLevelName = "";
     static protected String m_childAppId = "";
+    static protected String m_childSecret = "";
     static protected String m_peerName = "";
 
+    static protected Map<String, String> m_secretMap;
     public static BrainCloudWrapper _wrapper;
     public static BrainCloudClient _client;
 
@@ -33,10 +37,14 @@ public class TestFixtureBase {
         LoadIds();
 
         _wrapper = new BrainCloudWrapper();
-        _wrapper.initialize(m_appId, m_secret, m_appVersion, m_serverUrl);
-        _wrapper.getClient().enableLogging(true);
         _client = _wrapper.getClient();
 
+        m_secretMap = new HashMap<String, String>();
+        m_secretMap.put(m_appId, m_secret);
+        m_secretMap.put(m_childAppId, m_childSecret);
+
+        _client.initializeWithApps(m_serverUrl, m_appId, m_secretMap, m_appVersion);
+        _client.enableLogging(true);
 
         if (shouldAuthenticate()) {
             TestResult tr = new TestResult(_wrapper);
@@ -121,6 +129,9 @@ public class TestFixtureBase {
                     break;
                 case "childAppId":
                     m_childAppId = split[1];
+                    break;
+                case "childSecret":
+                    m_childSecret = split[1];
                     break;
                 case "parentLevelName":
                     m_parentLevelName = split[1];
