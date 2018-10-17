@@ -3,6 +3,7 @@ package com.bitheads.braincloud.services;
 import com.bitheads.braincloud.client.BrainCloudClient;
 import com.bitheads.braincloud.client.ReasonCodes;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -28,6 +29,7 @@ public class ProductServiceTest extends TestFixtureBase
         tr.Run();
     }
 
+    @Ignore("Used in Virtual Currency Service") 
     @Test
     public void testAwardCurrency() throws Exception
     {
@@ -41,6 +43,7 @@ public class ProductServiceTest extends TestFixtureBase
         tr.RunExpectFail(403, ReasonCodes.CURRENCY_SECURITY_ERROR);
     }
 
+    @Ignore("Used in Virtual Currency Service") 
     @Test
     public void testConsumeCurrency() throws Exception
     {
@@ -55,6 +58,7 @@ public class ProductServiceTest extends TestFixtureBase
         tr.RunExpectFail(403, ReasonCodes.CURRENCY_SECURITY_ERROR);
     }
 
+    @Ignore("Used in Virtual Currency Service") 
     @Test
     public void testResetCurrency() throws Exception
     {
