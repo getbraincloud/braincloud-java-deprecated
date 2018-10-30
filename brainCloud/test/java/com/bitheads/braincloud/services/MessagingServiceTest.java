@@ -73,9 +73,7 @@ public class MessagingServiceTest extends TestFixtureBase
     public void testSendMessage() throws Exception {
         TestResult tr = new TestResult(_wrapper);
 
-        JSONObject contentJson = new JSONObject();
-        contentJson.put("Subject", "Test");
-        contentJson.put("Text", "BlahBlah");
+        String contentJson = "{\"subject\": \"Chat and messaging features are here!\", \"text\": \"hi.\"}";
 
         ArrayList<String> toProfileIds = new ArrayList<String>();
         toProfileIds.add(_wrapper.getAuthenticationService().getProfileId());
