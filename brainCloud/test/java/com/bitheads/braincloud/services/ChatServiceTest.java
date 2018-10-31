@@ -13,9 +13,9 @@ import org.json.JSONObject;
  */
 public class ChatServiceTest extends TestFixtureBase
 {
-    static private String _channelId = "";
+    static private String _channelId = "20001:gl:valid";
     static private String _msgId = "";
-    static private int _msgVersion = 0;
+    static private int _msgVersion = 1;
 
     @Test
     public void testGetChannelIdValid() throws Exception {
@@ -84,11 +84,12 @@ public class ChatServiceTest extends TestFixtureBase
     public void getChatMessage() throws Exception {
         TestResult tr = new TestResult(_wrapper);
 
-        _wrapper.getChatService().getChatMessage(_channelId, _msgId, tr);
+        _wrapper.getChatService().postChatMessage(_channelId, "Hello World!", null, true, tr);
         tr.Run();
+        String message = tr.m_response.getJSONObject("data").getString("msgId");
 
-        if (!tr.m_response.getJSONObject("data").getJSONObject("content").getString("plain").equals("Hello World!")) throw new Exception("Wrong message");
-        _msgVersion = tr.m_response.getJSONObject("data").getInt("ver");
+        _wrapper.getChatService().getChatMessage(_channelId, message, tr);
+        tr.Run();
     }
 
     @Test
@@ -134,7 +135,11 @@ public class ChatServiceTest extends TestFixtureBase
     public void deleteChatMessage() throws Exception {
         TestResult tr = new TestResult(_wrapper);
 
-        _wrapper.getChatService().deleteChatMessage(_channelId, _msgId, _msgVersion, tr);
+        _wrapper.getChatService().postChatMessage(_channelId, "Hello World!", null, true, tr);
+        tr.Run();
+        String message = tr.m_response.getJSONObject("data").getString("msgId");
+
+        _wrapper.getChatService().deleteChatMessage(_channelId, message, _msgVersion, tr);
         tr.Run();
     }
 

@@ -42,6 +42,7 @@ import com.bitheads.braincloud.services.TournamentService;
 import com.bitheads.braincloud.services.VirtualCurrencyService;
 
 import java.util.prefs.Preferences;
+import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -147,6 +148,16 @@ public class BrainCloudWrapper implements IServerCallback {
     public void initialize(String appId, String secretKey, String appVersion, String serverUrl) {
         getClient().initialize(appId, secretKey, appVersion, serverUrl);
     }
+
+    private void initializeWithApps(String url, String defaultAppId, Map<String, String> secretMap, String version, String companyName, String appName)
+    {
+        if(_client == null)
+        {
+            _client = new BrainCloudClient();
+        }
+
+        getClient().initializeWithApps(url, defaultAppId, secretMap, version);
+    } 
 
     protected void initializeIdentity(boolean isAnonymousAuth) {
 

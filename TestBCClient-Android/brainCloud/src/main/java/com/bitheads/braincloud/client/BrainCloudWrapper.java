@@ -42,6 +42,7 @@ import com.bitheads.braincloud.services.VirtualCurrencyService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import java.util.Map;
 
 /**
  * The BrainCloudWrapper provides some convenience functionality to developers when they are
@@ -184,6 +185,16 @@ public class BrainCloudWrapper implements IServerCallback {
     public void initialize(String appId, String secretKey, String appVersion) {
         getClient().initialize(appId, secretKey, appVersion);
     }
+
+    private void initializeWithApps(String url, String appId, Map<String, String> secretMap, String version, String companyName, String appName)
+    {
+        if(_client == null)
+        {
+            _client = new BrainCloudClient();
+        }
+
+        getClient().initializeWithApps(url, appId, secretMap, version);
+    } 
 
     protected void initializeIdentity(boolean isAnonymousAuth) {
 

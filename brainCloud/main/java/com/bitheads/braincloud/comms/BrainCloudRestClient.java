@@ -26,9 +26,11 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.Map;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -47,6 +49,7 @@ public class BrainCloudRestClient implements Runnable {
     private String _uploadUrl;
     private String _appId;
     private String _secretKey;
+    private Map<String, String> _secretMap = new HashMap<String, String>();
     private String _sessionId;
     private long _packetId;
     private long _expectedPacketId;
@@ -124,6 +127,7 @@ public class BrainCloudRestClient implements Runnable {
         _sessionId = "";
         _retryCount = 0;
         _isInitialized = true;
+        _secretMap.put(appId, secretKey);
 
         String suffix = "/dispatcherv2";
         _uploadUrl = _serverUrl.endsWith(suffix) ? _serverUrl.substring(0, _serverUrl.length() - suffix.length()) : _serverUrl;
@@ -133,6 +137,16 @@ public class BrainCloudRestClient implements Runnable {
             _thread = new Thread(this);
             _thread.start();
         }
+    }
+
+    public void initializeWithApps(String serverUrl, String appId, Map<String, String> secretMap) {
+
+        //clear the map
+        _secretMap.clear();
+        //update the map
+        _secretMap = secretMap;
+
+        initialize(serverUrl, appId, secretMap.get(appId));
     }
 
     public void addToQueue(ServerCall serverCall) {
@@ -881,6 +895,16 @@ public class BrainCloudRestClient implements Runnable {
                                 }
                                 if (data.has("profileId")) {
                                     _client.getAuthenticationService().setProfileId(data.getString("profileId"));
+                                }
+                                if (data.has("switchToAppId"))
+                                {
+                                    _appId = data.getString("switchToAppId");
+
+                                    _secretKey = "MISSING";
+                                    if(_secretMap.containsKey(_appId))
+                                    {
+                                        _secretKey = _secretMap.get(_appId);
+                                    }
                                 }
                             }
                         }
