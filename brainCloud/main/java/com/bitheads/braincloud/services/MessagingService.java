@@ -175,16 +175,13 @@ public class MessagingService {
      * @param messageSubject
      * @param callback The method to be invoked when the server response is received
      */
-    public void sendMessage(ArrayList<String> toProfileIds, String messageText, String messageSubject, IServerCallback callback) {
+    public void sendMessage(ArrayList<String> toProfileIds, String contentJson, IServerCallback callback) {
         try {
             JSONObject data = new JSONObject();
             if (toProfileIds != null) {
                 data.put(Parameter.toProfileIds.name(), new JSONArray(toProfileIds));
             }
-            JSONObject contentJson = new JSONObject();
-            contentJson.put(Parameter.subject.name(), messageSubject);
-            contentJson.put(Parameter.text.name(), messageText);
-            data.put(Parameter.contentJson.name(), contentJson);
+            data.put(Parameter.contentJson.name(), new JSONObject(contentJson));
 
             ServerCall sc = new ServerCall(ServiceName.messaging,
                     ServiceOperation.SEND_MESSAGE, data, callback);
