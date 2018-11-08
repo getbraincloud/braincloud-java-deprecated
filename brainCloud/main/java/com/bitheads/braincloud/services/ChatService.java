@@ -259,6 +259,32 @@ public class ChatService {
     }
 
     /**
+     * Send a plaiin text message
+     *
+     * Service Name - Chat
+     * Service Operation - postChatMessageSimple
+     *
+     * @param channelId Channel id to post message to.
+     * @param plain the text message.
+     * @param recordInHistory true if the message persist in history
+     * @param callback The method to be invoked when the server response is received.
+     */
+    public void postChatMessage(String channelId, String plain, Boolean recordInHistory, IServerCallback callback) {
+        try {
+            JSONObject data = new JSONObject();
+            data.put(Parameter.channelId.name(), channelId);
+            data.put(Parameter.plain.name(), plain);
+            data.put(Parameter.recordInHistory.name(), recordInHistory);
+
+            ServerCall sc = new ServerCall(ServiceName.chat,
+                    ServiceOperation.POST_CHAT_MESSAGE, data, callback);
+            _client.sendRequest(sc);
+        } catch (JSONException je) {
+            je.printStackTrace();
+        }
+    }
+
+    /**
      * Update a chat message.
      * <content> must contain at least a "plain" field for plain-text messaging.
      * <version> must match the latest or pass -1 to bypass version check.
