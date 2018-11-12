@@ -187,7 +187,6 @@ public class PushNotificationServiceTest extends TestFixtureBase
         tr.Run();
     }
 
-    @Ignore("Currently fails. Must be reviewed")
     @Test
     public void testSendRawPushNotificationBatch() throws Exception
     {

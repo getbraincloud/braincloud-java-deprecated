@@ -74,7 +74,6 @@ public class ScriptServiceTest extends TestFixtureBase {
         tr.Run();
     }
 
-    @Ignore("Currently fails. Must be reviewed")
     @Test
     public void testRunParentScript() throws Exception {
         goToChildProfile();
