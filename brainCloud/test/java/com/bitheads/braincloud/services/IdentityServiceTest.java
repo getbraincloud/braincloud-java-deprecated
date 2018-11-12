@@ -33,7 +33,6 @@ public class IdentityServiceTest extends TestFixtureBase {
 
     }
 
-    @Ignore("Currently fails. Must be reviewed")
     @Test
     public void testSwitchToChildProfile() throws Exception {
         TestResult tr = new TestResult(_wrapper);
@@ -41,7 +40,6 @@ public class IdentityServiceTest extends TestFixtureBase {
         tr.Run();
     }
 
-    @Ignore("Currently fails. Must be reviewed")
     @Test
     public void testSwitchToSingletonChildProfile() throws Exception {
         Logout();
@@ -59,7 +57,6 @@ public class IdentityServiceTest extends TestFixtureBase {
         tr.Run();
     }
 
-    @Ignore("Currently fails. Must be reviewed")
     @Test
     public void testSwitchToParentProfile() throws Exception {
         TestResult tr = new TestResult(_wrapper);
@@ -71,7 +68,6 @@ public class IdentityServiceTest extends TestFixtureBase {
         tr.Run();
     }
 
-    @Ignore("Currently fails. Must be reviewed")
     @Test
     public void testAttachParentWithIdentity() throws Exception {
         TestResult tr = new TestResult(_wrapper);
@@ -164,9 +160,6 @@ public class IdentityServiceTest extends TestFixtureBase {
 
         _wrapper.getIdentityService().switchToChildProfile(null, "20005", true, tr);
         tr.Run();
-
-        _wrapper.getPlayerStateService().readUserState(tr);
-        tr.Run();
     }
 
     @Test
@@ -176,14 +169,9 @@ public class IdentityServiceTest extends TestFixtureBase {
         _wrapper.getIdentityService().switchToChildProfile(null, "20005", true, tr);
         tr.Run();
 
-        _wrapper.getPlayerStateService().readUserState(tr);
-        tr.Run();
-
         _wrapper.getIdentityService().switchToParentProfile("Master", tr);
         tr.Run();
 
-        _wrapper.getPlayerStateService().readUserState(tr);
-        tr.Run();
     }
 
 }
