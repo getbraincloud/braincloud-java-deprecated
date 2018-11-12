@@ -160,7 +160,6 @@ public class IdentityServiceTest extends TestFixtureBase {
 
         _wrapper.getIdentityService().switchToChildProfile(null, "20005", true, tr);
         tr.Run();
-
     }
 
     @Test
@@ -172,6 +171,7 @@ public class IdentityServiceTest extends TestFixtureBase {
 
         _wrapper.getIdentityService().switchToParentProfile("Master", tr);
         tr.Run();
+
     }
 
 }
