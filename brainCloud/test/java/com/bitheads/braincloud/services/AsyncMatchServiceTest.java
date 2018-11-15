@@ -159,7 +159,7 @@ public class AsyncMatchServiceTest extends TestFixtureBase
 
         tr.RunExpectFail(400, ReasonCodes.MATCH_NOT_FOUND);
 
-        abandonMatch(matchId);
+        //abandonMatch(matchId);
     }
 
     @Test
@@ -191,11 +191,11 @@ public class AsyncMatchServiceTest extends TestFixtureBase
         TestResult tr = new TestResult(_wrapper);
 
         _wrapper.getAsyncMatchService().abandonMatch(
-                getUser(Users.UserA).profileId,
-                matchId,
+                "invalid_profileId",
+                "invalid_matchId",
                 tr);
 
-        tr.Run();
+        tr.RunExpectFail(400, ReasonCodes.MATCH_NOT_FOUND);
     }
 
     @Test
