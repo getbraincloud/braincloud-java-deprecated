@@ -1,10 +1,13 @@
 package com.bitheads.braincloud.services;
 
 import com.bitheads.braincloud.client.BrainCloudClient;
+import com.bitheads.braincloud.client.ReasonCodes;
 
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Test;
+
+import java.security.cert.CertPathValidatorException;
 
 /**
  * Created by bradleyh on 5/6/2016.
@@ -28,7 +31,7 @@ public class GroupServiceTest extends TestFixtureBase {
 
     @Test
     public void testAcceptGroupInvitation() throws Exception {
-        authenticate(Users.UserA);
+        getUser(Users.UserA);
         createGroup();
 
         TestResult tr = new TestResult(_wrapper);
@@ -40,16 +43,11 @@ public class GroupServiceTest extends TestFixtureBase {
                 tr);
         tr.Run();
 
-        logout();
-        authenticate(Users.UserB);
-
         _wrapper.getGroupService().acceptGroupInvitation(
-                _groupId,
+                "invalid_groupId",
                 tr);
-        tr.Run();
+        tr.RunExpectFail(400, ReasonCodes.MISSING_RECORD);
 
-        logout();
-        deleteGroupAsUserA();
     }
 
     @Test
@@ -432,16 +430,10 @@ public class GroupServiceTest extends TestFixtureBase {
                 tr);
         tr.Run();
 
-        logout();
-        authenticate(Users.UserB);
-
         _wrapper.getGroupService().rejectGroupInvitation(
-                _groupId,
+                "invalid_groupId",
                 tr);
-        tr.Run();
-
-        logout();
-        deleteGroupAsUserA();
+        tr.RunExpectFail(400, ReasonCodes.MISSING_RECORD);
     }
 
     @Test
@@ -550,15 +542,12 @@ public class GroupServiceTest extends TestFixtureBase {
 
         TestResult tr = new TestResult(_wrapper);
         _wrapper.getGroupService().updateGroupMember(
-                _groupId,
+                "invalid_groupid",
                 getUser(Users.UserA).profileId,
                 null,
                 null,
                 tr);
-        tr.Run();
-
-        deleteGroup();
-        logout();
+        tr.RunExpectFail(400, ReasonCodes.MISSING_RECORD);
     }
 
     @Test

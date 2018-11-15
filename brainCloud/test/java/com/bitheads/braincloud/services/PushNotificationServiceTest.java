@@ -2,10 +2,13 @@ package com.bitheads.braincloud.services;
 
 import com.bitheads.braincloud.client.BrainCloudClient;
 import com.bitheads.braincloud.client.Platform;
+import com.bitheads.braincloud.client.ReasonCodes;
 
 import org.json.JSONObject;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import java.security.cert.CertPathValidatorException;
 
 import static org.junit.Assert.*;
 
@@ -178,13 +181,13 @@ public class PushNotificationServiceTest extends TestFixtureBase
         String facebookContent = "{\"template\": \"content of message\"}";
 
         _wrapper.getPushNotificationService().sendRawPushNotification(
-                getUser(Users.UserA).profileId,
+                "invalid_profileId",
                 fcmContent,
                 iosContent,
                 facebookContent,
                 tr);
 
-        tr.Run();
+        tr.RunExpectFail(400, ReasonCodes.INVALID_PLAYER_ID);
     }
 
     @Test
@@ -314,12 +317,12 @@ public class PushNotificationServiceTest extends TestFixtureBase
         TestResult tr = new TestResult(_wrapper);
 
         _wrapper.getPushNotificationService().sendNormalizedPushNotification(
-                getUser(Users.UserA).profileId,
+                "invalid_profileId",
                 "{ \"body\": \"content of message\", \"title\": \"message title\" }",
                 Helpers.createJsonPair("1", "asdf"),
                 tr);
 
-        tr.Run();
+        tr.RunExpectFail(400, ReasonCodes.INVALID_PLAYER_ID);
     }
 
     @Test
