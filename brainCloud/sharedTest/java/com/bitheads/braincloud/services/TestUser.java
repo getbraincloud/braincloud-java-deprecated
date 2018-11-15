@@ -22,30 +22,34 @@ public class TestUser
     BrainCloudWrapper _wrapper;
 
 
-    public TestUser(BrainCloudWrapper wrapper, String idPrefix, int suffix)
+    public TestUser(BrainCloudWrapper wrapper, String idPrefix, int suffix, boolean authWithEmail)
     {
         _wrapper = wrapper;
         id = idPrefix + suffix;
         password = id;
         email = id + "@bctestuser.com";
-        Authenticate();
+        Authenticate(authWithEmail);
     }
 
-    private void Authenticate()
+    private void Authenticate(boolean withEmail)
     {
         TestResult tr = new TestResult(_wrapper);
-        //_wrapper.getClient().getAuthenticationService().authenticateUniversal(
-        //        id,
-        //        password,
-        //        true,
-        //        tr);
-        //tr.Run();
-        _wrapper.getClient().getAuthenticationService().authenticateEmailPassword(
-                email,
-                password,
-                true,
-                tr);
-        tr.Run();
+        if(!withEmail) {
+            _wrapper.getClient().getAuthenticationService().authenticateUniversal(
+                    id,
+                    password,
+                    true,
+                    tr);
+            tr.Run();
+        }
+        if(withEmail) {
+            _wrapper.getClient().getAuthenticationService().authenticateEmailPassword(
+                    email,
+                    password,
+                    true,
+                    tr);
+            tr.Run();
+        }
 
         profileId = _wrapper.getClient().getAuthenticationService().getProfileId();
 

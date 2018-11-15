@@ -10,14 +10,8 @@ public class MailServiceTest extends TestFixtureBase {
     public void testSendBasicEmail() throws Exception {
         TestResult tr = new TestResult(_wrapper);
 
-       // _wrapper.getClient().getAuthenticationService().authenticateEmailPassword(
-        //        getUser(Users.UserA).email,
-        //        getUser(Users.UserA).password,
-        //        true,
-        //        tr);
-
         _wrapper.getMailService().sendBasicEmail(
-                getUser(Users.UserB).profileId,
+                getUser(Users.UserC).profileId,
                 "Test Subject - TestSendBasicEmail",
                 "Test body content message.",
                 tr);
@@ -35,7 +29,7 @@ public class MailServiceTest extends TestFixtureBase {
         data.put("categories", new String[]{"unit-test"});
 
         _wrapper.getMailService().sendAdvancedEmail(
-                getUser(Users.UserA).profileId,
+                getUser(Users.UserC).profileId,
                 data.toString(),
                 tr);
 
@@ -52,7 +46,7 @@ public class MailServiceTest extends TestFixtureBase {
         data.put("categories", new String[]{"unit-test"});
 
         _wrapper.getMailService().sendAdvancedEmailByAddress(
-                getUser(Users.UserA).email,
+                getUser(Users.UserC).email,
                 data.toString(),
                 tr);
 
