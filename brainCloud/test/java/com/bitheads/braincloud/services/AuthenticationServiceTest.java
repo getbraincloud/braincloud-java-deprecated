@@ -37,10 +37,10 @@ public class AuthenticationServiceTest extends TestFixtureNoAuth
         TestResult tr = new TestResult(_wrapper);
 
         _wrapper.getClient().getAuthenticationService().authenticateEmailPassword(
-                getUser(Users.UserA).email,
-                getUser(Users.UserA).password,
-                true,
-                tr);
+            getUser(Users.UserA).email,
+            getUser(Users.UserA).password,
+            true,
+            tr);
 
         tr.Run();
     }

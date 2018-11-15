@@ -34,12 +34,19 @@ public class TestUser
     private void Authenticate()
     {
         TestResult tr = new TestResult(_wrapper);
-        _wrapper.getClient().getAuthenticationService().authenticateUniversal(
-                id,
+        //_wrapper.getClient().getAuthenticationService().authenticateUniversal(
+        //        id,
+        //        password,
+        //        true,
+        //        tr);
+        //tr.Run();
+        _wrapper.getClient().getAuthenticationService().authenticateEmailPassword(
+                email,
                 password,
                 true,
                 tr);
         tr.Run();
+
         profileId = _wrapper.getClient().getAuthenticationService().getProfileId();
 
         try

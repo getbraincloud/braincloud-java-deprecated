@@ -10,6 +10,12 @@ public class MailServiceTest extends TestFixtureBase {
     public void testSendBasicEmail() throws Exception {
         TestResult tr = new TestResult(_wrapper);
 
+       // _wrapper.getClient().getAuthenticationService().authenticateEmailPassword(
+        //        getUser(Users.UserA).email,
+        //        getUser(Users.UserA).password,
+        //        true,
+        //        tr);
+
         _wrapper.getMailService().sendBasicEmail(
                 getUser(Users.UserB).profileId,
                 "Test Subject - TestSendBasicEmail",
@@ -22,14 +28,6 @@ public class MailServiceTest extends TestFixtureBase {
     @Test
     public void testSendAdvancedEmailSendGrid() throws Exception {
         TestResult tr = new TestResult(_wrapper);
-
-        //_wrapper.getClient().getAuthenticationService().authenticateEmailPassword(
-          //      getUser(Users.UserA).email,
-            //    getUser(Users.UserA).password,
-              //  true,
-                //tr);
-
-//        tr.Run();
 
         JSONObject data = new JSONObject();
         data.put("subject", "Test Subject - TestSendAdvancedEmailSendGrid");
@@ -47,14 +45,6 @@ public class MailServiceTest extends TestFixtureBase {
     @Test
     public void testSendAdvancedEmailByAddress() throws Exception {
         TestResult tr = new TestResult(_wrapper);
-
-        _wrapper.getClient().getAuthenticationService().authenticateEmailPassword(
-                getUser(Users.UserA).email,
-                getUser(Users.UserA).password,
-                true,
-                tr);
-
-        tr.Run();
 
         JSONObject data = new JSONObject();
         data.put("subject", "Test Subject - TestSendAdvancedEmailByAddress");
