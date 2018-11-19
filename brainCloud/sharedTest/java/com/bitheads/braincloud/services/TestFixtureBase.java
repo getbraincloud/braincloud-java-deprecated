@@ -146,7 +146,8 @@ public class TestFixtureBase {
     public enum Users {
         UserA,
         UserB,
-        UserC;
+        UserC,
+        UserD;
 
         public static Users byOrdinal(int ord) {
             for (Users m : Users.values()) {
@@ -174,7 +175,16 @@ public class TestFixtureBase {
             Random rand = new Random();
 
             for (int i = 0, ilen = _testUsers.length; i < ilen; ++i) {
-                _testUsers[i] = new TestUser(_wrapper, Users.byOrdinal(i).toString() + "-", rand.nextInt());
+                if(i < 2)
+                {
+                    _testUsers[i] = new TestUser(_wrapper, Users.byOrdinal(i).toString() + "-", rand.nextInt(), false);
+                }
+                //a crummy solution to this scritp's logic. Sets it up so all the users other than A and B authenticate with email. It is necessary to allow test users to
+                // have both authentications because Jenkins tends to miss vital information on some tests based on the test user's authentication.
+                if(i <= 2)
+                {
+                    _testUsers[i] = new TestUser(_wrapper, Users.byOrdinal(i).toString() + "-", rand.nextInt(), true);
+                }
                 //Log.i(getClass().getName(), ".");
             }
             //Log.i(getClass().getName(), "\n");

@@ -46,8 +46,8 @@ public class IdentityServiceTest extends TestFixtureBase {
 
         TestResult tr = new TestResult(_wrapper);
         _wrapper.getClient().getAuthenticationService().authenticateEmailPassword(
-                getUser(Users.UserC).email,
-                getUser(Users.UserC).password,
+                getUser(Users.UserA).email,
+                getUser(Users.UserA).password,
                 true,
                 tr);
         tr.Run();

@@ -1,6 +1,7 @@
 package com.bitheads.braincloud.services;
 
 import com.bitheads.braincloud.client.BrainCloudClient;
+import com.bitheads.braincloud.client.ReasonCodes;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -291,16 +292,14 @@ public class EntityServiceTest extends TestFixtureBase {
                 tr);
         tr.Run();
         String entityId = getEntityId(tr.m_response);
+        //String profileId = getProfileId(tr.m_response);
 
         _wrapper.getEntityService().incrementSharedUserEntityData(
                 entityId,
-                getUser(Users.UserA).profileId,
+                "Invalid_Id",
                 Helpers.createJsonPair("test", 1234),
                 tr);
-        tr.Run();
-
-        _wrapper.getEntityService().deleteEntity(entityId, -1, tr);
-        tr.Run();
+        tr.RunExpectFail(400, ReasonCodes.MISSING_RECORD);
     }
 
 
@@ -333,6 +332,20 @@ public class EntityServiceTest extends TestFixtureBase {
     private String getEntityId(JSONObject json) {
         try {
             return json.getJSONObject("data").getString("entityId");
+        } catch (JSONException je) {
+            je.printStackTrace();
+        }
+        return "";
+    }
+
+    /// <summary>
+    /// Returns the profileId from a raw json response
+    /// </summary>
+    /// <param name="json"> Json to parse for ID </param>
+    /// <returns> entityId from data </returns>
+    private String getProfileId(JSONObject json) {
+        try {
+            return json.getJSONObject("data").getString("profileId");
         } catch (JSONException je) {
             je.printStackTrace();
         }
