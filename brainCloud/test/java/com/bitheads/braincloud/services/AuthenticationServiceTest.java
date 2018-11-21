@@ -1,5 +1,8 @@
 package com.bitheads.braincloud.services;
 
+import com.bitheads.braincloud.client.ReasonCodes;
+import com.bitheads.braincloud.client.StatusCodes;
+
 import com.bitheads.braincloud.client.BrainCloudClient;
 import com.bitheads.braincloud.client.BrainCloudWrapper;
 
@@ -43,6 +46,16 @@ public class AuthenticationServiceTest extends TestFixtureNoAuth
                 tr);
 
         tr.Run();
+    }
+
+    @Test
+    public void testAuthenticateHandoff() throws Exception
+    {
+
+        TestResult tr = new TestResult(_wrapper);
+        _client.getAuthenticationService().authenticateHandoff("invalid_handoffId", "invalid_securityToken", tr);
+
+        tr.RunExpectFail(403, ReasonCodes.TOKEN_DOES_NOT_MATCH_USER);
     }
 
     @Test
