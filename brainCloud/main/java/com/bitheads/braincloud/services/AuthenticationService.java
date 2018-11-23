@@ -230,6 +230,17 @@ public class AuthenticationService {
     }
 
     /**
+     * Authenticate the user using a handoffId and an authentication token.
+     *
+     * @param handoffId   braincloud handoffId generated frim cloud script
+     * @param securityToken The authentication token
+     * @param callback   The callback handler
+     */
+    public void authenticateHandoff(String handoffId, String securityToken, IServerCallback callback) {
+        authenticate(handoffId, securityToken, AuthenticationType.Handoff, null, false, callback);
+    }
+
+    /**
      * Reset Email password - Sends a password reset email to the specified
      * address
      *
