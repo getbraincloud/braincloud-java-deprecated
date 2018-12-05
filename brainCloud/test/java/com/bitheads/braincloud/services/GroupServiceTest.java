@@ -7,8 +7,6 @@ import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Test;
 
-import java.security.cert.CertPathValidatorException;
-
 /**
  * Created by bradleyh on 5/6/2016.
  */
