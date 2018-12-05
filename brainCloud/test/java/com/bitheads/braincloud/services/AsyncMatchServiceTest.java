@@ -1,7 +1,5 @@
 package com.bitheads.braincloud.services;
 
-import android.nfc.NfcAdapter;
-
 import com.bitheads.braincloud.client.BrainCloudClient;
 import com.bitheads.braincloud.client.ReasonCodes;
 
@@ -10,7 +8,6 @@ import org.json.JSONObject;
 import org.junit.Test;
 
 import java.math.BigInteger;
-import java.security.cert.CertPathValidatorException;
 
 import static org.junit.Assert.*;
 
