@@ -8,8 +8,6 @@ import org.json.JSONObject;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.security.cert.CertPathValidatorException;
-
 import static org.junit.Assert.*;
 
 /**
