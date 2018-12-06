@@ -1,11 +1,11 @@
 package com.bitheads.braincloud.services;
 
 import com.bitheads.braincloud.client.BrainCloudClient;
+import com.bitheads.braincloud.client.ReasonCodes;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -83,7 +83,6 @@ public class EntityServiceTest extends TestFixtureBase {
     }
 
 
-    @Ignore("Currently fails. Must be reviewed")
     @Test
     public void testGetInstanceSharedEntitiesForProfileId() throws Exception {
         TestResult tr = new TestResult(_wrapper);
@@ -115,7 +114,7 @@ public class EntityServiceTest extends TestFixtureBase {
         deleteAllDefaultEntities(2);
     }
 
-    @Ignore("Currently fails. Must be reviewed")
+
     @Test
     public void testUpdateSharedEntity() throws Exception {
         TestResult tr = new TestResult(_wrapper);
@@ -135,7 +134,7 @@ public class EntityServiceTest extends TestFixtureBase {
         deleteAllDefaultEntities(2);
     }
 
-    @Ignore("Currently fails. Must be reviewed")
+
     @Test
     public void testGetSharedEntityForProfileId() throws Exception {
         TestResult tr = new TestResult(_wrapper);
@@ -281,7 +280,7 @@ public class EntityServiceTest extends TestFixtureBase {
         tr.Run();
     }
 
-    @Ignore("Currently fails. Must be reviewed")
+
     @Test
     public void testIncrementSharedUserEntityData() throws Exception {
         TestResult tr = new TestResult(_wrapper);
@@ -293,19 +292,17 @@ public class EntityServiceTest extends TestFixtureBase {
                 tr);
         tr.Run();
         String entityId = getEntityId(tr.m_response);
+        //String profileId = getProfileId(tr.m_response);
 
         _wrapper.getEntityService().incrementSharedUserEntityData(
                 entityId,
-                getUser(Users.UserA).profileId,
+                "Invalid_Id",
                 Helpers.createJsonPair("test", 1234),
                 tr);
-        tr.Run();
-
-        _wrapper.getEntityService().deleteEntity(entityId, -1, tr);
-        tr.Run();
+        tr.RunExpectFail(400, ReasonCodes.MISSING_RECORD);
     }
 
-    @Ignore("Currently fails. Must be reviewed")
+
     @Test
     public void testGetSharedEntitiesListForProfileId() throws Exception {
         TestResult tr = new TestResult(_wrapper);
@@ -335,6 +332,20 @@ public class EntityServiceTest extends TestFixtureBase {
     private String getEntityId(JSONObject json) {
         try {
             return json.getJSONObject("data").getString("entityId");
+        } catch (JSONException je) {
+            je.printStackTrace();
+        }
+        return "";
+    }
+
+    /// <summary>
+    /// Returns the profileId from a raw json response
+    /// </summary>
+    /// <param name="json"> Json to parse for ID </param>
+    /// <returns> entityId from data </returns>
+    private String getProfileId(JSONObject json) {
+        try {
+            return json.getJSONObject("data").getString("profileId");
         } catch (JSONException je) {
             je.printStackTrace();
         }

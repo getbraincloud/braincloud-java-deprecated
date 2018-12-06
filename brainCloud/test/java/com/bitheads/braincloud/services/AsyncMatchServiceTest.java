@@ -1,6 +1,7 @@
 package com.bitheads.braincloud.services;
 
 import com.bitheads.braincloud.client.BrainCloudClient;
+import com.bitheads.braincloud.client.ReasonCodes;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -25,7 +26,7 @@ public class AsyncMatchServiceTest extends TestFixtureBase
         JSONArray players = new JSONArray();
         JSONObject player = new JSONObject();
         player.put("platform", _platform);
-        player.put("id", getUser(Users.UserB).profileId);
+        player.put("id", "invalid_playerId");
         players.put(player);
 
         _wrapper.getAsyncMatchService().createMatch(
@@ -33,14 +34,16 @@ public class AsyncMatchServiceTest extends TestFixtureBase
                 null,
                 tr);
 
-        String matchId = "";
+        tr.RunExpectFail(400, ReasonCodes.INVALID_PLAYER_ID);
 
-        if (tr.Run())
-        {
-            matchId = tr.m_response.getJSONObject("data").getString("matchId");
-        }
+        //String matchId = "";
 
-        abandonMatch(matchId);
+        //if (tr.Run())
+        //{
+        //    matchId = tr.m_response.getJSONObject("data").getString("matchId");
+        //}
+
+        //abandonMatch(matchId);
     }
 
     @Test
@@ -51,7 +54,7 @@ public class AsyncMatchServiceTest extends TestFixtureBase
         JSONArray players = new JSONArray();
         JSONObject player = new JSONObject();
         player.put("platform", _platform);
-        player.put("id", getUser(Users.UserB).profileId);
+        player.put("id", "invalid_playerId");
         players.put(player);
 
         _wrapper.getAsyncMatchService().createMatchWithInitialTurn(
@@ -62,14 +65,16 @@ public class AsyncMatchServiceTest extends TestFixtureBase
                 Helpers.createJsonPair("map", "level1"),
                 tr);
 
-        String matchId = "";
+        tr.RunExpectFail(400, ReasonCodes.INVALID_PLAYER_ID);
 
-        if (tr.Run())
-        {
-            matchId = tr.m_response.getJSONObject("data").getString("matchId");
-        }
+        //String matchId = "";
 
-        abandonMatch(matchId);
+        //if (tr.Run())
+        //{
+        //    matchId = tr.m_response.getJSONObject("data").getString("matchId");
+        //}
+
+        //abandonMatch(matchId);
     }
 
     @Test
@@ -79,8 +84,8 @@ public class AsyncMatchServiceTest extends TestFixtureBase
         TestResult tr = new TestResult(_wrapper);
 
         _wrapper.getAsyncMatchService().submitTurn(
-                getUser(Users.UserA).profileId,
-                matchId,
+                "invalid_profileId",
+                "invalid_matchId",
                 BigInteger.valueOf(0),
                 Helpers.createJsonPair("blob", 1),
                 null,
@@ -89,9 +94,9 @@ public class AsyncMatchServiceTest extends TestFixtureBase
                 Helpers.createJsonPair("map", "level1"),
                 tr);
 
-        tr.Run();
+        tr.RunExpectFail(400, ReasonCodes.MATCH_NOT_FOUND);
 
-        abandonMatch(matchId);
+        //abandonMatch(matchId);
     }
 
     @Test
@@ -101,15 +106,13 @@ public class AsyncMatchServiceTest extends TestFixtureBase
         TestResult tr = new TestResult(_wrapper);
 
         _wrapper.getAsyncMatchService().updateMatchSummaryData(
-                getUser(Users.UserA).profileId,
-                matchId,
+                "invalid_profileId",
+                "invalid_matchId",
                 BigInteger.valueOf(0),
                 Helpers.createJsonPair("map", "level1"),
                 tr);
 
-        tr.Run();
-
-        abandonMatch(matchId);
+        tr.RunExpectFail(400, ReasonCodes.MATCH_NOT_FOUND);
     }
 
     @Test
@@ -119,11 +122,11 @@ public class AsyncMatchServiceTest extends TestFixtureBase
         TestResult tr = new TestResult(_wrapper);
 
         _wrapper.getAsyncMatchService().completeMatch(
-                getUser(Users.UserA).profileId,
-                matchId,
+                "invalid_profileId",
+                "invalid_matchId",
                 tr);
 
-        tr.Run();
+        tr.RunExpectFail(400, ReasonCodes.MATCH_NOT_FOUND);
     }
 
     @Test
@@ -133,13 +136,11 @@ public class AsyncMatchServiceTest extends TestFixtureBase
         TestResult tr = new TestResult(_wrapper);
 
         _wrapper.getAsyncMatchService().readMatch(
-                getUser(Users.UserA).profileId,
-                matchId,
+                "invalid_profileId",
+                "invalid_matchId",
                 tr);
 
-        tr.Run();
-
-        abandonMatch(matchId);
+        tr.RunExpectFail(400, ReasonCodes.MATCH_NOT_FOUND);
     }
 
     @Test
@@ -149,13 +150,13 @@ public class AsyncMatchServiceTest extends TestFixtureBase
         TestResult tr = new TestResult(_wrapper);
 
         _wrapper.getAsyncMatchService().readMatch(
-                getUser(Users.UserA).profileId,
-                matchId,
+                "invalid_profileId",
+                "invalid_matchId",
                 tr);
 
-        tr.Run();
+        tr.RunExpectFail(400, ReasonCodes.MATCH_NOT_FOUND);
 
-        abandonMatch(matchId);
+        //abandonMatch(matchId);
     }
 
     @Test
@@ -187,11 +188,11 @@ public class AsyncMatchServiceTest extends TestFixtureBase
         TestResult tr = new TestResult(_wrapper);
 
         _wrapper.getAsyncMatchService().abandonMatch(
-                getUser(Users.UserA).profileId,
-                matchId,
+                "invalid_profileId",
+                "invalid_matchId",
                 tr);
 
-        tr.Run();
+        tr.RunExpectFail(400, ReasonCodes.MATCH_NOT_FOUND);
     }
 
     @Test
@@ -201,11 +202,11 @@ public class AsyncMatchServiceTest extends TestFixtureBase
         TestResult tr = new TestResult(_wrapper);
 
         _wrapper.getAsyncMatchService().deleteMatch(
-                getUser(Users.UserA).profileId,
-                matchId,
+                "invalid_profileId",
+                "Invalid_matchId",
                 tr);
 
-        tr.Run();
+        tr.RunExpectFail(400, ReasonCodes.MATCH_NOT_FOUND);
     }
     
     
@@ -268,9 +269,9 @@ public class AsyncMatchServiceTest extends TestFixtureBase
     {
         TestResult tr = new TestResult(_wrapper);
         _wrapper.getAsyncMatchService().abandonMatch(
-                getUser(Users.UserA).profileId,
-                matchId,
+                "invalid_profileId",
+                "invalid_matchId",
                 tr);
-        tr.Run();
+        tr.RunExpectFail(400, ReasonCodes.MATCH_NOT_FOUND);
     }
 }

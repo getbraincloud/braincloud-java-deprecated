@@ -24,6 +24,7 @@ public class ChatService {
         content,
         recordInHistory,
         plain,
+        text,
         rich
     }
 
@@ -252,6 +253,32 @@ public class ChatService {
 
             ServerCall sc = new ServerCall(ServiceName.chat,
                     ServiceOperation.POST_CHAT_MESSAGE, data, callback);
+            _client.sendRequest(sc);
+        } catch (JSONException je) {
+            je.printStackTrace();
+        }
+    }
+
+    /**
+     * Send a plaiin text message
+     *
+     * Service Name - Chat
+     * Service Operation - postChatMessageSimple
+     *
+     * @param channelId Channel id to post message to.
+     * @param text the text message.
+     * @param recordInHistory true if the message persist in history
+     * @param callback The method to be invoked when the server response is received.
+     */
+    public void postChatMessageSimple(String channelId, String text, Boolean recordInHistory, IServerCallback callback) {
+        try {
+            JSONObject data = new JSONObject();
+            data.put(Parameter.channelId.name(), channelId);
+            data.put(Parameter.text.name(), text);
+            data.put(Parameter.recordInHistory.name(), recordInHistory);
+
+            ServerCall sc = new ServerCall(ServiceName.chat,
+                    ServiceOperation.POST_CHAT_MESSAGE_SIMPLE, data, callback);
             _client.sendRequest(sc);
         } catch (JSONException je) {
             je.printStackTrace();

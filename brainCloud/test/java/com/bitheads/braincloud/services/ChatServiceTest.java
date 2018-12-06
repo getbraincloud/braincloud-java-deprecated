@@ -81,6 +81,16 @@ public class ChatServiceTest extends TestFixtureBase
     }
 
     @Test
+    public void postChatMessageSimple() throws Exception {
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.getChatService().postChatMessageSimple(_channelId, "Hello World! SIMPLE", true, tr);
+        tr.Run();
+
+        _msgId = tr.m_response.getJSONObject("data").getString("msgId");
+    }
+
+    @Test
     public void getChatMessage() throws Exception {
         TestResult tr = new TestResult(_wrapper);
 

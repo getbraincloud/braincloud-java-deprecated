@@ -2,9 +2,11 @@ package com.bitheads.braincloud.services;
 
 import com.bitheads.braincloud.client.BrainCloudClient;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
-import org.junit.Ignore;
 import org.junit.Test;
+
+import java.util.Dictionary;
 
 /**
  * Created by prestonjennings on 15-09-02.
@@ -219,12 +221,11 @@ public class GlobalEntityServiceTest extends TestFixtureBase {
         tr.Run();
     }
 
-    @Ignore("Currently fails. Must be reviewed")
     @Test
     public void testGetRandomEntitiesMatching() throws Exception {
         TestResult tr = new TestResult(_wrapper);
-        String entityId = getEntityId(tr.m_response);
-        _wrapper.getGlobalEntityService().getRandomEntitiesMatching(entityId, 2,tr);
+
+        _wrapper.getGlobalEntityService().getRandomEntitiesMatching("{data.property : entityType}", 2,tr);
 
         tr.Run();
     }
