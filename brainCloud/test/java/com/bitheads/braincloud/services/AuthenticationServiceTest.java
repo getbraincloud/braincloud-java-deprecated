@@ -8,6 +8,7 @@ import com.bitheads.braincloud.client.BrainCloudWrapper;
 
 import org.junit.After;
 import org.junit.Before;
+import org.json.JSONObject;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -103,6 +104,45 @@ public class AuthenticationServiceTest extends TestFixtureNoAuth
         TestResult tr = new TestResult(_wrapper);
         _wrapper.getClient().getAuthenticationService().resetEmailPassword(
                 email, tr);
+        tr.Run();
+    }
+
+    @Test
+    public void testResetEmailPasswordAdvanced() throws Exception
+    {
+        TestResult tr = new TestResult(_wrapper);
+
+        //this is something we want to avoid in future, our goal is to be able to test without authentication
+        _wrapper.getClient().getAuthenticationService().authenticateEmailPassword(
+                getUser(Users.UserA).email,
+                getUser(Users.UserA).password,
+                true,
+                tr);
+
+        tr.Run();
+
+        JSONObject testJson = new JSONObject();
+        testJson.put("fromAddress", "fromAddress");
+        testJson.put("fromName", "fromName");
+        testJson.put("replyName", "replyName");
+        testJson.put("templateId", "8f14c77d-61f4-4966-ab6d-0bee8b13d090");
+        testJson.put("subject", "subject");
+        testJson.put("body", "body here");
+        JSONObject substitutions = new JSONObject();
+        substitutions.put(":name", "John Doe");
+        substitutions.put(":resetLink", "www.dummyLink.io");
+        testJson.put("substitutions", substitutions.toString());
+        String[] categories = new String[2];
+        categories[0] = "category1";
+        categories[1] = "category2";
+        testJson.put("categories", categories);
+        String test = testJson.toString();
+
+        _wrapper.getClient().getAuthenticationService().resetEmailPasswordAdvanced(
+                "braincloudunittest@gmail.com",
+                test,
+                tr);
+
         tr.Run();
     }
 }
