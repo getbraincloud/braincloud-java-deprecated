@@ -97,7 +97,7 @@ public class MessagingServiceTest extends TestFixtureBase
 
         ArrayList<String> msgIds = new ArrayList<String>();
         msgIds.add("invalidMsgId");
-        _wrapper.getMessagingService().markMessagesRead("inbox", msgIds, tr);
+        _wrapper.getMessagingService().markMessagesRead("inbox", msgIds, true, tr);
         tr.Run();
     }
 }
