@@ -6,6 +6,9 @@ import com.bitheads.braincloud.client.StatusCodes;
 import com.bitheads.braincloud.client.BrainCloudClient;
 import com.bitheads.braincloud.client.BrainCloudWrapper;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.After;
 import org.junit.Before;
 import org.json.JSONObject;
@@ -121,28 +124,27 @@ public class AuthenticationServiceTest extends TestFixtureNoAuth
 
         tr.Run();
 
-        JSONObject testJson = new JSONObject();
-        testJson.put("fromAddress", "fromAddress");
-        testJson.put("fromName", "fromName");
-        testJson.put("replyName", "replyName");
-        testJson.put("templateId", "8f14c77d-61f4-4966-ab6d-0bee8b13d090");
-        testJson.put("subject", "subject");
-        testJson.put("body", "body here");
-        JSONObject substitutions = new JSONObject();
+        Map testMap = new HashMap();
+        testMap.put("fromAddress", "fromAddress");
+        testMap.put("fromName", "fromName");
+        testMap.put("replyName", "replyName");
+        testMap.put("templateId", "8f14c77d-61f4-4966-ab6d-0bee8b13d090");
+        testMap.put("subject", "subject");
+        testMap.put("body", "body here");
+        Map substitutions =  new HashMap();
         substitutions.put(":name", "John Doe");
         substitutions.put(":resetLink", "www.dummyLink.io");
-        testJson.put("substitutions", substitutions.toString());
+        testMap.put("substitutions", substitutions);
         String[] categories = new String[2];
         categories[0] = "category1";
         categories[1] = "category2";
-        testJson.put("categories", categories);
-        String test = testJson.toString();
+        testMap.put("categories", categories);
 
         _wrapper.getClient().getAuthenticationService().resetEmailPasswordAdvanced(
                 "braincloudunittest@gmail.com",
-                test,
+                testMap,
                 tr);
 
-        tr.Run();
+        tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.INVALID_FROM_ADDRESS);
     }
 }

@@ -7,6 +7,9 @@ import com.bitheads.braincloud.client.ServiceName;
 import com.bitheads.braincloud.client.ServiceOperation;
 import com.bitheads.braincloud.comms.ServerCall;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -280,7 +283,7 @@ public class AuthenticationService {
      * Note the follow error reason codes:
      * SECURITY_ERROR (40209) - If the email address cannot be found.
      */
-    public void resetEmailPasswordAdvanced(String email, String serviceParams, IServerCallback callback) {
+    public void resetEmailPasswordAdvanced(String email, Map serviceParams, IServerCallback callback) {
         try {
             String appId = _client.getAppId();
 
