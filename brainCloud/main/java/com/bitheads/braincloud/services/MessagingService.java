@@ -19,6 +19,7 @@ public class MessagingService {
 
     private enum Parameter {
         msgbox,
+        markAsRead,
         msgIds,
         context,
         pageOffset,
@@ -171,8 +172,7 @@ public class MessagingService {
      * Service Operation - SEND_MESSAGE
      *
      * @param toProfileIds
-     * @param messageText
-     * @param messageSubject
+     * @param contentJson
      * @param callback The method to be invoked when the server response is received
      */
     public void sendMessage(ArrayList<String> toProfileIds, String contentJson, IServerCallback callback) {
@@ -225,15 +225,17 @@ public class MessagingService {
      *
      * @param msgbox
      * @param msgIds
+     * @param markAsRead
      * @param callback The method to be invoked when the server response is received
      */
-    public void markMessagesRead(String msgbox, ArrayList<String> msgIds, IServerCallback callback) {
+    public void markMessagesRead(String msgbox, ArrayList<String> msgIds, Boolean markAsRead, IServerCallback callback) {
         try {
             JSONObject data = new JSONObject();
             data.put(Parameter.msgbox.name(), msgbox);
             if (msgIds != null) {
                 data.put(Parameter.msgIds.name(), new JSONArray(msgIds));
             }
+            data.put(Parameter.markAsRead.name(), markAsRead);
 
             ServerCall sc = new ServerCall(ServiceName.messaging,
                     ServiceOperation.MARK_MESSAGES_READ, data, callback);

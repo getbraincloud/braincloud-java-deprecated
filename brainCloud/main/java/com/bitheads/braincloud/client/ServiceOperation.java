@@ -6,6 +6,7 @@ package com.bitheads.braincloud.client;
 public enum ServiceOperation {
     AUTHENTICATE,
     RESET_EMAIL_PASSWORD,
+    RESET_EMAIL_PASSWORD_ADVANCED,
     CREATE,
     DELETE,
     READ,
