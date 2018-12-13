@@ -133,5 +133,6 @@ public class AuthenticationServiceTest extends TestFixtureNoAuth
                 tr2);
 
         tr2.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.INVALID_FROM_ADDRESS);
+
     }
 }
