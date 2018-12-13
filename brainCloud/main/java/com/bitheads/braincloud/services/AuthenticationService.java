@@ -283,14 +283,14 @@ public class AuthenticationService {
      * Note the follow error reason codes:
      * SECURITY_ERROR (40209) - If the email address cannot be found.
      */
-    public void resetEmailPasswordAdvanced(String email, Map serviceParams, IServerCallback callback) {
+    public void resetEmailPasswordAdvanced(String email, String serviceParams, IServerCallback callback) {
         try {
             String appId = _client.getAppId();
 
             JSONObject message = new JSONObject();
             message.put(Parameter.gameId.name(), appId);
             message.put(Parameter.emailAddress.name(), email);
-            message.put(Parameter.serviceParams.name(), serviceParams);
+            message.put(Parameter.serviceParams.name(), new JSONObject(serviceParams));
 
             ServerCall serverCall = new ServerCall(
                     ServiceName.authenticationV2,
