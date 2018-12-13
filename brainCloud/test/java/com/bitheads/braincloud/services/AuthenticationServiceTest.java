@@ -124,27 +124,15 @@ public class AuthenticationServiceTest extends TestFixtureNoAuth
 
         tr.Run();
 
-        Map testMap = new HashMap();
-        testMap.put("fromAddress", "fromAddress");
-        testMap.put("fromName", "fromName");
-        testMap.put("replyName", "replyName");
-        testMap.put("templateId", "8f14c77d-61f4-4966-ab6d-0bee8b13d090");
-        testMap.put("subject", "subject");
-        testMap.put("body", "body here");
-        Map substitutions =  new HashMap();
-        substitutions.put(":name", "John Doe");
-        substitutions.put(":resetLink", "www.dummyLink.io");
-        testMap.put("substitutions", substitutions);
-        String[] categories = new String[2];
-        categories[0] = "category1";
-        categories[1] = "category2";
-        testMap.put("categories", categories);
+        TestResult tr2 = new TestResult(_wrapper);
 
+        String content = "{\"fromAddress\": \"fromAddress\",\"fromName\": \"fromName\",\"replyToAddress\": \"replyToAddress\",\"replyToName\": \"replyToName\", \"templateId\": \"8f14c77d-61f4-4966-ab6d-0bee8b13d090\",\"subject\": \"subject\",\"body\": \"Body goes here\", \"substitutions\": { \":name\": \"John Doe\",\":resetLink\": \"www.dummuyLink.io\"}, \"categories\": [\"category1\",\"category2\" ]}";
         _wrapper.getClient().getAuthenticationService().resetEmailPasswordAdvanced(
                 "braincloudunittest@gmail.com",
-                testMap,
-                tr);
+                content,
+                tr2);
 
-        tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.INVALID_FROM_ADDRESS);
+        tr2.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.INVALID_FROM_ADDRESS);
+
     }
 }
