@@ -47,7 +47,7 @@ public class MessagingServiceTest extends TestFixtureBase
 
         ArrayList<String> msgIds = new ArrayList<String>();
         msgIds.add("invalidMsgId");
-        _wrapper.getMessagingService().getMessages("inbox", msgIds, tr);
+        _wrapper.getMessagingService().getMessages("inbox", msgIds, true, tr);
         tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.MESSAGE_NOT_FOUND);
     }
 
@@ -97,7 +97,7 @@ public class MessagingServiceTest extends TestFixtureBase
 
         ArrayList<String> msgIds = new ArrayList<String>();
         msgIds.add("invalidMsgId");
-        _wrapper.getMessagingService().markMessagesRead("inbox", msgIds, true, tr);
+        _wrapper.getMessagingService().markMessagesRead("inbox", msgIds, tr);
         tr.Run();
     }
 }

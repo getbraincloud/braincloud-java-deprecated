@@ -118,7 +118,6 @@ public class MessagingService {
             if (msgIds != null) {
                 data.put(Parameter.msgIds.name(), new JSONArray(msgIds));
             }
-
             data.put(Parameter.markAsRead.name(), markAsRead);
 
             ServerCall sc = new ServerCall(ServiceName.messaging,
