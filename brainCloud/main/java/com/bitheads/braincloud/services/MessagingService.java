@@ -111,7 +111,7 @@ public class MessagingService {
      * @param markAsRead Whether the messages should be marked as read once retrieved.
      * @param callback The method to be invoked when the server response is received
      */
-    public void getMessages(String msgbox, ArrayList<String> msgIds,Boolean markAsRead, IServerCallback callback) {
+    public void getMessages(String msgbox, ArrayList<String> msgIds, Boolean markAsRead, IServerCallback callback) {
         try {
             JSONObject data = new JSONObject();
             data.put(Parameter.msgbox.name(), msgbox);

@@ -113,17 +113,6 @@ public class AuthenticationServiceTest extends TestFixtureNoAuth
     @Test
     public void testResetEmailPasswordAdvanced() throws Exception
     {
-        TestResult tr = new TestResult(_wrapper);
-
-        //this is something we want to avoid in future, our goal is to be able to test without authentication
-        _wrapper.getClient().getAuthenticationService().authenticateEmailPassword(
-                getUser(Users.UserA).email,
-                getUser(Users.UserA).password,
-                true,
-                tr);
-
-        tr.Run();
-
         TestResult tr2 = new TestResult(_wrapper);
 
         String content = "{\"fromAddress\": \"fromAddress\",\"fromName\": \"fromName\",\"replyToAddress\": \"replyToAddress\",\"replyToName\": \"replyToName\", \"templateId\": \"8f14c77d-61f4-4966-ab6d-0bee8b13d090\",\"subject\": \"subject\",\"body\": \"Body goes here\", \"substitutions\": { \":name\": \"John Doe\",\":resetLink\": \"www.dummuyLink.io\"}, \"categories\": [\"category1\",\"category2\" ]}";
@@ -133,6 +122,5 @@ public class AuthenticationServiceTest extends TestFixtureNoAuth
                 tr2);
 
         tr2.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.INVALID_FROM_ADDRESS);
-
     }
 }
