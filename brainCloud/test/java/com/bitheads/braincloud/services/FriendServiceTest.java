@@ -56,6 +56,45 @@ public class FriendServiceTest extends TestFixtureBase
         tr.Run();
     }
 
+    @Test 
+    public void findUserByExactUniversalId() throws Exception
+    {
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.getFriendService().findUserByExactUniversalId(
+            "randomUniversalId",
+            tr);
+        
+        //we expect it will search, though it won't find anything.
+        tr.Run();
+    }
+
+    @Test
+    public void findUsersByNameStartingWith() throws Exception
+    {
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.getFriendService().findUsersByNameStartingWith(
+            "completelyRandomName",
+            30,        
+            tr);
+
+        tr.Run();
+    }
+
+    @Test
+    public void findUsersByUniversalIdStartingWith() throws Exception
+    {
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.getFriendService().findUsersByUniversalIdStartingWith(
+            "completelyRandomUniversalId",
+            30,        
+            tr);
+
+        tr.Run();
+    }
+
     @Test
     public void findUsersBySubstrName() throws Exception
     {
