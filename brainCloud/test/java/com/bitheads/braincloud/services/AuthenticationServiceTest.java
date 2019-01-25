@@ -25,7 +25,10 @@ public class AuthenticationServiceTest extends TestFixtureNoAuth
     @Test
     public void testAuthenticateAnonymous() throws Exception
     {
-        // not implemented
+        TestResult tr = new TestResult(_wrapper);
+        String anonId = _client.getAuthenticationService().generateAnonymousId();
+        _client.getAuthenticationService().authenticateAnonymous(anonId, true, tr);
+        tr.Run();
     }
 
     @Test

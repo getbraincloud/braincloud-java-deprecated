@@ -101,6 +101,21 @@ public class AuthenticationService {
     }
 
     /**
+     * Overloaded for users not using wrapper, they will need to create their own anonId.
+     * Authenticate a user anonymously with brainCloud - used for apps that
+     * don't want to bother the user to login, or for users who are sensitive to
+     * their privacy.
+     *
+     * @param anonymousId 
+     * @param forceCreate Should a new profile be created if it does not exist?
+     * @param callback    The callback handler
+     */
+    public void authenticateAnonymous(String anonymousId, boolean forceCreate, IServerCallback callback) {
+        _anonymousId = anonymousId;
+        authenticateAnonymous(forceCreate, callback);
+    }
+
+    /**
      * Authenticate the user with a custom Email and Password. Note that the
      * client app is responsible for collecting (and storing) the e-mail and
      * potentially password (for convenience) in the client data. For the
