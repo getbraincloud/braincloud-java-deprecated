@@ -250,8 +250,8 @@ public class SocialLeaderboardServiceTest extends TestFixtureBase
                 Helpers.createJsonPair("testDataKey", 400),
                 SocialLeaderboardService.SocialLeaderboardType.LAST_VALUE.toString(),
                 SocialLeaderboardService.RotationType.DAILY.toString(),
-                addDays(new Date(), 3),
-                5,
+                addDays(new Date(), 2),
+                3,
                 tr);
 
         tr.Run();

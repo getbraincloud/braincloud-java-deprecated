@@ -27,7 +27,9 @@ public class AuthenticationServiceTest extends TestFixtureNoAuth
     {
         TestResult tr = new TestResult(_wrapper);
         String anonId = _client.getAuthenticationService().generateAnonymousId();
+
         _client.getAuthenticationService().authenticateAnonymous(anonId, true, tr);
+        develop
         tr.Run();
     }
 
