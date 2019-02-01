@@ -756,6 +756,14 @@ public class BrainCloudClient {
     }
 
     /**
+     * Returns true is RTT is enabled
+     */
+    public bool getRTTEnabled()
+    {
+        return _rttComms.isRTTEnabled();
+    }
+
+    /**
      * Sets the language code sent to brainCloud when a user authenticates.
      * If the language is set to a non-ISO 639-1 standard value the app default will be used instead.
      * Will override any auto detected language.
