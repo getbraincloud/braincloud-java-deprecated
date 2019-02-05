@@ -758,7 +758,7 @@ public class BrainCloudClient {
     /**
      * Returns true is RTT is enabled
      */
-    public bool getRTTEnabled()
+    public boolean getRTTEnabled()
     {
         return _rttComms.isRTTEnabled();
     }

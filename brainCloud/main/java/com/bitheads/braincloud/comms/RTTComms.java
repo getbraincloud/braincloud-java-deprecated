@@ -174,7 +174,7 @@ public class RTTComms implements IServerCallback {
     /**
      * Returns true if RTT is enabled
      */
-    public bool isRTTEnabled()
+    public boolean isRTTEnabled()
     {
         return _isConnected;
     }
