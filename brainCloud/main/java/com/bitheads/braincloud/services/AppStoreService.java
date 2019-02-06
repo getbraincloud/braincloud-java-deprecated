@@ -16,7 +16,7 @@ public class AppStoreService {
         receiptData,
         category,
         priceInfoCriteria,
-        user_currency,
+        userCurrency,
         purchaseData,
         transactionId,
         transactionData
@@ -123,7 +123,7 @@ public class AppStoreService {
             JSONObject priceInfoCriteria = new JSONObject();
             if (userCurrency != null)
             {
-                priceInfoCriteria.put(Parameter.user_currency.name(), userCurrency);
+                priceInfoCriteria.put(Parameter.userCurrency.name(), userCurrency);
             }
             data.put(Parameter.priceInfoCriteria.name(), priceInfoCriteria);
 
