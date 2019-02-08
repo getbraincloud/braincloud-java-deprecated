@@ -170,7 +170,7 @@ public class FriendService {
     }
 
     /**
-     * @deprecated Use findUserByExactUniversalId
+     * @deprecated Use findUserByExactUniversalId - Removal after Feb 1, 2019
      */
     public void findUserByUniversalId(String searchText, int maxResults, IServerCallback callback) {
         JSONObject data = new JSONObject();
