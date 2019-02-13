@@ -826,6 +826,19 @@ public class BrainCloudClient {
     }
 
     /**
+     * Listen to real time presence events.
+     * 
+     * Notes: RTT must be enabled for this app, and enableRTT must have been successfully called.
+     * Only one presence callback can be registered at a time. Calling this a second time will override the previous callback.
+     */
+    public void registerRTTPresenceCallback(IRTTCallback callback) {
+        _rttComms.registerRTTCallback(ServiceName.presence.toString(), callback);
+    }
+    public void deregisterRTTPresenceCallback() {
+        _rttComms.deregisterRTTCallback(ServiceName.presence.toString());
+    }
+
+    /**
      * Clear all set RTT callbacks
      */
     public void deregisterAllCallbacks() {
