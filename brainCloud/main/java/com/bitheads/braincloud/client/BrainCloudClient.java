@@ -64,7 +64,7 @@ public class BrainCloudClient {
     private double _timeZoneOffset;
 
 
-    private final static String BRAINCLOUD_VERSION = "3.10.0";
+    private final static String BRAINCLOUD_VERSION = "3.11.0";
 
     private BrainCloudRestClient _restClient;
     private RTTComms _rttComms;
@@ -756,6 +756,14 @@ public class BrainCloudClient {
     }
 
     /**
+     * Returns true is RTT is enabled
+     */
+    public boolean getRTTEnabled()
+    {
+        return _rttComms.isRTTEnabled();
+    }
+
+    /**
      * Sets the language code sent to brainCloud when a user authenticates.
      * If the language is set to a non-ISO 639-1 standard value the app default will be used instead.
      * Will override any auto detected language.
@@ -815,6 +823,19 @@ public class BrainCloudClient {
     }
     public void deregisterRTTLobbyCallback() {
         _rttComms.deregisterRTTCallback(ServiceName.lobby.toString());
+    }
+
+    /**
+     * Listen to real time presence events.
+     * 
+     * Notes: RTT must be enabled for this app, and enableRTT must have been successfully called.
+     * Only one presence callback can be registered at a time. Calling this a second time will override the previous callback.
+     */
+    public void registerRTTPresenceCallback(IRTTCallback callback) {
+        _rttComms.registerRTTCallback(ServiceName.presence.toString(), callback);
+    }
+    public void deregisterRTTPresenceCallback() {
+        _rttComms.deregisterRTTCallback(ServiceName.presence.toString());
     }
 
     /**

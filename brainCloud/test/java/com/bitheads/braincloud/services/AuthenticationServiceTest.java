@@ -6,8 +6,12 @@ import com.bitheads.braincloud.client.StatusCodes;
 import com.bitheads.braincloud.client.BrainCloudClient;
 import com.bitheads.braincloud.client.BrainCloudWrapper;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.After;
 import org.junit.Before;
+import org.json.JSONObject;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -21,7 +25,11 @@ public class AuthenticationServiceTest extends TestFixtureNoAuth
     @Test
     public void testAuthenticateAnonymous() throws Exception
     {
-        // not implemented
+        TestResult tr = new TestResult(_wrapper);
+        String anonId = _client.getAuthenticationService().generateAnonymousId();
+        _client.getAuthenticationService().authenticateAnonymous(anonId, true, tr);
+
+        tr.Run();
     }
 
     @Test
@@ -104,5 +112,19 @@ public class AuthenticationServiceTest extends TestFixtureNoAuth
         _wrapper.getClient().getAuthenticationService().resetEmailPassword(
                 email, tr);
         tr.Run();
+    }
+
+    @Test
+    public void testResetEmailPasswordAdvanced() throws Exception
+    {
+        TestResult tr2 = new TestResult(_wrapper);
+
+        String content = "{\"fromAddress\": \"fromAddress\",\"fromName\": \"fromName\",\"replyToAddress\": \"replyToAddress\",\"replyToName\": \"replyToName\", \"templateId\": \"8f14c77d-61f4-4966-ab6d-0bee8b13d090\",\"subject\": \"subject\",\"body\": \"Body goes here\", \"substitutions\": { \":name\": \"John Doe\",\":resetLink\": \"www.dummuyLink.io\"}, \"categories\": [\"category1\",\"category2\" ]}";
+        _wrapper.getClient().getAuthenticationService().resetEmailPasswordAdvanced(
+                "braincloudunittest@gmail.com",
+                content,
+                tr2);
+
+        tr2.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.INVALID_FROM_ADDRESS);
     }
 }

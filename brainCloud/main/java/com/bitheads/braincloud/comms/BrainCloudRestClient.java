@@ -526,7 +526,8 @@ public class BrainCloudRestClient implements Runnable {
                         while (iter.hasNext()) {
                             ServerCall serverCall = iter.next();
                             if (serverCall.getServiceOperation() == ServiceOperation.AUTHENTICATE ||
-                                    serverCall.getServiceOperation() == ServiceOperation.RESET_EMAIL_PASSWORD) {
+                                    serverCall.getServiceOperation() == ServiceOperation.RESET_EMAIL_PASSWORD||
+                                    serverCall.getServiceOperation() == ServiceOperation.RESET_EMAIL_PASSWORD_ADVANCED) {
                                 isAuth = true;
                             } else if (serverCall.getServiceName() == ServiceName.heartbeat) {
                                 iter.remove();

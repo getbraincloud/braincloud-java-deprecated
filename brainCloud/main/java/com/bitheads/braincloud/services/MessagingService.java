@@ -19,6 +19,7 @@ public class MessagingService {
 
     private enum Parameter {
         msgbox,
+        markAsRead,
         msgIds,
         context,
         pageOffset,
@@ -91,22 +92,33 @@ public class MessagingService {
         _client.sendRequest(sc);
     }
 
+
+    /**
+     * @deprecated Use getMessages(String msgbox, ArrayList<String> msgIds, Boolean markAsRead, IServerCallback callback) instead - Removal after June 1 2019
+     */
+    public void getMessages(String msgbox, ArrayList<String> msgIds, IServerCallback callback) {
+        getMessages(msgbox, msgIds, false, callback);
+    }
+
     /**
      * Retrieves list of specified messages.
      *
      * Service Name - Messaging
      * Service Operation - GET_MESSAGES
      *
+     * @param msgbox The messagebox that the messages reside in
      * @param msgIds Arrays of message ids to get.
+     * @param markAsRead Whether the messages should be marked as read once retrieved.
      * @param callback The method to be invoked when the server response is received
      */
-    public void getMessages(String msgbox, ArrayList<String> msgIds, IServerCallback callback) {
+    public void getMessages(String msgbox, ArrayList<String> msgIds, Boolean markAsRead, IServerCallback callback) {
         try {
             JSONObject data = new JSONObject();
             data.put(Parameter.msgbox.name(), msgbox);
             if (msgIds != null) {
                 data.put(Parameter.msgIds.name(), new JSONArray(msgIds));
             }
+            data.put(Parameter.markAsRead.name(), markAsRead);
 
             ServerCall sc = new ServerCall(ServiceName.messaging,
                     ServiceOperation.GET_MESSAGES, data, callback);
@@ -171,8 +183,7 @@ public class MessagingService {
      * Service Operation - SEND_MESSAGE
      *
      * @param toProfileIds
-     * @param messageText
-     * @param messageSubject
+     * @param contentJson
      * @param callback The method to be invoked when the server response is received
      */
     public void sendMessage(ArrayList<String> toProfileIds, String contentJson, IServerCallback callback) {
