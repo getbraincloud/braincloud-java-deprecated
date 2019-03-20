@@ -134,7 +134,7 @@ public class BrainCloudWrapper implements IServerCallback {
      * @param appVersion The app version
      */
     public void initialize(String appId, String secretKey, String appVersion) {
-        getClient().initialize(appId, secretKey, appVersion, _DEFAULT_URL);
+        getClient().initialize( _DEFAULT_URL, appId, secretKey, appVersion);
     }
 
     /**
@@ -146,7 +146,7 @@ public class BrainCloudWrapper implements IServerCallback {
      * @param serverUrl  The url to the brainCloud server
      */
     public void initialize(String appId, String secretKey, String appVersion, String serverUrl) {
-        getClient().initialize(appId, secretKey, appVersion, serverUrl);
+        getClient().initialize(serverUrl, appId, secretKey, appVersion);
     }
 
     private void initializeWithApps(String url, String defaultAppId, Map<String, String> secretMap, String version, String companyName, String appName)
