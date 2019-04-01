@@ -116,6 +116,44 @@ public class BrainCloudWrapper implements IServerCallback {
         getClient().initialize(serverUrl, appId, secretKey, appVersion);
     }
 
+    /**
+     * Method initializes the BrainCloudClient.
+     *
+     * @param appId      The app id
+     * @param secretKey  The secret key for your app
+     * @param appVersion The app version
+     * @param serverUrl  The url to the brainCloud server
+     * @param compantName 
+     * @param appName
+     */
+    private void initializeWithApps(String url, String defaultAppId, Map<String, String> secretMap, String version, String companyName, String appName)
+    {
+        if(_client == null)
+        {
+            _client = new BrainCloudClient();
+        }
+
+        getClient().initializeWithApps(url, defaultAppId, secretMap, version);
+    } 
+
+        /**
+     * Method initializes the BrainCloudClient.
+     *
+     * @param appId      The app id
+     * @param secretKey  The secret key for your app
+     * @param appVersion The app version
+     * @param serverUrl  The url to the brainCloud server
+     */
+    private void initializeWithApps(String url, String defaultAppId, Map<String, String> secretMap, String version)
+    {
+        if(_client == null)
+        {
+            _client = new BrainCloudClient();
+        }
+
+        getClient().initializeWithApps(url, defaultAppId, secretMap, version);
+    } 
+
     protected void initializeIdentity(boolean isAnonymousAuth) {
 
         // check if we already have saved IDs
