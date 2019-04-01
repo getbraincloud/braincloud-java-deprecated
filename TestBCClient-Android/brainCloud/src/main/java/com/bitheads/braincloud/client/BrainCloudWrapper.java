@@ -197,7 +197,7 @@ public class BrainCloudWrapper implements IServerCallback {
     } 
 
     /**
-     * Method initializes the BrainCloudClient.
+     * Method initializes the BrainCloudClient. - Note this is here for toggling purposes to testdifferent initializations. 
      *
      * @param appId      The app id
      * @param secretKey  The secret key for your app
