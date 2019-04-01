@@ -42,7 +42,6 @@ import com.bitheads.braincloud.services.TournamentService;
 import com.bitheads.braincloud.services.VirtualCurrencyService;
 
 import java.util.prefs.Preferences;
-import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -60,8 +59,6 @@ public class BrainCloudWrapper implements IServerCallback {
     private static final String AUTHENTICATION_ANONYMOUS = "anonymous";
     private static final String _SHARED_PREFERENCES = "bcprefs";
     private static final String _DEFAULT_URL = "https://sharedprod.braincloudservers.com/dispatcherv2";
-
-    private static BrainCloudWrapper _instance = null;
 
     private Preferences _prefs = Preferences.userNodeForPackage(com.bitheads.braincloud.client.BrainCloudWrapper.class);
 
@@ -97,36 +94,6 @@ public class BrainCloudWrapper implements IServerCallback {
     }
 
     /**
-     * Method returns a singleton instance of the BrainCloudWrapper.
-     *
-     * @return A singleton instance of the BrainCloudWrapper.
-     *
-     * @deprecated Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/apidocs/release-3-6-5/
-     */
-    public static BrainCloudWrapper getInstance() {
-
-        if (BrainCloudClient.EnableSingletonMode == false) {
-            throw new AssertionError(BrainCloudClient.SingletonUseErrorMessage);
-        }
-
-        if (_instance == null) {
-            _instance = new BrainCloudWrapper();
-            BrainCloudClient.setInstance(_instance.getClient());
-        }
-
-        return _instance;
-    }
-
-    /**
-     * Returns a singleton instance of the BrainCloudClient.
-     *
-     * @return A singleton instance of the BrainCloudClient.
-     */
-    public static BrainCloudClient getBC() {
-        return getInstance().getClient();
-    }
-
-    /**
      * Method initializes the BrainCloudClient.
      *
      * @param appId      The app id
@@ -134,7 +101,7 @@ public class BrainCloudWrapper implements IServerCallback {
      * @param appVersion The app version
      */
     public void initialize(String appId, String secretKey, String appVersion) {
-        getClient().initialize(appId, secretKey, appVersion, _DEFAULT_URL);
+        getClient().initialize(_DEFAULT_URL, appId, secretKey, appVersion);
     }
 
     /**
@@ -146,10 +113,38 @@ public class BrainCloudWrapper implements IServerCallback {
      * @param serverUrl  The url to the brainCloud server
      */
     public void initialize(String appId, String secretKey, String appVersion, String serverUrl) {
-        getClient().initialize(appId, secretKey, appVersion, serverUrl);
+        getClient().initialize(serverUrl, appId, secretKey, appVersion);
     }
 
+    /**
+     * Method initializes the BrainCloudClient. Note - this is here for testing purposes so a tester can toggle initializations being used. 
+     *
+     * @param appId      The app id
+     * @param secretKey  The secret key for your app
+     * @param appVersion The app version
+     * @param serverUrl  The url to the brainCloud server
+     * @param compantName 
+     * @param appName
+     */
     private void initializeWithApps(String url, String defaultAppId, Map<String, String> secretMap, String version, String companyName, String appName)
+    {
+        if(_client == null)
+        {
+            _client = new BrainCloudClient();
+        }
+
+        getClient().initializeWithApps(url, defaultAppId, secretMap, version);
+    } 
+
+        /**
+     * Method initializes the BrainCloudClient.
+     *
+     * @param appId      The app id
+     * @param secretKey  The secret key for your app
+     * @param appVersion The app version
+     * @param serverUrl  The url to the brainCloud server
+     */
+    private void initializeWithApps(String url, String defaultAppId, Map<String, String> secretMap, String version)
     {
         if(_client == null)
         {

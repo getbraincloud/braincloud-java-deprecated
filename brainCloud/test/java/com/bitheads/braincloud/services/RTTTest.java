@@ -51,7 +51,7 @@ public class RTTTest extends TestFixtureBase
         // Enable RTT
         {
             RTTConnectionTestResult tr = new RTTConnectionTestResult(_wrapper);
-            _wrapper.getClient().enableRTT(tr, false);
+            _wrapper.getClient().enableRTT(tr, true);
             tr.Run();
         }
 

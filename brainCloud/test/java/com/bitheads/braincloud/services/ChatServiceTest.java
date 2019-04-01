@@ -117,7 +117,7 @@ public class ChatServiceTest extends TestFixtureBase
         _wrapper.getChatService().getChatMessage(_channelId, _msgId, tr);
         tr.Run();
 
-        if (!tr.m_response.getJSONObject("data").getJSONObject("content").getString("plain").equals("Hello World! edited")) throw new Exception("Wrong message");
+        if (!tr.m_response.getJSONObject("data").getJSONObject("content").getString("text").equals("Hello World! edited")) throw new Exception("Wrong message");
         _msgVersion = tr.m_response.getJSONObject("data").getInt("ver");
         if (_msgVersion != 2) throw new Exception("Expected msg version to be 2");
     }

@@ -143,7 +143,7 @@ public class BrainCloudWrapper implements IServerCallback {
      */
     public void initialize(Context ctx, String appId, String secretKey, String appVersion) {
         setContext(ctx);
-        getClient().initialize(appId, secretKey, appVersion, _DEFAULT_URL);
+        getClient().initialize(_DEFAULT_URL,appId, secretKey, appVersion);
     }
 
     /**
@@ -157,7 +157,7 @@ public class BrainCloudWrapper implements IServerCallback {
      */
     public void initialize(Context ctx, String appId, String secretKey, String appVersion, String serverUrl) {
         setContext(ctx);
-        getClient().initialize(appId, secretKey, appVersion, serverUrl);
+        getClient().initialize(serverUrl, appId, secretKey, appVersion);
     }
 
 
@@ -171,7 +171,7 @@ public class BrainCloudWrapper implements IServerCallback {
      * @param serverUrl  The url to the brainCloud server
      */
     public void initialize(String appId, String secretKey, String appVersion, String serverUrl) {
-        getClient().initialize(appId, secretKey, appVersion, serverUrl);
+        getClient().initialize(serverUrl, appId, secretKey, appVersion);
     }
 
     /**
@@ -194,6 +194,24 @@ public class BrainCloudWrapper implements IServerCallback {
         }
 
         getClient().initializeWithApps(url, appId, secretMap, version);
+    } 
+
+    /**
+     * Method initializes the BrainCloudClient. - Note this is here for toggling purposes to testdifferent initializations. 
+     *
+     * @param appId      The app id
+     * @param secretKey  The secret key for your app
+     * @param appVersion The app version
+     * @param serverUrl  The url to the brainCloud server
+     */
+    private void initializeWithApps(String url, String defaultAppId, Map<String, String> secretMap, String version)
+    {
+        if(_client == null)
+        {
+            _client = new BrainCloudClient();
+        }
+
+        getClient().initializeWithApps(url, defaultAppId, secretMap, version);
     } 
 
     protected void initializeIdentity(boolean isAnonymousAuth) {

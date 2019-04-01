@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.Map;
 
 import javax.net.ssl.HostnameVerifier;
@@ -61,8 +62,8 @@ public class BrainCloudRestClient implements Runnable {
     private boolean _cacheMessagesOnNetworkError = false;
     private long _lastSendTime;
 
-    private int _uploadLowTransferTimeout = 120;
-    private int _uploadLowTransferThreshold = 50;
+    private int _uploadLowTransferTimeoutSecs = 120;
+    private int _uploadLowTransferThresholdSecs = 50;
 
     /// This flag is set when _cacheMessagesOnNetworkError is true
     /// and a network error occurs. It is reset when a call is made
@@ -83,6 +84,7 @@ public class BrainCloudRestClient implements Runnable {
     private int _maxBundleSize = 10;
     private int _retryCount;
     private ArrayList<Integer> _packetTimeouts = new ArrayList<>();
+    private long _messageQueuePollIntervalMillis = 1000;
 
     //kill switch
     private int _killSwitchThreshold = 11;
@@ -229,19 +231,19 @@ public class BrainCloudRestClient implements Runnable {
     }
 
     public int getUploadLowTransferRateTimeout() {
-        return _uploadLowTransferTimeout;
+        return _uploadLowTransferTimeoutSecs;
     }
 
     public void setUploadLowTransferRateTimeout(int timeoutSecs) {
-        _uploadLowTransferTimeout = timeoutSecs;
+        _uploadLowTransferTimeoutSecs = timeoutSecs;
     }
 
     public int getUploadLowTransferRateThreshold() {
-        return _uploadLowTransferThreshold;
+        return _uploadLowTransferThresholdSecs;
     }
 
     public void setUploadLowTransferRateThreshold(int bytesPerSec) {
-        _uploadLowTransferThreshold = bytesPerSec;
+        _uploadLowTransferThresholdSecs = bytesPerSec;
     }
 
     public void cancelUpload(String uploadFileId) {
@@ -419,6 +421,14 @@ public class BrainCloudRestClient implements Runnable {
 
     public void setHeartbeatInterval(long heartbeatInterval) {
         _heartbeatIntervalMillis = heartbeatInterval;
+    }
+
+    /**
+     * Set the internal message queue polling interval.
+     * @param pollIntervalMillis Poll interval in milliseconds
+     */
+    public void setMessageQueuePollInterval(long pollIntervalMillis) {
+        _messageQueuePollIntervalMillis = pollIntervalMillis;
     }
 
     public boolean isAuthenticated() {
@@ -642,7 +652,14 @@ public class BrainCloudRestClient implements Runnable {
 
         //fill bundle
         while (_bundleQueue.size() < _maxBundleSize) {
-            ServerCall serverCall = _messageQueue.poll();
+
+            // Do a blocking poll for messages
+            ServerCall serverCall = null;
+            try {
+                serverCall = _messageQueue.poll(_messageQueuePollIntervalMillis, TimeUnit.MILLISECONDS);
+            }
+            catch (InterruptedException e) {
+            }
 
             if (serverCall == null)
                 return;
@@ -939,7 +956,7 @@ public class BrainCloudRestClient implements Runnable {
                             String uploadId = data.getString("uploadId");
                             String localPath = data.getString("localPath");
                             _fileUploads.add(new FileUploader(uploadId, localPath, _uploadUrl, _sessionId,
-                                    _uploadLowTransferTimeout, _uploadLowTransferThreshold));
+                                    _uploadLowTransferTimeoutSecs, _uploadLowTransferThresholdSecs));
                         }
 
                         serverResponse._isError = false;
