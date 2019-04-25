@@ -56,6 +56,14 @@ public class LobbyServiceTest extends TestFixtureBase
     }
 
     @Test
+    public void testJoinLobby() throws Exception {
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.getLobbyService().joinLobby("wrongLobbyId", true, "{}", "red", null, tr);
+        tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.LOBBY_NOT_FOUND);
+    }
+
+    @Test
     public void testRemoveMember() throws Exception {
         TestResult tr = new TestResult(_wrapper);
 

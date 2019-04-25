@@ -218,6 +218,39 @@ public class LobbyService {
     }
 
     /**
+     * Causes the caller to join the specified lobby. 
+     *
+     * Service Name - Lobby
+     * Service Operation - JOIN_LOBBY
+     * 
+     * @param lobbyId Id of chosen lobby.
+     * @param isReady initial ready status of this user
+     * @param extraJson Initial extra-data about this user
+     * @param teamCode specified team code
+     * @param otherUserCxIds Array fo other users (ie party members) to add to the lobby as well. Constrains things so only lobbies with room for all players will be considered. 
+     */
+    public void joinLobby(String lobbyId, boolean isReady, String extraJson, String teamCode, ArrayList<String> otherUserCxIds, IServerCallback callback) {
+        try {
+            JSONObject data = new JSONObject();
+            data.put(Parameter.lobbyId.name(), lobbyId);
+            data.put(Parameter.isReady.name(), isReady);
+            if (StringUtil.IsOptionalParameterValid(extraJson)) {
+                data.put(Parameter.extraJson.name(), new JSONObject(extraJson));
+            }
+            data.put(Parameter.teamCode.name(), teamCode);
+            if (otherUserCxIds != null) {
+                data.put(Parameter.otherUserCxIds.name(), new JSONArray(otherUserCxIds));
+            }
+
+            ServerCall sc = new ServerCall(ServiceName.lobby,
+                    ServiceOperation.JOIN_LOBBY, data, callback);
+            _client.sendRequest(sc);
+        } catch (JSONException je) {
+            je.printStackTrace();
+        }
+    }
+
+    /**
      * Evicts the specified user from the specified lobby. The caller must be the owner of the lobby.
      *
      * Service Name - Lobby

@@ -45,6 +45,7 @@ import java.util.prefs.Preferences;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import java.util.Map;
 
 /**
  * The BrainCloudWrapper provides some convenience functionality to developers when they are

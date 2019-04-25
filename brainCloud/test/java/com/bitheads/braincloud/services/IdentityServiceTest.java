@@ -2,9 +2,12 @@ package com.bitheads.braincloud.services;
 
 import com.bitheads.braincloud.client.AuthenticationType;
 import com.bitheads.braincloud.client.BrainCloudClient;
+import com.bitheads.braincloud.client.ReasonCodes;
+import com.bitheads.braincloud.client.StatusCodes;
 
 import org.junit.Ignore;
 import org.junit.Test;
+
 
 /**
  * Created by prestonjennings on 15-09-02.
@@ -171,7 +174,21 @@ public class IdentityServiceTest extends TestFixtureBase {
 
         _wrapper.getIdentityService().switchToParentProfile("Master", tr);
         tr.Run();
-
     }
 
+    @Test
+    public void testAttachNonUniversalIdLogin() throws Exception {
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.getIdentityService().attachNonLoginUniversalId("braincloudtest@gmail.com", tr);
+        tr.RunExpectFail(202, ReasonCodes.DUPLICATE_IDENTITY_TYPE);
+    }
+
+    @Test
+    public void testUpdateUniversalIdLogin() throws Exception {
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.getIdentityService().updateUniversalIdLogin("braincloudtest@gmail.com", tr);
+        tr.RunExpectFail(400, ReasonCodes.NEW_CREDENTIAL_IN_USE);
+    }
 }
