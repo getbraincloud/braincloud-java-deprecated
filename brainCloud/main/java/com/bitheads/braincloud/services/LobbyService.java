@@ -31,7 +31,8 @@ public class LobbyService {
         lobbyId,
         cxId,
         signalData,
-        toTeamCode
+        toTeamCode,
+        roomType
     }
 
     private BrainCloudClient _client;
@@ -369,6 +370,23 @@ public class LobbyService {
 
             ServerCall sc = new ServerCall(ServiceName.lobby,
                     ServiceOperation.UPDATE_SETTINGS, data, callback);
+            _client.sendRequest(sc);
+        } catch (JSONException je) {
+            je.printStackTrace();
+        }
+    }
+
+    /// <summary>
+    /// Cancel this members Find, Join and Searching of Lobbies
+    /// </summary>
+    public void cancelFindRequest(String lobbyType, String cxId, IServerCallback callback) {
+        try {
+            JSONObject data = new JSONObject();
+            data.put(Parameter.lobbyType.name(), lobbyType);
+            data.put(Parameter.cxId.name(), cxId);
+
+            ServerCall sc = new ServerCall(ServiceName.lobby,
+                    ServiceOperation.CANCEL_FIND_REQUEST, data, callback);
             _client.sendRequest(sc);
         } catch (JSONException je) {
             je.printStackTrace();

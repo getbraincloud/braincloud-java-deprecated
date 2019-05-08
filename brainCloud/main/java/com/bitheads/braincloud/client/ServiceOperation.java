@@ -7,6 +7,8 @@ public enum ServiceOperation {
     AUTHENTICATE,
     RESET_EMAIL_PASSWORD,
     RESET_EMAIL_PASSWORD_ADVANCED,
+    RESET_UNIVERSAL_ID_PASSWORD,
+    RESET_UNIVERSAL_ID_PASSWORD_ADVANCED,
     CREATE,
     DELETE,
     READ,
@@ -352,6 +354,7 @@ public enum ServiceOperation {
     SWITCH_TEAM,
     UPDATE_READY,
     UPDATE_SETTINGS,
+    CANCEL_FIND_REQUEST,
 
     //messaging
     DELETE_MESSAGES,

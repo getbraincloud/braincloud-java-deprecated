@@ -115,6 +115,11 @@ public class BrainCloudClient {
         _rttComms = new RTTComms(this);
     }
 
+    public String getRttConnectionId()
+    {
+        return _rttComms.getConnectionId();
+    }
+
     /**
      * @deprecated Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/apidocs/wrappers-clients-and-inconvenient-singletons/
      */
