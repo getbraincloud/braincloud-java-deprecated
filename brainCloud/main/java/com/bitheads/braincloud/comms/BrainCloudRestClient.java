@@ -905,7 +905,9 @@ public class BrainCloudRestClient implements Runnable {
                         resetKillSwitch();
 
                         // A session id or a profile id could potentially come back in any messages
-                        if (message.has("data")) {
+                        //but we want to only update the cache if the auth service or identity service is being used. 
+                        if (message.has("data") && (sc.getServiceName() == ServiceName.authenticationV2 || sc.getServiceName() == ServiceName.identity)) 
+                        {
                             JSONObject data = message.optJSONObject("data");
                             if (data != null) {
                                 if (data.has("sessionId")) {
