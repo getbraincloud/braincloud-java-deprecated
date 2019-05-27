@@ -35,11 +35,11 @@ public class AuthenticationServiceTest extends TestFixtureNoAuth
     @Test
     public void testAuthenticateUniversalInstance() throws Exception
     {
+        TestResult tr2 = new TestResult(_wrapper);
 
-        TestResult tr = new TestResult(_wrapper);
-        _client.getAuthenticationService().authenticateUniversal("abc", "abc", true, tr);
-
-        tr.Run();
+        _wrapper.getClient().getAuthenticationService().authenticateUniversal(getUser(Users.UserA).id, getUser(Users.UserA).password, true, tr2);
+        
+        tr2.Run();
     }
 
     @Test
@@ -126,5 +126,42 @@ public class AuthenticationServiceTest extends TestFixtureNoAuth
                 tr2);
 
         tr2.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.INVALID_FROM_ADDRESS);
+    }
+
+    @Test
+    public void testResetUniversalIdPassword() throws Exception
+    {
+        TestResult tr2 = new TestResult(_wrapper);
+
+        _wrapper.getClient().getAuthenticationService().authenticateUniversal(getUser(Users.UserB).id, getUser(Users.UserB).password, true, tr2);
+        
+        tr2.Run();
+
+        TestResult tr = new TestResult(_wrapper);
+        _wrapper.getClient().getAuthenticationService().resetUniversalIdPassword(
+        //an example universal ID of userB
+        "userb-1177370719", tr);
+        tr.Run();
+    }
+
+    @Test
+    public void testResetUniversalIdPasswordAdvanced() throws Exception
+    {
+        TestResult tr2 = new TestResult(_wrapper);
+
+        _wrapper.getClient().getAuthenticationService().authenticateUniversal(getUser(Users.UserB).id, getUser(Users.UserB).password, true, tr2);
+        
+        tr2.Run();
+
+        TestResult tr = new TestResult(_wrapper);
+
+        String content = "{\"templateId\": \"d-template-id-guid\", \"substitutions\": { \":name\": \"John Doe\",\":resetLink\": \"www.dummuyLink.io\"}, \"categories\": [\"category1\",\"category2\" ]}"; 
+        _wrapper.getClient().getAuthenticationService().resetUniversalIdPasswordAdvanced(
+            //an example universalId of userB
+                "userb-1177370719",
+                content,
+                tr);
+
+        tr.Run();
     }
 }
