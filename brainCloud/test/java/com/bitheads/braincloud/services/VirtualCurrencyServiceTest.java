@@ -52,4 +52,12 @@ public class VirtualCurrencyServiceTest extends TestFixtureBase
         _wrapper.getVirtualCurrencyService().consumeCurrency("credits", 100, tr);
         tr.Run();
     }
+
+    @Test
+    public void testResetCurrency() throws Exception {
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.getVirtualCurrencyService().resetCurrency(tr);
+        tr.Run();
+    }
 }

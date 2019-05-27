@@ -231,6 +231,23 @@ public class GlobalEntityServiceTest extends TestFixtureBase {
     }
 
     @Test
+    public void testUpdateEntityIndexedId() throws Exception {
+        TestResult tr = new TestResult(_wrapper);
+
+        String entityId = createDefaultGlobalEntity(ACL.Access.None, "indexedIdTest");
+        //_wrapper.getGlobalEntityService().createEntityWithIndexedId(_defaultEntityType,"indexedIdTest",0,null,Helpers.createJsonPair(_defaultEntityValueName, _defaultEntityValue),tr);
+
+
+        _wrapper.getGlobalEntityService().updateEntityIndexedId(
+                entityId,
+                1,
+                "indexedIdTest",
+                tr);
+        tr.Run();
+    }
+
+
+    @Test
     public void testUpdateEntityOwnerAndAcl() throws Exception {
         TestResult tr = new TestResult(_wrapper);
 

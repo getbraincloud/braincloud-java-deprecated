@@ -23,7 +23,7 @@ public class RTTTest extends TestFixtureBase
     public void testRequestClientConnection() throws Exception {
         TestResult tr = new TestResult(_wrapper);
 
-        _wrapper.getRTTRegistrationService().requestClientConnection(tr);
+        _wrapper.getRTTService().requestClientConnection(tr);
         tr.Run();
     }
 
@@ -31,7 +31,7 @@ public class RTTTest extends TestFixtureBase
     public void testEnableRTTWithWS() throws Exception {
         RTTConnectionTestResult tr = new RTTConnectionTestResult(_wrapper);
 
-        _wrapper.getClient().enableRTT(tr, true);
+        _wrapper.getClient().getRTTService().enableRTT(tr, true);
         tr.Run();
     }
 
@@ -39,7 +39,7 @@ public class RTTTest extends TestFixtureBase
     public void testEnableRTTWithTCP() throws Exception {
         RTTConnectionTestResult tr = new RTTConnectionTestResult(_wrapper);
 
-        _wrapper.getClient().enableRTT(tr, false);
+        _wrapper.getClient().getRTTService().enableRTT(tr, false);
         tr.Run();
     }
 
@@ -51,7 +51,7 @@ public class RTTTest extends TestFixtureBase
         // Enable RTT
         {
             RTTConnectionTestResult tr = new RTTConnectionTestResult(_wrapper);
-            _wrapper.getClient().enableRTT(tr, true);
+            _wrapper.getClient().getRTTService().enableRTT(tr, true);
             tr.Run();
         }
 
