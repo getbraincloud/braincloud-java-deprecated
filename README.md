@@ -15,6 +15,10 @@ Package | Description
  ---- | ----
 [**brainCloudClient_Java_X.X.X.X**](https://github.com/getbraincloud/braincloud-java/releases) | Android Java libraries
 
+## Examples
+
+Java/Android example here: https://github.com/getbraincloud/braincloud-java
+
 ## Troubleshooting
 
 Here are a few common errors that you may see on your first attempt to connect to brainCloud.
