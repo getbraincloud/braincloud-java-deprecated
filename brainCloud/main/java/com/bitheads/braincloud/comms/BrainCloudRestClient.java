@@ -61,6 +61,7 @@ public class BrainCloudRestClient implements Runnable {
     private boolean _oldStyleStatusMessageErrorCallback = false;
     private boolean _cacheMessagesOnNetworkError = false;
     private long _lastSendTime;
+    private long _lastReceivedPacket;
 
     private int _uploadLowTransferTimeoutSecs = 120;
     private int _uploadLowTransferThresholdSecs = 50;
@@ -244,6 +245,11 @@ public class BrainCloudRestClient implements Runnable {
 
     public void setUploadLowTransferRateThreshold(int bytesPerSec) {
         _uploadLowTransferThresholdSecs = bytesPerSec;
+    }
+
+    public long getLastReceivedPacketId()
+    {
+        return _lastReceivedPacket;
     }
 
     public void cancelUpload(String uploadFileId) {
@@ -789,7 +795,8 @@ public class BrainCloudRestClient implements Runnable {
             root = new JSONObject(responseBody);
 
             long receivedPacketId = root.getLong("packetId");
-            if (_expectedPacketId == NO_PACKET_EXPECTED || receivedPacketId != _expectedPacketId) {
+            _lastReceivedPacket = receivedPacketId;
+            if (receivedPacketId != NO_PACKET_EXPECTED &&(_expectedPacketId == NO_PACKET_EXPECTED || receivedPacketId != _expectedPacketId)) {
                 // this is an old packet so ignore it
                 LogString("Received packet id " + receivedPacketId + " but expected packet id " + _expectedPacketId);
                 return true;
