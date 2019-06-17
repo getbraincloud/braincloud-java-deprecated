@@ -20,7 +20,7 @@ public class SocialLeaderboardServiceTest extends TestFixtureBase
     private final String _globalLeaderboardId = "testLeaderboard";
     private final String _socialLeaderboardId = "testSocialLeaderboard";
     private final String _dynamicLeaderboardId = "testDynamicLeaderboard";
-    private final String _groupLeaderboardId = "testGroupLeaderboard";
+    private final String _groupLeaderboardId = "groupLeaderboardConfig";
     
     @Test
     public void testGetSocialLeaderboard() throws Exception
