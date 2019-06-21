@@ -264,7 +264,7 @@ public class GroupService {
      * @param summaryData summary
      * @param callback The method to be invoked when the server response is received
      */
-    public void createGroup(
+    public void createGroupWithSummaryData(
             String name,
             String groupType,
             boolean isOpenGroup,

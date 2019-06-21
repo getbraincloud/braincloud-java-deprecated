@@ -141,7 +141,7 @@ public class GroupServiceTest extends TestFixtureBase {
     @Test
     public void testcreateGroupWithSummaryData() throws Exception {
         authenticate(Users.UserA);
-        createGroupWithSumamryData(false);
+        createGroupWithSummaryData(false);
         deleteGroup();
         logout();
     }
@@ -677,10 +677,10 @@ public class GroupServiceTest extends TestFixtureBase {
         _groupId = data.getString("groupId");
     }
 
-    private void createGroupWithSumamryData(boolean isOpen) throws Exception {
+    private void createGroupWithSummaryData(boolean isOpen) throws Exception {
         TestResult tr = new TestResult(_wrapper);
 
-        _wrapper.getGroupService().createGroup(
+        _wrapper.getGroupService().createGroupWithSummaryData(
                 "testGroup",
                 _groupType,
                 isOpen,
