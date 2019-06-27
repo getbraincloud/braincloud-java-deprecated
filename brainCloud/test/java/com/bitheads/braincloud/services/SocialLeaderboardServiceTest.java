@@ -20,6 +20,7 @@ public class SocialLeaderboardServiceTest extends TestFixtureBase
     private final String _globalLeaderboardId = "testLeaderboard";
     private final String _socialLeaderboardId = "testSocialLeaderboard";
     private final String _dynamicLeaderboardId = "testDynamicLeaderboard";
+    private final String _groupLeaderboardId = "groupLeaderboardConfig";
     
     @Test
     public void testGetSocialLeaderboard() throws Exception
@@ -411,6 +412,156 @@ public class SocialLeaderboardServiceTest extends TestFixtureBase
                 lbIds,
                 tr);
 
+        tr.Run();
+    }
+////////////////////
+    @Test
+    public void testPostScoreToGroupLeaderboard() throws Exception
+    {
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.getGroupService().createGroup(
+                "testGroup",
+                "test",
+                false,
+                new GroupACL(GroupACL.Access.ReadWrite, GroupACL.Access.ReadWrite),
+                Helpers.createJsonPair("testInc", 123),
+                Helpers.createJsonPair("test", "test"),
+                Helpers.createJsonPair("test", "test"),
+                tr);
+
+        tr.Run();
+
+        JSONObject data = tr.m_response.getJSONObject("data");
+        String groupId = data.getString("groupId");
+
+        _wrapper.getSocialLeaderboardService().postScoreToGroupLeaderboard(
+                _groupLeaderboardId,
+                groupId,
+                0, 
+                Helpers.createJsonPair("test", "stuff"),
+                tr);
+        tr.Run();
+
+        _wrapper.getGroupService().deleteGroup(
+                groupId,
+                -1,
+                tr);
+        tr.Run();
+    }
+
+    @Test
+    public void testRemoveGroupScore() throws Exception
+    {
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.getGroupService().createGroup(
+                "testGroup",
+                "test",
+                false,
+                new GroupACL(GroupACL.Access.ReadWrite, GroupACL.Access.ReadWrite),
+                Helpers.createJsonPair("testInc", 123),
+                Helpers.createJsonPair("test", "test"),
+                Helpers.createJsonPair("test", "test"),
+                tr);
+
+        tr.Run();
+
+        JSONObject data = tr.m_response.getJSONObject("data");
+        String groupId = data.getString("groupId");
+
+        _wrapper.getSocialLeaderboardService().postScoreToGroupLeaderboard(
+                _groupLeaderboardId,
+                groupId,
+                0, 
+                Helpers.createJsonPair("test", "stuff"),
+                tr);
+        tr.Run();
+
+        _wrapper.getSocialLeaderboardService().removeGroupScore(
+            _groupLeaderboardId,
+            groupId,
+            1, 
+            tr);
+        tr.Run();
+
+        _wrapper.getGroupService().deleteGroup(
+                groupId,
+                -1,
+                tr);
+        tr.Run();
+    }
+
+    @Test
+    public void testGetGroupLeaderboardView() throws Exception
+    {
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.getGroupService().createGroup(
+                "testGroup",
+                "test",
+                false,
+                new GroupACL(GroupACL.Access.ReadWrite, GroupACL.Access.ReadWrite),
+                Helpers.createJsonPair("testInc", 123),
+                Helpers.createJsonPair("test", "test"),
+                Helpers.createJsonPair("test", "test"),
+                tr);
+
+        tr.Run();
+
+        JSONObject data = tr.m_response.getJSONObject("data");
+        String groupId = data.getString("groupId");
+
+        _wrapper.getSocialLeaderboardService().getGroupLeaderboardView(
+                _groupLeaderboardId,
+                groupId,
+                SocialLeaderboardService.SortOrder.HIGH_TO_LOW,
+                5,
+                5, 
+                tr);
+        tr.Run();
+
+        _wrapper.getGroupService().deleteGroup(
+                groupId,
+                -1,
+                tr);
+        tr.Run();
+    }
+
+    @Test
+    public void testGetGroupLeaderboardViewByVersion() throws Exception
+    {
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.getGroupService().createGroup(
+                "testGroup",
+                "test",
+                false,
+                new GroupACL(GroupACL.Access.ReadWrite, GroupACL.Access.ReadWrite),
+                Helpers.createJsonPair("testInc", 123),
+                Helpers.createJsonPair("test", "test"),
+                Helpers.createJsonPair("test", "test"),
+                tr);
+
+        tr.Run();
+
+        JSONObject data = tr.m_response.getJSONObject("data");
+        String groupId = data.getString("groupId");
+
+        _wrapper.getSocialLeaderboardService().getGroupLeaderboardViewByVersion(
+                _groupLeaderboardId,
+                groupId,
+                1,
+                SocialLeaderboardService.SortOrder.HIGH_TO_LOW,
+                5,
+                5, 
+                tr);
+        tr.Run();
+
+        _wrapper.getGroupService().deleteGroup(
+                groupId,
+                -1,
+                tr);
         tr.Run();
     }
 

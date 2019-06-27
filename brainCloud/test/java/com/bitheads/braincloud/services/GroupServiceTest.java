@@ -139,6 +139,14 @@ public class GroupServiceTest extends TestFixtureBase {
     }
 
     @Test
+    public void testcreateGroupWithSummaryData() throws Exception {
+        authenticate(Users.UserA);
+        createGroupWithSummaryData(false);
+        deleteGroup();
+        logout();
+    }
+
+    @Test
     public void testcreateGroupEntity() throws Exception {
         authenticate(Users.UserA);
         createGroup();
@@ -578,6 +586,36 @@ public class GroupServiceTest extends TestFixtureBase {
         logout();
     }
 
+    @Test
+    public void testUpdateGroupSummaryData() throws Exception {
+        authenticate(Users.UserA);
+        createGroup();
+
+        TestResult tr = new TestResult(_wrapper);
+        _wrapper.getGroupService().updateGroupSummaryData(
+                _groupId, 1, Helpers.createJsonPair("testUpdate", 1), tr);
+        tr.Run();
+
+        deleteGroup();
+        logout();
+    }
+
+    @Test
+    public void testGetRandomGroupsMatching() throws Exception {
+        createGroupAsUserA(true);
+        authenticate(Users.UserB);
+
+        TestResult tr = new TestResult(_wrapper);
+        _wrapper.getGroupService().getRandomGroupsMatching(
+                "{\"groupType\": \"BLUE\"}",
+                0,
+                tr);
+        tr.Run();
+
+        logout();
+        deleteGroupAsUserA();
+    }
+
     ///
     // Helpers
     ///
@@ -631,6 +669,26 @@ public class GroupServiceTest extends TestFixtureBase {
                 Helpers.createJsonPair("testInc", 123),
                 Helpers.createJsonPair("test", "test"),
                 Helpers.createJsonPair("test", "test"),
+                tr);
+
+        tr.Run();
+
+        JSONObject data = tr.m_response.getJSONObject("data");
+        _groupId = data.getString("groupId");
+    }
+
+    private void createGroupWithSummaryData(boolean isOpen) throws Exception {
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.getGroupService().createGroupWithSummaryData(
+                "testGroup",
+                _groupType,
+                isOpen,
+                new GroupACL(GroupACL.Access.ReadWrite, GroupACL.Access.ReadWrite),
+                Helpers.createJsonPair("testInc", 123),
+                Helpers.createJsonPair("test", "test"),
+                Helpers.createJsonPair("test", "test"),
+                Helpers.createJsonPair("summary", "data"),
                 tr);
 
         tr.Run();
