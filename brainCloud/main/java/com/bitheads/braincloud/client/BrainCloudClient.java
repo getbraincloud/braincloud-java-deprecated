@@ -41,6 +41,8 @@ import com.bitheads.braincloud.services.SocialLeaderboardService;
 import com.bitheads.braincloud.services.TimeService;
 import com.bitheads.braincloud.services.TournamentService;
 import com.bitheads.braincloud.services.VirtualCurrencyService;
+import com.bitheads.braincloud.services.ItemCatalogService;
+import com.bitheads.braincloud.services.UserInventoryManagementService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -105,6 +107,9 @@ public class BrainCloudClient {
     private TimeService _timeService = new TimeService(this);
     private TournamentService _tournamentService = new TournamentService(this);
     private VirtualCurrencyService _virtualCurrencyService = new VirtualCurrencyService(this);
+    private ItemCatalogService _itemCatalogService = new ItemCatalogService(this);
+    private UserInventoryManagementService _userInventoryManagementService = new UserInventoryManagementService(this);
+
 
     private static BrainCloudClient instance = null;
 
@@ -888,5 +893,13 @@ public class BrainCloudClient {
 
     public TournamentService getTournamentService() {
         return _tournamentService;
+    }
+
+    public ItemCatalogService getItemCatalogService() {
+        return _itemCatalogService;
+    }
+
+    public UserInventoryManagementService getUserInventoryManagementService() {
+        return _userInventoryManagementService;
     }
 }

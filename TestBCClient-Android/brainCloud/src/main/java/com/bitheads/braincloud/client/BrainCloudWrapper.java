@@ -39,6 +39,8 @@ import com.bitheads.braincloud.services.SocialLeaderboardService;
 import com.bitheads.braincloud.services.TimeService;
 import com.bitheads.braincloud.services.TournamentService;
 import com.bitheads.braincloud.services.VirtualCurrencyService;
+import com.bitheads.braincloud.services.ItemCatalogService;
+import com.bitheads.braincloud.services.UserInventoryManagementService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -738,5 +740,13 @@ public class BrainCloudWrapper implements IServerCallback {
 
     public TournamentService getTournamentService() {
         return _client.getTournamentService();
+    }
+
+    public ItemCatalogService getItemCatalogService() {
+        return _client.getItemCatalogService();
+    }
+
+    public UserInventoryManagementService getUserInventoryManagementService() {
+        return _client.getUserInventoryManagementService();
     }
 }
