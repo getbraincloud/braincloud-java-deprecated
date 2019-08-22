@@ -168,7 +168,7 @@ public class AuthenticationServiceTest extends TestFixtureNoAuth
 
         tr.Run();
     }
-
+    
     @Test
     public void testBadSig() throws Exception
     {
