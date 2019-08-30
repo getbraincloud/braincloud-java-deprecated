@@ -156,4 +156,22 @@ public class UserInventoryManagementServiceTest extends TestFixtureBase {
                 tr);
         tr.RunExpectFail(400, ReasonCodes.ITEM_NOT_FOUND);
     }
+
+    @Test
+    public void publishUserItemToBlockchain() throws Exception {
+        TestResult tr = new TestResult(_wrapper);
+        _wrapper.getUserInventoryManagementService().publishUserItemToBlockchain(
+                "invalidForNow",
+                1,
+                tr);
+        tr.RunExpectFail(400, ReasonCodes.ITEM_NOT_FOUND);
+    }
+
+    @Test
+    public void refreshBlockchainUserItems() throws Exception {
+        TestResult tr = new TestResult(_wrapper);
+        _wrapper.getUserInventoryManagementService().refreshBlockchainUserItems(
+                tr);
+        tr.Run();
+    }
 }

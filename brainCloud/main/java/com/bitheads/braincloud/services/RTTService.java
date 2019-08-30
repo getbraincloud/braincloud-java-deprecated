@@ -117,6 +117,19 @@ public class RTTService {
         _client.getRTTComms().deregisterRTTCallback(ServiceName.presence.toString());
     }
 
+        /**
+     * Listen to real time blockchain events.
+     * 
+     * Notes: RTT must be enabled for this app, and enableRTT must have been successfully called.
+     * Only one presence callback can be registered at a time. Calling this a second time will override the previous callback.
+     */
+    public void registerRTTBlockchainRefresh(IRTTCallback callback) {
+        _client.getRTTComms().registerRTTCallback(ServiceName.userInventoryManagement.toString(), callback);
+    }
+    public void deregisterRTTBlockchainRefreshCallback() {
+        _client.getRTTComms().deregisterRTTCallback(ServiceName.userInventoryManagement.toString());
+    }
+
     /**
      * Clear all set RTT callbacks
      */

@@ -342,5 +342,39 @@ public class UserInventoryManagementService {
             _client.sendRequest(sc);
         } catch (JSONException ignored) {
         }
+	}
+	
+	/**
+	 * Publishes the specified item to the item management attached blockchain. Results are reported asynchronously via an RTT event.
+	 *
+	 * Service Name - userInventoryManagement
+	 * Service Operation - PUBLISH_USER_ITEM_TO_BLOCKCHAIN
+	 *
+	 * @param itemId
+	 * @param version
+	 */
+    public void publishUserItemToBlockchain(String itemId, int version, IServerCallback callback) {
+        try {
+            JSONObject data = new JSONObject();
+            data.put(Parameter.itemId.name(), itemId);
+            data.put(Parameter.version.name(), version);
+
+            ServerCall sc = new ServerCall(ServiceName.userInventoryManagement, ServiceOperation.PUBLISH_USER_ITEM_TO_BLOCKCHAIN, data, callback);
+            _client.sendRequest(sc);
+        } catch (JSONException ignored) {
+        }
+	}
+	
+	/**
+	 * Syncs the caller's user items with the item management attached blockchain. Results are reported asynchronously via an RTT event.
+	 *
+	 * Service Name - userInventoryManagement
+	 * Service Operation - REFRESH_BLOCKCHAIN_USER_ITEMS
+	 *
+	 */
+    public void refreshBlockchainUserItems(IServerCallback callback) {
+            JSONObject data = new JSONObject();
+            ServerCall sc = new ServerCall(ServiceName.userInventoryManagement, ServiceOperation.REFRESH_BLOCKCHAIN_USER_ITEMS, data, callback);
+            _client.sendRequest(sc);
     }
 }
