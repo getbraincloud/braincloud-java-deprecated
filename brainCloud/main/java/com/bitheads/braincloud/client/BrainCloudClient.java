@@ -40,9 +40,10 @@ import com.bitheads.braincloud.services.ScriptService;
 import com.bitheads.braincloud.services.SocialLeaderboardService;
 import com.bitheads.braincloud.services.TimeService;
 import com.bitheads.braincloud.services.TournamentService;
+import com.bitheads.braincloud.services.CustomEntityService;
 import com.bitheads.braincloud.services.VirtualCurrencyService;
 import com.bitheads.braincloud.services.ItemCatalogService;
-import com.bitheads.braincloud.services.UserInventoryManagementService;
+import com.bitheads.braincloud.services.UserItemsService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -106,9 +107,10 @@ public class BrainCloudClient {
     private SocialLeaderboardService _socialLeaderboardService = new SocialLeaderboardService(this);
     private TimeService _timeService = new TimeService(this);
     private TournamentService _tournamentService = new TournamentService(this);
+    private CustomEntityService _customEntityService = new CustomEntityService(this);
     private VirtualCurrencyService _virtualCurrencyService = new VirtualCurrencyService(this);
     private ItemCatalogService _itemCatalogService = new ItemCatalogService(this);
-    private UserInventoryManagementService _userInventoryManagementService = new UserInventoryManagementService(this);
+    private UserItemsService _userItemsService = new UserItemsService(this);
 
 
     private static BrainCloudClient instance = null;
@@ -895,11 +897,15 @@ public class BrainCloudClient {
         return _tournamentService;
     }
 
+    public CustomEntityService getCustomEntityService() {
+        return _customEntityService;
+    }
+
     public ItemCatalogService getItemCatalogService() {
         return _itemCatalogService;
     }
 
-    public UserInventoryManagementService getUserInventoryManagementService() {
-        return _userInventoryManagementService;
+    public UserItemsService getUserItemsService() {
+        return _userItemsService;
     }
 }

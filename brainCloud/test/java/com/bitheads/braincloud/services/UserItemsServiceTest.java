@@ -14,13 +14,13 @@ import java.util.Enumeration;
  * Created by bradleyh on 1/9/2017.
  */
 
-public class UserInventoryManagementServiceTest extends TestFixtureBase {
+public class UserItemsServiceTest extends TestFixtureBase {
 
     @Test
     public void awardUserItem() throws Exception {
         
         TestResult tr = new TestResult(_wrapper);
-        _wrapper.getUserInventoryManagementService().awardUserItem(
+        _wrapper.getUserItemsService().awardUserItem(
                 "sword001",
                 5,
                 true,
@@ -32,7 +32,7 @@ public class UserInventoryManagementServiceTest extends TestFixtureBase {
     public void dropUserItem() throws Exception {
         
         TestResult tr = new TestResult(_wrapper);
-        _wrapper.getUserInventoryManagementService().dropUserItem(
+        _wrapper.getUserItemsService().dropUserItem(
                 "invalidForNow",
                 1,
                 true,
@@ -41,21 +41,10 @@ public class UserInventoryManagementServiceTest extends TestFixtureBase {
     }
 
     @Test
-    public void getUserInventory() throws Exception {
-        String criteria = "{\"itemData.bonus\": \"1\"}";
-        TestResult tr = new TestResult(_wrapper);
-        _wrapper.getUserInventoryManagementService().getUserInventory(
-                criteria,
-                true,
-                tr);
-        tr.Run();
-    }
-
-    @Test
-    public void getUserInventoryPage() throws Exception {
+    public void getUserItemsPage() throws Exception {
         String context = "{\"test\": \"Testing\"}";
         TestResult tr = new TestResult(_wrapper);
-        _wrapper.getUserInventoryManagementService().getUserInventoryPage(
+        _wrapper.getUserItemsService().getUserItemsPage(
                 context,
                 true,
                 tr);
@@ -63,10 +52,10 @@ public class UserInventoryManagementServiceTest extends TestFixtureBase {
     }
 
     @Test
-    public void getUserInventoryPageOffset() throws Exception {
+    public void getUserItemsPageOffset() throws Exception {
         String context = "eyJzZWFyY2hDcml0ZXJpYSI6eyJnYW1lSWQiOiIyMDAwMSIsInBsYXllcklkIjoiNmVhYWU4M2EtYjZkMy00NTM5LWExZjAtZTIxMmMzYjUzMGIwIiwiZ2lmdGVkVG8iOm51bGx9LCJzb3J0Q3JpdGVyaWEiOnt9LCJwYWdpbmF0aW9uIjp7InJvd3NQZXJQYWdlIjoxMDAsInBhZ2VOdW1iZXIiOm51bGx9LCJvcHRpb25zIjpudWxsfQ";
         TestResult tr = new TestResult(_wrapper);
-        _wrapper.getUserInventoryManagementService().getUserInventoryPageOffset(
+        _wrapper.getUserItemsService().getUserItemsPageOffset(
                 context,
                 1,
                 true,
@@ -78,7 +67,7 @@ public class UserInventoryManagementServiceTest extends TestFixtureBase {
     public void GetUserItem() throws Exception {
         
         TestResult tr = new TestResult(_wrapper);
-        _wrapper.getUserInventoryManagementService().getUserItem(
+        _wrapper.getUserItemsService().getUserItem(
                 "invalidForNow",
                 true,
                 tr);
@@ -89,7 +78,7 @@ public class UserInventoryManagementServiceTest extends TestFixtureBase {
     public void giveUserItemTo() throws Exception {
         
         TestResult tr = new TestResult(_wrapper);
-        _wrapper.getUserInventoryManagementService().giveUserItemTo(
+        _wrapper.getUserItemsService().giveUserItemTo(
             getUser(Users.UserB).id, "invalidForNow", 1, true,
                 tr);
         tr.RunExpectFail(400, ReasonCodes.ITEM_NOT_FOUND);
@@ -99,7 +88,7 @@ public class UserInventoryManagementServiceTest extends TestFixtureBase {
     public void purchaseUserItem() throws Exception {
         
         TestResult tr = new TestResult(_wrapper);
-        _wrapper.getUserInventoryManagementService().purchaseUserItem(
+        _wrapper.getUserItemsService().purchaseUserItem(
                 "sword001",
                 1,
                 null,
@@ -112,7 +101,7 @@ public class UserInventoryManagementServiceTest extends TestFixtureBase {
     public void receiveUserItemFrom() throws Exception {
         
         TestResult tr = new TestResult(_wrapper);
-        _wrapper.getUserInventoryManagementService().receiveUserItemFrom(
+        _wrapper.getUserItemsService().receiveUserItemFrom(
             getUser(Users.UserB).id, "invalidForNow",
                 tr);
         tr.RunExpectFail(400, ReasonCodes.ITEM_NOT_FOUND);
@@ -122,7 +111,7 @@ public class UserInventoryManagementServiceTest extends TestFixtureBase {
     public void sellUserItem() throws Exception {
         
         TestResult tr = new TestResult(_wrapper);
-        _wrapper.getUserInventoryManagementService().sellUserItem(
+        _wrapper.getUserItemsService().sellUserItem(
                 "invalidForNow",
                 1,
                 1,
@@ -136,7 +125,7 @@ public class UserInventoryManagementServiceTest extends TestFixtureBase {
     public void updateUserItemData() throws Exception {
         String newItemData = "{\"test\": \"Testing\"}";
         TestResult tr = new TestResult(_wrapper);
-        _wrapper.getUserInventoryManagementService().updateUserItemData(
+        _wrapper.getUserItemsService().updateUserItemData(
                 "invalidForNow",
                 1,
                 newItemData,
@@ -148,7 +137,7 @@ public class UserInventoryManagementServiceTest extends TestFixtureBase {
     public void useUserItem() throws Exception {
         String newItemData = "{\"test\": \"Testing\"}";
         TestResult tr = new TestResult(_wrapper);
-        _wrapper.getUserInventoryManagementService().useUserItem(
+        _wrapper.getUserItemsService().useUserItem(
                 "invalidForNow",
                 1,
                 newItemData,
@@ -160,7 +149,7 @@ public class UserInventoryManagementServiceTest extends TestFixtureBase {
     @Test
     public void publishUserItemToBlockchain() throws Exception {
         TestResult tr = new TestResult(_wrapper);
-        _wrapper.getUserInventoryManagementService().publishUserItemToBlockchain(
+        _wrapper.getUserItemsService().publishUserItemToBlockchain(
                 "invalidForNow",
                 1,
                 tr);
@@ -170,8 +159,18 @@ public class UserInventoryManagementServiceTest extends TestFixtureBase {
     @Test
     public void refreshBlockchainUserItems() throws Exception {
         TestResult tr = new TestResult(_wrapper);
-        _wrapper.getUserInventoryManagementService().refreshBlockchainUserItems(
+        _wrapper.getUserItemsService().refreshBlockchainUserItems(
                 tr);
         tr.Run();
+    }
+
+    @Test
+    public void removeUserItemFromBlockchain() throws Exception {
+        TestResult tr = new TestResult(_wrapper);
+        _wrapper.getUserItemsService().removeUserItemFromBlockchain(
+                "invalidForNow",
+                1,
+                tr);
+        tr.RunExpectFail(400, ReasonCodes.ITEM_NOT_FOUND);
     }
 }
