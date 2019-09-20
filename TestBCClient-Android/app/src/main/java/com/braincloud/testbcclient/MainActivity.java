@@ -26,6 +26,8 @@ import com.google.android.gms.plus.Plus;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
@@ -51,12 +53,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String authToken;
 
     BrainCloudWrapper _wrapper;
+    Timer _timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         findViewById(R.id.sign_in_button).setOnClickListener(this);
+        findViewById(R.id.btnUniversalConnect).setOnClickListener(this);
+        findViewById(R.id.btnTestTrans).setOnClickListener(this);
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -68,10 +73,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         _wrapper = new BrainCloudWrapper();
         BrainCloudClient client = _wrapper.getClient();
-        String appId = "";
-        String secret = "";
+        client.enableLogging(true);
+        String appId = "23302";
+        String secret = "1177833c-f1c1-4cab-b19f-c08f3971cced";
         String appVersion = "1.0.0";
-        client.initialize(appId, secret, appVersion);
+        String serverUrl = "https://internal.braincloudservers.com/dispatcherv2";
+        client.initialize(serverUrl, appId, secret, appVersion);
+
+        TimerTask timerTask = this.initializeTimeTask();
+        _timer = new Timer();
+        _timer.schedule(timerTask, 1000, 1000);
 
         EditText txtUser = findViewById(R.id.txtUser);
         EditText txtPwd = findViewById(R.id.txtPassword);
@@ -141,8 +152,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btnUniversalConnect:
                 testUniversalLogin();
                 break;
+            case R.id.btnTestTrans:
+                testTrans();
+                break;
         }
 
+    }
+
+    private TimerTask initializeTimeTask() {
+        TimerTask timerTask =  new TimerTask() {
+            public void run() {
+                _wrapper.runCallbacks();
+            }
+        };
+        return timerTask;
     }
 
     private void testGoogleLogin()
@@ -167,6 +190,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    private void testTrans()
+    {
+        BrainCloudClient client = _wrapper.getClient();
+        client.getPlayerStateService().readUserState(this);;
+    }
     /* Track whether the sign-in button has been clicked so that we know to resolve
     * all issues preventing sign-in without waiting.
     */
@@ -231,6 +259,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             {
                 onResetEmailPassword(jsonData);
             }
+        } else if (serviceName.equals(ServiceName.playerState)) {
+            if (serviceOperation.equals(ServiceOperation.READ)) {
+                onReadPlayerState(jsonData);
+            }
         }
     }
 
@@ -257,6 +289,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    public void onReadPlayerState(JSONObject response) {
+        try {
+            int statusCode = response.getInt("status");
+            if (statusCode == 200) {
+                Log.d(TAG, "Read Player State success:" + response.toString());
+            }
+            else {
+                Log.e(TAG, "Read Player State failure:" + response.toString());
+            }
+        }
+        catch (Exception e)
+        {
+            Log.e(TAG, "Exception:", e);
+        }
+
+    }
     public void onResetEmailPassword(JSONObject response) {
         Log.i(TAG, "onResetEmailPassword() invoked: " + response);
     }
