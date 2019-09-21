@@ -74,11 +74,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         _wrapper = new BrainCloudWrapper();
         BrainCloudClient client = _wrapper.getClient();
         client.enableLogging(true);
-        String appId = "23302";
-        String secret = "1177833c-f1c1-4cab-b19f-c08f3971cced";
+        String appId = "";
+        String secret = "";
         String appVersion = "1.0.0";
-        String serverUrl = "https://internal.braincloudservers.com/dispatcherv2";
-        client.initialize(serverUrl, appId, secret, appVersion);
+        client.initialize(appId, secret, appVersion);
 
         TimerTask timerTask = this.initializeTimeTask();
         _timer = new Timer();
