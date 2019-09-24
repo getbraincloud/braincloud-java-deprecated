@@ -174,12 +174,13 @@ public class UserItemsService {
 	 * @param version
 	 * @param immediate 
 	 */
-    public void giveUserItemTo(String profileId, String itemId, int version, boolean immediate, IServerCallback callback) {
+    public void giveUserItemTo(String profileId, String itemId, int version, int quantity, boolean immediate, IServerCallback callback) {
         try {
             JSONObject data = new JSONObject();
             data.put(Parameter.profileId.name(), profileId);
             data.put(Parameter.itemId.name(), itemId);
-            data.put(Parameter.version.name(), version);
+			data.put(Parameter.version.name(), version);
+			data.put(Parameter.quantity.name(), quantity);
             data.put(Parameter.immediate.name(), immediate);
 
             ServerCall sc = new ServerCall(ServiceName.userItems, ServiceOperation.GIVE_USER_ITEM_TO, data, callback);

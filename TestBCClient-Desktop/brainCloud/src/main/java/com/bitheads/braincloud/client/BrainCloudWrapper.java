@@ -41,8 +41,8 @@ import com.bitheads.braincloud.services.TimeService;
 import com.bitheads.braincloud.services.TournamentService;
 import com.bitheads.braincloud.services.CustomEntityService;
 import com.bitheads.braincloud.services.VirtualCurrencyService;
-import com.bitheads.braincloud.services.ItemCatalog;
-import com.bitheads.braincloud.services.UserItems;
+import com.bitheads.braincloud.services.ItemCatalogService;
+import com.bitheads.braincloud.services.UserItemsService;
 
 import java.util.prefs.Preferences;
 
