@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.Map;
 
@@ -107,6 +108,10 @@ public class BrainCloudRestClient implements Runnable {
     private int _reasonCodeCache;
     private String _statusMessageCache;
 
+    // This semaphore is used to monitor size of waiting queue
+    // Required due to lack of blocking peek in blocking queue
+    private Semaphore _messageQueueCount = new Semaphore(0);
+
     // Disable all SSL Checks. Not recommended
     final static boolean DISABLE_SSL_CHECK = false;
     static {
@@ -153,7 +158,9 @@ public class BrainCloudRestClient implements Runnable {
     }
 
     public void addToQueue(ServerCall serverCall) {
-        _waitingQueue.add(serverCall);
+        synchronized (_lock) {
+            _waitingQueue.add(serverCall);
+        }
     }
 
     public void runCallbacks() {
@@ -172,6 +179,7 @@ public class BrainCloudRestClient implements Runnable {
             //push waiting calls onto queue that the thread will use
             if(_messageQueue.peek() == null) {
                 _messageQueue.addAll(_waitingQueue);
+                _messageQueueCount.release(_waitingQueue.size());
                 _waitingQueue.clear();
             }
 
@@ -628,13 +636,41 @@ public class BrainCloudRestClient implements Runnable {
     }
 
     private void fillBundle() {
+        // we will wait here until the message queue has records
+        long polltime = _heartbeatIntervalMillis;
+        if (_isAuthenticated) {
+            polltime = System.currentTimeMillis() + _heartbeatIntervalMillis - _lastSendTime;
+            if (polltime < 0) {
+                polltime = 500L;
+            }
+        }
+        //LogString("poll time - " + polltime);
+
+        boolean hasRecords = false;
+        try {
+            hasRecords = this._messageQueueCount.tryAcquire(1, polltime, TimeUnit.MILLISECONDS);
+        }
+        catch (InterruptedException e) {
+        }
+
         //waiting for callbacks to be run
-        if(_serverResponses.peek() != null) return;
+        // do a one second sleep so we don't hit this too hard
+        // return the sempahore permit if required
+        if(_serverResponses.peek() != null) {
+            try {
+                Thread.sleep(1000);
+                // if we aquired a permit for the queue return it
+                if (hasRecords) {
+                    _messageQueueCount.release();
+                }
+            }
+            catch (InterruptedException e) {
+            }
+            return;
+        }
 
-        ServerCall firstCall = _messageQueue.peek();
-
-        //check for heartbeat
-        if(firstCall == null) {
+        //check for heartbeat if no data in queue
+        if(!hasRecords) {
             if (System.currentTimeMillis() - _lastSendTime > _heartbeatIntervalMillis && _isAuthenticated) {
                 ServerCall serverCall = new ServerCall(ServiceName.heartbeat, ServiceOperation.READ, null, null);
                 _bundleQueue.add(serverCall);
@@ -656,19 +692,21 @@ public class BrainCloudRestClient implements Runnable {
             }
         }
 
+        // quick adjustment to make the following code more straightforward
+        _messageQueueCount.release();
+
         //fill bundle
-        while (_bundleQueue.size() < _maxBundleSize) {
+        while (_bundleQueue.size() < _maxBundleSize && _messageQueue.size() > 0) {
 
             // Do a blocking poll for messages
             ServerCall serverCall = null;
             try {
-                serverCall = _messageQueue.poll(_messageQueuePollIntervalMillis, TimeUnit.MILLISECONDS);
+                serverCall = _messageQueue.poll();
+                // re acquire permit
+                _messageQueueCount.acquire();
             }
             catch (InterruptedException e) {
             }
-
-            if (serverCall == null)
-                return;
 
             if (serverCall.isEndOfBundleMarker())
                 return;
