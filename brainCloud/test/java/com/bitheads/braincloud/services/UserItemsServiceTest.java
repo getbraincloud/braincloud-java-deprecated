@@ -79,7 +79,7 @@ public class UserItemsServiceTest extends TestFixtureBase {
         
         TestResult tr = new TestResult(_wrapper);
         _wrapper.getUserItemsService().giveUserItemTo(
-            getUser(Users.UserB).id, "invalidForNow", 1, true,
+            getUser(Users.UserB).id, "invalidForNow", 1, 1, true,
                 tr);
         tr.RunExpectFail(400, ReasonCodes.ITEM_NOT_FOUND);
     }

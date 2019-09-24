@@ -644,7 +644,7 @@ public class BrainCloudRestClient implements Runnable {
                 polltime = 500L;
             }
         }
-        LogString("poll time - " + polltime);
+        //LogString("poll time - " + polltime);
 
         boolean hasRecords = false;
         try {
