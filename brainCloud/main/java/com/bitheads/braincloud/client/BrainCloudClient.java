@@ -307,6 +307,20 @@ public class BrainCloudClient {
     }
 
     /**
+     * Enable compression in comms transactions
+     */
+    public void enableCompression() {
+        _restClient.enableCompression();
+    }
+
+    /**
+     * Disable compression in comms transactions
+     */
+    public void disableCompression() {
+        _restClient.disableCompression();
+    }
+
+    /**
      * Returns whether the client is authenticated with the brainCloud server.
      * @return True if authenticated, false otherwise.
      */

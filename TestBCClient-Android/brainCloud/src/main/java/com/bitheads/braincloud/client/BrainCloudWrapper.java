@@ -552,6 +552,19 @@ public class BrainCloudWrapper implements IServerCallback {
         getClient().runCallbacks();
     }
 
+    /**
+     * Enable compression in comms transactions
+     */
+    public void enableCompression() {
+        getClient().enableCompression();
+    }
+
+    /**
+     * Disable compression in comms transactions
+     */
+    public void disableCompression() {
+        getClient().disableCompression();
+    }
 
     /**
      * The serverCallback() method returns server data back to the layer
