@@ -39,7 +39,8 @@ public class AuthenticationService {
         serviceParams,
         languageCode,
         timeZoneOffset,
-        universalId
+        universalId,
+        handoffCode
     }
 
     private String _anonymousId;
@@ -260,6 +261,16 @@ public class AuthenticationService {
      */
     public void authenticateHandoff(String handoffId, String securityToken, IServerCallback callback) {
         authenticate(handoffId, securityToken, AuthenticationType.Handoff, null, false, callback);
+    }
+
+    /**
+     * Authenticate the user using a handoffId and an authentication token.
+     *
+     * @param handoffCode generate in cloud code
+     * @param callback   The callback handler
+     */
+    public void authenticateSettopHandoff(String handoffCode, IServerCallback callback) {
+        authenticate(handoffCode, "", AuthenticationType.SettopHandoff, null, false, callback);
     }
 
     /**

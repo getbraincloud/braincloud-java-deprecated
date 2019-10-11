@@ -451,6 +451,44 @@ public class SocialLeaderboardServiceTest extends TestFixtureBase
     }
 
     @Test
+    public void testPostScoreToDynamicGroupLeaderboard() throws Exception
+    {
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.getGroupService().createGroup(
+                "testGroup",
+                "test",
+                false,
+                new GroupACL(GroupACL.Access.ReadWrite, GroupACL.Access.ReadWrite),
+                Helpers.createJsonPair("testInc", 123),
+                Helpers.createJsonPair("test", "test"),
+                Helpers.createJsonPair("test", "test"),
+                tr);
+
+        tr.Run();
+
+        JSONObject data = tr.m_response.getJSONObject("data");
+        String groupId = data.getString("groupId");
+        _wrapper.getSocialLeaderboardService().postScoreToDynamicGroupLeaderboard(
+                _groupLeaderboardId,
+                groupId,
+                0, 
+                Helpers.createJsonPair("test", "stuff"),
+                "HIGH_VALUE",
+                "WEEKLY",
+                157082811,
+                2,
+                tr);
+        tr.Run();
+
+        _wrapper.getGroupService().deleteGroup(
+                groupId,
+                -1,
+                tr);
+        tr.Run();
+    }
+
+    @Test
     public void testRemoveGroupScore() throws Exception
     {
         TestResult tr = new TestResult(_wrapper);
