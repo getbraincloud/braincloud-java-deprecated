@@ -313,7 +313,7 @@ public class BrainCloudWrapper implements IServerCallback {
      * @param callback   The callback handler
      */
     public void authenticateSettopHandoff(String handoffCode, IServerCallback callback) {
-        getClient.getAuthenticationService().authenticateSettopHandoff(handoffCode, this);
+        getClient().getAuthenticationService().authenticateSettopHandoff(handoffCode, this);
     }
 
     /**
