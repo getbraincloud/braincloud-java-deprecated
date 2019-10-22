@@ -66,6 +66,26 @@ public class GroupServiceTest extends TestFixtureBase {
     }
 
     @Test
+    public void testAutoJoinGroupMulti() throws Exception {
+        createGroupAsUserA(true);
+        authenticate(Users.UserB);
+
+        String[] types = new String[1];
+        types[0] = _groupType;
+
+        TestResult tr = new TestResult(_wrapper);
+        _wrapper.getGroupService().autoJoinGroupMulti(
+                types,
+                GroupService.AutoJoinStrategy.JoinFirstGroup,
+                null,
+                tr);
+        tr.Run();
+
+        logout();
+        deleteGroupAsUserA();
+    }
+
+    @Test
     public void testAddGroupMember() throws Exception {
         authenticate(Users.UserA);
         createGroup();
