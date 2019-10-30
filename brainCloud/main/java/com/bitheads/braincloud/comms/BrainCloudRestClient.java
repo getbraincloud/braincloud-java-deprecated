@@ -395,8 +395,9 @@ public class BrainCloudRestClient implements Runnable {
     public void setPacketTimeoutsToDefault() {
         _packetTimeouts = new ArrayList<>();
         _packetTimeouts.add(15);
-        _packetTimeouts.add(10);
-        _packetTimeouts.add(10);
+        _packetTimeouts.add(20);
+        _packetTimeouts.add(35);
+        _packetTimeouts.add(50);
     }
 
     public int getAuthenticationPacketTimeout() {
