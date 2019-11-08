@@ -12,12 +12,8 @@ import com.bitheads.braincloud.comms.ServerResponse;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
