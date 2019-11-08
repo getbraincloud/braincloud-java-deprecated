@@ -647,6 +647,7 @@ public class BrainCloudClient {
     public void sendRequest(ServerCall serverCall) {
         _restClient.addToQueue(serverCall);
     }
+    
 
     /**
      * Returns the sessionId or empty string if no session present.

@@ -37,6 +37,11 @@ public class ServerCall {
         return _serviceName;
     }
 
+    public JSONObject getData()
+    {
+        return _data;
+    }
+
     public void setServiceName(ServiceName _serviceName) {
         this._serviceName = _serviceName;
     }

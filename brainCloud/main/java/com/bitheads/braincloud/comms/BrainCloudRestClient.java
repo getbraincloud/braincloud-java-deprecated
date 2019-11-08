@@ -1115,7 +1115,6 @@ public class BrainCloudRestClient implements Runnable {
 
                         updateKillSwitch(status, sc.getServiceName().toString(), sc.getServiceOperation().toString());
                     }
-
                     _serverResponses.addLast(serverResponse);
                 } else {
                     LogString("missing server call for json response: " + messages.toString());
