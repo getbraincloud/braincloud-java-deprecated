@@ -577,10 +577,9 @@ public class LobbyService implements IServerCallback{
     public void getRegionsForLobbies(String[] in_lobbyTypes, IServerCallback callback)
     {
         try {    
+        _regionsForLobbiesCallback = callback;
         JSONObject data = new JSONObject();
         data.put(Parameter.lobbyTypes.name(), in_lobbyTypes);
-
-        _regionsForLobbiesCallback = callback;
 
         ServerCall sc = new ServerCall(ServiceName.lobby,
         ServiceOperation.GET_REGIONS_FOR_LOBBIES, data, this);
@@ -596,7 +595,6 @@ public class LobbyService implements IServerCallback{
     {
         //we have our regions data, so now we can start pinging each region and its target if its PING type
         //Doing a fresh set of pinging on regions
-        System.out.print("\nPING REGIONS");
         if(callback != null)
         {
             _pingSuccessCallback = callback;
@@ -690,7 +688,6 @@ public class LobbyService implements IServerCallback{
                 target = m_regionTargetsToProcess.get(i).getString(region);
                 System.out.print("\n" + target);
                 
-                ArrayList<Long> m_cachedRegionArr;
                 m_cachedRegionArr =(ArrayList<Long>) m_cachedPingResponses.get(region);
 
                 m_regionTargetsToProcess.remove(0);
@@ -730,14 +727,11 @@ public class LobbyService implements IServerCallback{
         //make http request
         HttpURLConnection connection = null;
         try{
-                connection = (HttpURLConnection) new URL(targetURL).openConnection();
-        }catch(java.io.IOException io){}
+            connection = (HttpURLConnection) new URL(targetURL).openConnection();
+            try {
+                connection.setRequestMethod("GET");
+            }catch(java.net.ProtocolException pe){}
 
-        try {
-            connection.setRequestMethod("GET");
-        }catch(java.net.ProtocolException pe){}
-
-        try{
             System.out.print("CODE" + connection.getResponseCode());
             if(connection.getResponseCode() == 200)
             {
@@ -848,11 +842,12 @@ public class LobbyService implements IServerCallback{
     private JSONObject m_regionPingData = new JSONObject();
     private JSONObject m_lobbyTypeRegions = new JSONObject();
     private JSONObject m_cachedPingResponses = new JSONObject();
+    private ArrayList<Long> m_cachedRegionArr = new ArrayList<Long>();
     private ArrayList<JSONObject> m_regionTargetsToProcess = new ArrayList<JSONObject>();
     private Object m_pingRegionObject;
     private IServerCallback _regionsForLobbiesCallback;
     private IServerCallback _pingSuccessCallback;
     private final Object _lock = new Object();
     private final int MAX_PING_CALLS = 4;
-    private final int NUM_PING_CALLS_IN_PARALLEL = 3;
+    private final int NUM_PING_CALLS_IN_PARALLEL = 2;
 }
