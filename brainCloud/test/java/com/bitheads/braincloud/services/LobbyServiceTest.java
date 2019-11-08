@@ -26,8 +26,10 @@ public class LobbyServiceTest extends TestFixtureBase
         _wrapper.getLobbyService().getRegionsForLobbies(lobbyTypes, tr);
         tr.Run();
 
+        _wrapper.getLobbyService().pingRegions(null);
+
         TestResult tr2 = new TestResult(_wrapper);
-        _wrapper.getLobbyService().pingRegions(tr2);
+        _wrapper.getLobbyService().findOrCreateLobbyWithPingData("MATCH_UNRANKED", 0, 1, "{\"strategy\":\"ranged-absolute\",\"alignment\":\"center\",\"ranges\":[1000]}", "{}", null, "{}", true, "{}", "all", tr2);
         tr2.Run();
     }
 

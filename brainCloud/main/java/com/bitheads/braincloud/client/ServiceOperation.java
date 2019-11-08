@@ -50,6 +50,7 @@ public enum ServiceOperation {
     READ_SUBSET,
     READ_XP_LEVELS,
 
+    PING_DATA,
     GET_LIST,
     GET_LIST_BY_INDEXED_ID,
     GET_LIST_COUNT,

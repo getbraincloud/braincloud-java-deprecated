@@ -30,7 +30,7 @@ import java.net.URL;
 /**
  * Created by David St-Louis on 2018-07-04
  */
-public class LobbyService{
+public class LobbyService implements IServerCallback{
  
     private enum Parameter {
         lobbyType,
@@ -580,13 +580,11 @@ public class LobbyService{
         JSONObject data = new JSONObject();
         data.put(Parameter.lobbyTypes.name(), in_lobbyTypes);
 
-        RegionConnectionResult result = new RegionConnectionResult(_client, callback, data);
+        _regionsForLobbiesCallback = callback;
 
         ServerCall sc = new ServerCall(ServiceName.lobby,
-        ServiceOperation.GET_REGIONS_FOR_LOBBIES, data, result);
+        ServiceOperation.GET_REGIONS_FOR_LOBBIES, data, this);
         _client.sendRequest(sc);
-
-        result.Run();
 
         } catch (JSONException je) 
         {
@@ -596,9 +594,15 @@ public class LobbyService{
 
     public void pingRegions(IServerCallback callback)
     {
-        System.out.print("\nPING REGIONS");
         //we have our regions data, so now we can start pinging each region and its target if its PING type
         //Doing a fresh set of pinging on regions
+        System.out.print("\nPING REGIONS");
+        if(callback != null)
+        {
+            _pingSuccessCallback = callback;
+            System.out.println("THE CALLLABACK: " + _pingSuccessCallback);
+        }
+
         //clear the cached pings
         Iterator cachedKeys = m_cachedPingResponses.keys();
         while(cachedKeys.hasNext())
@@ -663,7 +667,7 @@ public class LobbyService{
         }
         else
         {
-            //_client.getRestClient().fakeErrorResponse(StatusCodes.BAD_REQUEST, ReasonCodes.MISSING_REQUIRED_PARAMETER, "No Regions to ping. Please call GetRegionsForLobbies and await the response before calling PingRegions");
+            _client.getRestClient().fakeErrorResponse(StatusCodes.BAD_REQUEST, ReasonCodes.MISSING_REQUIRED_PARAMETER, "No Regions to ping. Please call GetRegionsForLobbies and await the response before calling PingRegions");
         }
 
     }
@@ -671,6 +675,7 @@ public class LobbyService{
     private void PingNextItemToProcess()
     {
         System.out.print("\nPING NEXT ITEM");
+        System.out.print("PING DATA: " + m_pingData);
         //check that there's regions to process
         if(m_regionTargetsToProcess.size() > 0)
         {
@@ -697,9 +702,11 @@ public class LobbyService{
                 }catch(JSONException je){}
             }
         }
-        else
+        else if(m_regionPingData.length() == m_pingData.length() && _pingSuccessCallback != null && _pingSuccessCallback.toString() != "undefined")
         {
-            System.out.print(m_pingData);
+            System.out.print("PING DATA: " + m_pingData);
+            _pingSuccessCallback.serverCallback(ServiceName.lobby, ServiceOperation.PING_DATA, m_pingData);
+            System.out.print("WOOOOOHGHHOOOOOOO");
         }
     }
 
@@ -783,11 +790,14 @@ public class LobbyService{
 
     private void attachPingDataAndSend(JSONObject in_data, ServiceOperation in_operation, IServerCallback callback)
     {
+        System.out.print("OOOOOOOOOOOIIIiiiiiiiiiii");
+        System.out.print(in_data);
         if(m_pingData != null && m_pingData.length() > 0)
         {
+            System.out.print("DOUUUUUUUUUUUUUUUUUUUUBLE OOOOOOOOOOOIIIiiiiiiiiiii");
             try{
             in_data.put(Parameter.pingData.name(), m_pingData);
-
+            System.out.print(in_data);
             ServerCall sc = new ServerCall(ServiceName.lobby,
             in_operation, in_data, callback);
             _client.sendRequest(sc);
@@ -798,74 +808,39 @@ public class LobbyService{
         else
         {
             //fake error response
-
+            _client.getRestClient().fakeErrorResponse(StatusCodes.BAD_REQUEST, ReasonCodes.MISSING_REQUIRED_PARAMETER, 
+            "Required parameter 'pingData' is missing. Please ensure 'pingData' exists by first calling GetRegionsForLobbies, then wait for the response and then call PingRegions");
         }
     }
 
-    public class RegionConnectionResult implements IServerCallback {
-        private boolean m_done = false;
-        
-        BrainCloudClient _client;
-        IServerCallback _callback;
-        JSONObject _data;
+    public void serverCallback(ServiceName serviceName, ServiceOperation serviceOperation, JSONObject jsonData)
+    {
+        System.out.print("\nSUCCESS" + m_regionPingData);
+        System.out.print("\nSERVICE" + serviceName);
+        System.out.print("\nOPERATION" + serviceOperation);
+        System.out.print("\nRESULT" + serviceOperation.toString().equals("GET_REGIONS_FOR_LOBBIES"));
 
-        public RegionConnectionResult(BrainCloudClient client, IServerCallback callback, JSONObject data) {
-            _client = client;
-            _callback = callback;
-            _data = data;
-        }
-        
-        public void Run() {
-            Spin();
-        }
-
-        public void serverCallback(ServiceName serviceName, ServiceOperation serviceOperation, JSONObject jsonData)
+        if(serviceName.toString().equals("lobby") && serviceOperation.toString().equals("GET_REGIONS_FOR_LOBBIES"))
         {
-            m_done = true;
             try {
                 m_regionPingData = jsonData.getJSONObject("data").getJSONObject("regionPingData");
             }
             catch (JSONException je)
             {}
-            System.out.print("SUCCESS" + m_regionPingData);
-            System.out.print("SERVICE" + serviceName);
-            System.out.print("OPERATION" + serviceOperation);
-            System.out.print("CALLBACK");
-            System.out.println(_callback);
-            if (_callback != null)
+
+            if(_regionsForLobbiesCallback != null)
             {
-                System.out.print("MAKE OUR NEW CALLBACK");
-                pingRegions(_callback);
-                _callback.serverCallback(serviceName, serviceOperation, _data);
-                System.out.print("\ndoes this work?");
+                System.out.print("CALLING BACK REGIONS FOR LOBBIES CALLBACK");
+                _regionsForLobbiesCallback.serverCallback(serviceName, serviceOperation, jsonData);
             }
         }
+    }
 
-        public void serverError(ServiceName serviceName, ServiceOperation serviceOperation, int statusCode, int reasonCode, String jsonError)
+    public void serverError(ServiceName serviceName, ServiceOperation serviceOperation, int statusCode, int reasonCode, String jsonError)
+    {
+        if(serviceName.toString().equals("lobby") && serviceOperation.toString().equals("GET_REGIONS_FOR_LOBBIES"))
         {
-            System.out.print("FAIL");
-            if (_callback != null)
-            {
-                _callback.serverError(serviceName, serviceOperation, statusCode, reasonCode, jsonError);
-            }
-        }
-
-        public boolean IsDone()
-        {
-            return m_done;
-        }
-
-        private void Spin()
-        {
-            while (!m_done)
-            {
-                _client.runCallbacks();
-                try
-                {
-                    Thread.sleep(100);
-                } catch(InterruptedException ie)
-                {}
-            }
+            _regionsForLobbiesCallback.serverError(serviceName, serviceOperation, statusCode, reasonCode, jsonError);
         }
     }
 
@@ -875,7 +850,8 @@ public class LobbyService{
     private JSONObject m_cachedPingResponses = new JSONObject();
     private ArrayList<JSONObject> m_regionTargetsToProcess = new ArrayList<JSONObject>();
     private Object m_pingRegionObject;
-    private  IServerCallback _getRegionsForLobbiesCallback = null;
+    private IServerCallback _regionsForLobbiesCallback;
+    private IServerCallback _pingSuccessCallback;
     private final Object _lock = new Object();
     private final int MAX_PING_CALLS = 4;
     private final int NUM_PING_CALLS_IN_PARALLEL = 3;

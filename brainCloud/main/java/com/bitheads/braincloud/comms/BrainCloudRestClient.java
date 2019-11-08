@@ -608,7 +608,7 @@ public class BrainCloudRestClient implements Runnable {
         }
     }
 
-    private void fakeErrorResponse(int statusCode, int reasonCode, String statusMessage)
+    public void fakeErrorResponse(int statusCode, int reasonCode, String statusMessage)
     {
         if (_loggingEnabled) {
             try {
