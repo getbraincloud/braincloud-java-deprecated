@@ -598,7 +598,6 @@ public class LobbyService implements IServerCallback{
         if(callback != null)
         {
             _pingSuccessCallback = callback;
-            System.out.println("THE CALLLABACK: " + _pingSuccessCallback);
         }
 
         //clear the cached pings
@@ -606,23 +605,17 @@ public class LobbyService implements IServerCallback{
         while(cachedKeys.hasNext())
             m_cachedPingResponses.remove((String)m_cachedPingResponses.keys().next());
 
-        System.out.println("\nCache cleared: " + m_cachedPingResponses);
-
         //reset the ping data
         Iterator pingDataKeys = m_pingData.keys();
         while(pingDataKeys.hasNext())
             m_pingData.remove((String)m_pingData.keys().next());
         
-        System.out.println("\nPingData cleared: " + m_pingData);
-
         //make temp variables for extra storage purposes
         String targetStr;
 
         //interpret the ping data
-        System.out.print(m_regionPingData.length());
         if(m_regionPingData.length() > 0)
         {
-            System.out.println("\nInterpreting ping...");
             //grab the keys and iterate through them 
             Iterator <String> keys = m_regionPingData.keys();
             while (keys.hasNext()) {
@@ -631,29 +624,20 @@ public class LobbyService implements IServerCallback{
                     if (m_regionPingData.get(key) instanceof JSONObject) 
                     {
                         //is the key of type PING?
-                        System.out.print("\nHey!");
-                        System.out.print(key);
-                        System.out.print(m_regionPingData.getJSONObject(key));
-                        System.out.print(m_regionPingData.getJSONObject(key).getString("type"));
                         if(m_regionPingData.getJSONObject(key).getString("type").equals("PING"))
                         {
-                            System.out.print("\nIt is of type PING");
                             //update our cache with the regions so we can stroe ping values in individual arrays
                             ArrayList<Long> tempArr = new ArrayList<Long>();
                             m_cachedPingResponses.put(key, tempArr);
-                            System.out.print("\n Cached responses: " + m_cachedPingResponses);
                             targetStr = m_regionPingData.getJSONObject(key).getString("target");
-                            System.out.print("\n Target string: " + targetStr);
 
                             //now we want to setup the regions we want to process, and have a number based on the amount of ping calls we want to make
                             for(int i = 0; i < MAX_PING_CALLS; i++)
                             {
-                                System.out.print("\nFilling regions to process");
                                 //get region and target and prepare to test
                                 JSONObject keyValuePair = new JSONObject();
                                 keyValuePair.put(key, targetStr);
                                 m_regionTargetsToProcess.add(keyValuePair);
-                                System.out.print("\n" + m_regionTargetsToProcess);
                             }
                         }
                     }
@@ -672,8 +656,6 @@ public class LobbyService implements IServerCallback{
 
     private void PingNextItemToProcess()
     {
-        System.out.print("\nPING NEXT ITEM");
-        System.out.print("PING DATA: " + m_pingData);
         //check that there's regions to process
         if(m_regionTargetsToProcess.size() > 0)
         {
@@ -683,16 +665,12 @@ public class LobbyService implements IServerCallback{
             {
                 Iterator keys = m_regionTargetsToProcess.get(i).keys();
                 region = keys.next().toString();
-                System.out.print("\n" + region);
                 try{
                 target = m_regionTargetsToProcess.get(i).getString(region);
-                System.out.print("\n" + target);
                 
                 m_cachedRegionArr =(ArrayList<Long>) m_cachedPingResponses.get(region);
 
                 m_regionTargetsToProcess.remove(0);
-
-                System.out.print("\nRegions left to process: " + m_regionTargetsToProcess);
 
                 pingHost(region, target, m_cachedRegionArr.size());
 
@@ -701,9 +679,7 @@ public class LobbyService implements IServerCallback{
         }
         else if(m_regionPingData.length() == m_pingData.length() && _pingSuccessCallback != null && _pingSuccessCallback.toString() != "undefined")
         {
-            System.out.print("PING DATA: " + m_pingData);
             _pingSuccessCallback.serverCallback(ServiceName.lobby, ServiceOperation.PING_DATA, m_pingData);
-            System.out.print("WOOOOOHGHHOOOOOOO");
         }
     }
 
@@ -711,17 +687,13 @@ public class LobbyService implements IServerCallback{
     {
         //set up target
         String targetURL = "https://" + target;
-        System.out.print("\n TargetURL: " + targetURL);
 
         //store a start time for each region to allow parallel
         try
         {
-        System.out.print("\n" + m_cachedPingResponses.get(region));
         ArrayList<Long> arr;
         arr = (ArrayList<Long>) m_cachedPingResponses.get(region);
         arr.add(System.currentTimeMillis());
-        //System.out.print(tempArr);
-        System.out.print("\n" + region + " " + m_cachedPingResponses.get(region));
         }catch(JSONException je){}
 
         //make http request
@@ -732,7 +704,6 @@ public class LobbyService implements IServerCallback{
                 connection.setRequestMethod("GET");
             }catch(java.net.ProtocolException pe){}
 
-            System.out.print("CODE" + connection.getResponseCode());
             if(connection.getResponseCode() == 200)
             {
                 handlePingResponse(region, index);
@@ -743,19 +714,12 @@ public class LobbyService implements IServerCallback{
     private void handlePingResponse(String region, int index)
     {
         //get the ping time
-        System.out.print("\nHANDLING PING RESPONSE");
         try{
             ArrayList<Long> cachedArr;
             cachedArr = (ArrayList<Long>) m_cachedPingResponses.get(region);
-            System.out.println("\nCurrent Time: " + System.currentTimeMillis());
-            System.out.println("\nCached Time: " + cachedArr.get(index));
             long time = System.currentTimeMillis() - cachedArr.get(index);
-            System.out.print("INDEX: " + index);
             cachedArr.set(index, time);
-            System.out.println("\n" + region + " Ping: " + time);
-            System.out.print(cachedArr);
 
-            System.out.print("\ncachedArrSize" + cachedArr.size());
             //we've reached our desired number of ping calls, so we now need to do some logic to get the average ping
             if(cachedArr.size() == MAX_PING_CALLS)
             {
@@ -784,14 +748,10 @@ public class LobbyService implements IServerCallback{
 
     private void attachPingDataAndSend(JSONObject in_data, ServiceOperation in_operation, IServerCallback callback)
     {
-        System.out.print("OOOOOOOOOOOIIIiiiiiiiiiii");
-        System.out.print(in_data);
         if(m_pingData != null && m_pingData.length() > 0)
         {
-            System.out.print("DOUUUUUUUUUUUUUUUUUUUUBLE OOOOOOOOOOOIIIiiiiiiiiiii");
             try{
             in_data.put(Parameter.pingData.name(), m_pingData);
-            System.out.print(in_data);
             ServerCall sc = new ServerCall(ServiceName.lobby,
             in_operation, in_data, callback);
             _client.sendRequest(sc);
@@ -809,11 +769,6 @@ public class LobbyService implements IServerCallback{
 
     public void serverCallback(ServiceName serviceName, ServiceOperation serviceOperation, JSONObject jsonData)
     {
-        System.out.print("\nSUCCESS" + m_regionPingData);
-        System.out.print("\nSERVICE" + serviceName);
-        System.out.print("\nOPERATION" + serviceOperation);
-        System.out.print("\nRESULT" + serviceOperation.toString().equals("GET_REGIONS_FOR_LOBBIES"));
-
         if(serviceName.toString().equals("lobby") && serviceOperation.toString().equals("GET_REGIONS_FOR_LOBBIES"))
         {
             try {
@@ -824,7 +779,6 @@ public class LobbyService implements IServerCallback{
 
             if(_regionsForLobbiesCallback != null)
             {
-                System.out.print("CALLING BACK REGIONS FOR LOBBIES CALLBACK");
                 _regionsForLobbiesCallback.serverCallback(serviceName, serviceOperation, jsonData);
             }
         }
