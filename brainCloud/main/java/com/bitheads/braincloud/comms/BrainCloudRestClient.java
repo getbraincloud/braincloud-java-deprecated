@@ -608,7 +608,7 @@ public class BrainCloudRestClient implements Runnable {
         }
     }
 
-    private void fakeErrorResponse(int statusCode, int reasonCode, String statusMessage)
+    public void fakeErrorResponse(int statusCode, int reasonCode, String statusMessage)
     {
         if (_loggingEnabled) {
             try {
@@ -1115,7 +1115,6 @@ public class BrainCloudRestClient implements Runnable {
 
                         updateKillSwitch(status, sc.getServiceName().toString(), sc.getServiceOperation().toString());
                     }
-
                     _serverResponses.addLast(serverResponse);
                 } else {
                     LogString("missing server call for json response: " + messages.toString());
