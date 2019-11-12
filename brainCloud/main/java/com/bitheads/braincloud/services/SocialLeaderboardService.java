@@ -731,6 +731,44 @@ public class SocialLeaderboardService {
         }
     }
 
+        /**
+     * Post the group score to the given group leaderboard and dynamically create if necessary. LeaderboardType, rotationType, rotationReset, and retainedCount are required.	 *
+     *
+     * Service Name - leaderboard
+     * Service Operation - POST_GROUP_SCORE_DYNAMIC
+     *
+     * @param leaderboardId the leaderboard
+     * @param groupId the groups id
+     * @param score the score you want to post
+     * @param data
+     * @param leaderboardType
+     * @param rotationType
+     * @param rotationResetTime
+     * @param retainedCount
+     * @param callback The method to be invoked when the server response is received
+     */
+    public void postScoreToDynamicGroupLeaderboard(String leaderboardId, String groupId, long score, String data, String leaderboardType, String rotationType, long rotationResetTime, int retainedCount, IServerCallback callback) {
+        try {
+            JSONObject message = new JSONObject();
+            message.put(Parameter.leaderboardId.name(), leaderboardId);
+            message.put(Parameter.groupId.name(), groupId);
+            message.put(Parameter.score.name(), score);
+            if (StringUtil.IsOptionalParameterValid(data)) {
+                message.put(Parameter.data.name(), new JSONObject(data));
+            }
+            message.put(Parameter.leaderboardType.name(), leaderboardType);
+            message.put(Parameter.rotationType.name(), rotationType);
+            message.put(Parameter.rotationResetTime.name(), rotationResetTime);
+            message.put(Parameter.retainedCount.name(), retainedCount);
+
+            ServerCall sc = new ServerCall(ServiceName.leaderboard,
+                    ServiceOperation.POST_GROUP_SCORE_DYNAMIC, message, callback);
+            _client.sendRequest(sc);
+        } catch (JSONException je) {
+            je.printStackTrace();
+        }
+    }
+
     /**
      * Removes score from group leaderboard
      * 

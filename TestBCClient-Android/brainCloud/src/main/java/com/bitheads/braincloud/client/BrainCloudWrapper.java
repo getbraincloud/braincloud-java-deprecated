@@ -372,6 +372,27 @@ public class BrainCloudWrapper implements IServerCallback {
     }
 
     /**
+     * Authenticate the user using a handoffId and an authentication token.
+     *
+     * @param handoffId   braincloud handoffId generated frim cloud script
+     * @param securityToken The authentication token
+     * @param callback   The callback handler
+     */
+    public void authenticateHandoff(String handoffId, String securityToken, IServerCallback callback) {
+        getClient().getAuthenticationService().authenticateHandoff(handoffId, securityToken, this);
+    }
+
+    /**
+     * Authenticate the user using a handoffId and an authentication token.
+     *
+     * @param handoffCode generate in cloud code
+     * @param callback   The callback handler
+     */
+    public void authenticateSettopHandoff(String handoffCode, IServerCallback callback) {
+        getClient().getAuthenticationService().authenticateSettopHandoff(handoffCode, this);
+    }
+
+    /**
      * Authenticate the user with a custom Email and Password. Note that the
      * client app is responsible for collecting (and storing) the e-mail and
      * potentially password (for convenience) in the client data. For the
@@ -552,6 +573,19 @@ public class BrainCloudWrapper implements IServerCallback {
         getClient().runCallbacks();
     }
 
+    /**
+     * Enable compression in comms transactions
+     */
+    public void enableCompression() {
+        getClient().enableCompression();
+    }
+
+    /**
+     * Disable compression in comms transactions
+     */
+    public void disableCompression() {
+        getClient().disableCompression();
+    }
 
     /**
      * The serverCallback() method returns server data back to the layer
