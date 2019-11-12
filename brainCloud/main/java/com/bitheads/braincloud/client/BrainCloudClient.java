@@ -67,7 +67,7 @@ public class BrainCloudClient {
     private double _timeZoneOffset;
 
 
-    private final static String BRAINCLOUD_VERSION = "4.2.0";
+    private final static String BRAINCLOUD_VERSION = "4.3.0";
 
     private BrainCloudRestClient _restClient;
     private RTTComms _rttComms;
@@ -304,6 +304,20 @@ public class BrainCloudClient {
     public void runCallbacks() {
         _restClient.runCallbacks();
         _rttComms.runCallbacks();
+    }
+
+    /**
+     * Enable compression in comms transactions
+     */
+    public void enableCompression() {
+        _restClient.enableCompression();
+    }
+
+    /**
+     * Disable compression in comms transactions
+     */
+    public void disableCompression() {
+        _restClient.disableCompression();
     }
 
     /**
@@ -633,6 +647,7 @@ public class BrainCloudClient {
     public void sendRequest(ServerCall serverCall) {
         _restClient.addToQueue(serverCall);
     }
+    
 
     /**
      * Returns the sessionId or empty string if no session present.

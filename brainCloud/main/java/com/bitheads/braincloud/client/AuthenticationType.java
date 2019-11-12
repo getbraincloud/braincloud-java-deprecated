@@ -16,6 +16,7 @@ public class AuthenticationType {
     public static final AuthenticationType Twitter = new AuthenticationType("Twitter");
     public static final AuthenticationType Parse = new AuthenticationType("Parse");
     public static final AuthenticationType Handoff = new AuthenticationType("Handoff");
+    public static final AuthenticationType SettopHandoff = new AuthenticationType("SettopHandoff");
     public static final AuthenticationType External = new AuthenticationType("External");
     public static final AuthenticationType Unknown = new AuthenticationType("Unknown");
 

@@ -63,11 +63,47 @@ public class AuthenticationServiceTest extends TestFixtureNoAuth
     @Test
     public void testAuthenticateHandoff() throws Exception
     {
+        String handoffId;
+        String handoffToken;
+
+        TestResult tr3 = new TestResult(_wrapper);
+        String anonId = _client.getAuthenticationService().generateAnonymousId();
+        _client.getAuthenticationService().authenticateAnonymous(anonId, true, tr3);
+        tr3.Run();
+
+        TestResult tr2 = new TestResult(_wrapper);
+        _client.getScriptService().runScript("createHandoffId", 
+        Helpers.createJsonPair("", ""),
+         tr2);
+        tr2.Run();
+        handoffId = tr2.m_response.getJSONObject("data").getJSONObject("response").getString("handoffId");
+        handoffToken = tr2.m_response.getJSONObject("data").getJSONObject("response").getString("securityToken");
 
         TestResult tr = new TestResult(_wrapper);
-        _client.getAuthenticationService().authenticateHandoff("invalid_handoffId", "invalid_securityToken", tr);
+        _client.getAuthenticationService().authenticateHandoff(handoffId, handoffToken, tr);
+        tr.Run();
+    }
+    
+    @Test
+    public void testAuthenticateSettopHandoff() throws Exception
+    {
+        String handoffCode;
 
-        tr.RunExpectFail(403, ReasonCodes.TOKEN_DOES_NOT_MATCH_USER);
+        TestResult tr3 = new TestResult(_wrapper);
+        String anonId = _client.getAuthenticationService().generateAnonymousId();
+        _client.getAuthenticationService().authenticateAnonymous(anonId, true, tr3);
+        tr3.Run();
+
+        TestResult tr2 = new TestResult(_wrapper);
+        _client.getScriptService().runScript("CreateSettopHandoffCode", 
+        Helpers.createJsonPair("", ""),
+         tr2);
+        tr2.Run();
+        handoffCode = tr2.m_response.getJSONObject("data").getJSONObject("response").getString("handoffCode");
+
+        TestResult tr = new TestResult(_wrapper);
+        _client.getAuthenticationService().authenticateSettopHandoff(handoffCode, tr);
+        tr.Run();
     }
 
     @Test
