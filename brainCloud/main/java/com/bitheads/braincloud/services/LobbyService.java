@@ -14,6 +14,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.HashMap;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -596,10 +598,9 @@ public class LobbyService implements IServerCallback{
             _pingSuccessCallback = callback;
         }
 
-        //clear the cached pings
-        Iterator cachedKeys = m_cachedPingResponses.keys();
-        while(cachedKeys.hasNext())
-            m_cachedPingResponses.remove((String)m_cachedPingResponses.keys().next());
+        for (Map.Entry<String, ArrayList<Long>> entry : m_cachedPingResponses.entrySet()) {
+            m_cachedPingResponses.remove(entry);
+        }
 
         //reset the ping data
         Iterator pingDataKeys = m_pingData.keys();
@@ -685,12 +686,9 @@ public class LobbyService implements IServerCallback{
         String targetURL = "https://" + target;
 
         //store a start time for each region to allow parallel
-        try
-        {
         ArrayList<Long> arr;
         arr = (ArrayList<Long>) m_cachedPingResponses.get(region);
         arr.add(System.currentTimeMillis());
-        }catch(JSONException je){}
 
         //make http request
         HttpURLConnection connection = null;
@@ -791,7 +789,7 @@ public class LobbyService implements IServerCallback{
     private JSONObject m_pingData = new JSONObject();
     private JSONObject m_regionPingData = new JSONObject();
     private JSONObject m_lobbyTypeRegions = new JSONObject();
-    private JSONObject m_cachedPingResponses = new JSONObject();
+    private Map<String, ArrayList<Long>> m_cachedPingResponses = new HashMap<String, ArrayList<Long>>();
     private ArrayList<Long> m_cachedRegionArr = new ArrayList<Long>();
     private ArrayList<JSONObject> m_regionTargetsToProcess = new ArrayList<JSONObject>();
     private Object m_pingRegionObject;
