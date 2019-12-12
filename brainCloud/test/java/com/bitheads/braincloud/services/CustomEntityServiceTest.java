@@ -57,33 +57,38 @@ public class CustomEntityServiceTest extends TestFixtureBase {
         tr.Run();
     }
 
-    // @Test
-    // public void testGetPage() throws Exception {
-    //     TestResult tr = new TestResult(_wrapper);
+    @Test
+    public void testGetEntityPage() throws Exception {
+        TestResult tr = new TestResult(_wrapper);
+        _wrapper.getCustomEntityService().getEntityPage(
+                _defaultEntityType, createContext(125, 1, _defaultEntityType),
+                tr);
+        tr.Run();
+    }
 
-    //     _wrapper.getCustomEntityService().getPage(
-    //             _defaultEntityType,
-    //             1,
-    //             "{\"data.position\": \"defense\"}",
-    //             "{\"createdAt\": \"1\"}",
-    //             false,
-    //             tr);
+    @Test
+    public void testGetPageOffset() throws Exception {
+        TestResult tr = new TestResult(_wrapper);
 
-    //     tr.Run();
-    // }
+         _wrapper.getCustomEntityService().getEntityPage(_defaultEntityType,
+                createContext(50, 1, _defaultEntityType),
+                tr);
+        tr.Run();
 
-    // @Test
-    // public void testGetPageOffset() throws Exception {
-    //     TestResult tr = new TestResult(_wrapper);
-    //     String context = "";
-    //     _wrapper.getCustomEntityService().getPageOffset(
-    //             _defaultEntityType,
-    //             context,
-    //             1,
-    //             tr);
+         int page = 0;
+        page = tr.m_response.getJSONObject("data").getJSONObject("results").getInt("page");
 
-    //     tr.Run();
-    // }
+        String context = tr.m_response.getJSONObject("data").getString("context");
+
+        _wrapper.getCustomEntityService().getPageOffset(
+                _defaultEntityType,
+                context,
+                1,
+                tr);
+
+        tr.Run();
+    }
+    ////////////////////////////////////////
 
     @Test
     public void testReadEntity() throws Exception {
@@ -166,5 +171,19 @@ public class CustomEntityServiceTest extends TestFixtureBase {
             je.printStackTrace();
         }
         return "";
+    }
+
+    private String createContext(int numberOfEntitiesPerPage, int startPage, String entityType) throws Exception {
+        JSONObject context = new JSONObject();
+
+        JSONObject pagination = new JSONObject();
+        pagination.put("rowsPerPage", numberOfEntitiesPerPage);
+        pagination.put("pageNumber", startPage);
+        context.put("pagination", pagination);
+
+        JSONObject searchCriteria = new JSONObject();
+        searchCriteria.put("entityType", entityType);
+
+        return context.toString();
     }
 }
