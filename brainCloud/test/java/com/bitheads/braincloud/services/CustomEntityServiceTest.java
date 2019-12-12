@@ -67,7 +67,7 @@ public class CustomEntityServiceTest extends TestFixtureBase {
     }
 
     @Test
-    public void testGetPageOffset() throws Exception {
+    public void testGetEntityPageOffset() throws Exception {
         TestResult tr = new TestResult(_wrapper);
 
          _wrapper.getCustomEntityService().getEntityPage(_defaultEntityType,
@@ -80,7 +80,7 @@ public class CustomEntityServiceTest extends TestFixtureBase {
 
         String context = tr.m_response.getJSONObject("data").getString("context");
 
-        _wrapper.getCustomEntityService().getPageOffset(
+        _wrapper.getCustomEntityService().getEntityPageOffset(
                 _defaultEntityType,
                 context,
                 1,
