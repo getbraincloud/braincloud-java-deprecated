@@ -62,12 +62,6 @@ public class MainActivity extends AppCompatActivity implements IServerCallback {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestScopes(new Scope(Scopes.GAMES))
                 .requestServerAuthCode("47930100991-ndh6mp76o991cqp6gfo87b93jspbrael.apps.googleusercontent.com")
-                .requestIdToken("47930100991-ndh6mp76o991cqp6gfo87b93jspbrael.apps.googleusercontent.com")
-                .requestId()
-                .requestProfile()
-                .requestEmail()
-//                .requestScopes(new Scope(Scopes.DRIVE_APPFOLDER))
-//                .requestScopes(GoogleSignInOptions.zav)
                 .build();
 
         googleSignInClient = GoogleSignIn.getClient(this, gso);
@@ -90,10 +84,6 @@ public class MainActivity extends AppCompatActivity implements IServerCallback {
                 start(); // just restart the timer
             }
         }.start();
-
-//        TimerTask timerTask = this.initializeTimeTask();
-//        timer = new Timer();
-//        timer.schedule(timerTask, 1000, 1000);
 
         googleSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,18 +110,8 @@ public class MainActivity extends AppCompatActivity implements IServerCallback {
         });
     }
 
-    private TimerTask initializeTimeTask() {
-        TimerTask timerTask =  new TimerTask() {
-            public void run() {
-                wrapper.runCallbacks();
-            }
-        };
-        return timerTask;
-    }
-
     private void loggedOut() {
         Toast.makeText(this, "Logged out", Toast.LENGTH_LONG).show();
-
     }
 
     @Override
@@ -149,10 +129,6 @@ public class MainActivity extends AppCompatActivity implements IServerCallback {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-//        Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-//        if (!task.isSuccessful()) {
-//            Log.w(TAG, "signInWithCredential:failure", task.getException());
-//        }
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case 101:
