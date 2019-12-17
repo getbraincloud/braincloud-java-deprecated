@@ -6,11 +6,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.bitheads.braincloud.client.BrainCloudClient;
+import com.bitheads.braincloud.client.BrainCloudWrapper;
+import com.bitheads.braincloud.client.IServerCallback;
+import com.bitheads.braincloud.client.ServiceName;
+import com.bitheads.braincloud.client.ServiceOperation;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -27,9 +34,17 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
-public class MainActivity extends AppCompatActivity {
+import org.json.JSONObject;
+
+import java.util.Timer;
+import java.util.TimerTask;
+
+public class MainActivity extends AppCompatActivity implements IServerCallback {
 
     private static final String TAG = "BraincloudClarified";
+
+    BrainCloudWrapper wrapper;
+    Timer timer;
 
     private GoogleSignInClient googleSignInClient;
     private SignInButton googleSignInButton;
@@ -57,6 +72,29 @@ public class MainActivity extends AppCompatActivity {
 
         googleSignInClient = GoogleSignIn.getClient(this, gso);
 
+        wrapper = new BrainCloudWrapper();
+        BrainCloudClient client = wrapper.getClient();
+        client.enableLogging(true);
+        String appId = "23302";
+        String secret = "************************";
+        String appVersion = "1.0.0";
+        client.initialize("https://internal.braincloudservers.com/dispatcherv2", appId, secret, appVersion);
+
+        new CountDownTimer(10000, 1000) {
+            public void onTick(long millisUntilFinished) {
+//                Log.i("onStart", "tttt---before-onTick");
+                wrapper.runCallbacks();
+//                Log.i("onStart", "tttt---after-onTick");
+            }
+            public void onFinish() {
+                start(); // just restart the timer
+            }
+        }.start();
+
+//        TimerTask timerTask = this.initializeTimeTask();
+//        timer = new Timer();
+//        timer.schedule(timerTask, 1000, 1000);
+
         googleSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,6 +118,15 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    private TimerTask initializeTimeTask() {
+        TimerTask timerTask =  new TimerTask() {
+            public void run() {
+                wrapper.runCallbacks();
+            }
+        };
+        return timerTask;
     }
 
     private void loggedOut() {
@@ -149,6 +196,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void bcLogin() {
-        Toast.makeText(this, "brainCloud login", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Attempting brainCloud login", Toast.LENGTH_LONG).show();
+        BrainCloudClient client = wrapper.getClient();
+        client.getAuthenticationService().authenticateGoogle(playerId,
+                authCode, true, this);
+
+    }
+
+    @Override
+    public void serverCallback(ServiceName serviceName, ServiceOperation serviceOperation, JSONObject jsonData) {
+        Toast.makeText(this, "brainCloud login success", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void serverError(ServiceName serviceName, ServiceOperation serviceOperation, int statusCode, int reasonCode, String jsonError) {
+        Toast.makeText(this, "brainCloud login failure", Toast.LENGTH_LONG).show();
     }
 }
