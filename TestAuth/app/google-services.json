@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "47930100991",
+    "firebase_url": "https://exalted-breaker-854.firebaseio.com",
+    "project_id": "exalted-breaker-854",
+    "storage_bucket": "exalted-breaker-854.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:47930100991:android:6093bec432ae0a0022d0ca",
+        "android_client_info": {
+          "package_name": "com.braincloud.testauth"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "47930100991-2685jjpnhkhpqbefrov5l4ai6cv1f1ju.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.braincloud.testauth",
+            "certificate_hash": "b4487a7bd36040f58ac077dd8048f5ac9cc390a1"
+          }
+        },
+        {
+          "client_id": "47930100991-ndh6mp76o991cqp6gfo87b93jspbrael.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5S2qg-vqyxe7YldPILqkde7HV04vcc0g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "47930100991-ndh6mp76o991cqp6gfo87b93jspbrael.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
