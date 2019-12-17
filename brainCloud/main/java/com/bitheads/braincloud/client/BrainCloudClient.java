@@ -303,6 +303,7 @@ public class BrainCloudClient {
      */
     public void runCallbacks() {
         _restClient.runCallbacks();
+        _lobbyService.runPingCallbacks();
         _rttComms.runCallbacks();
     }
 
@@ -339,6 +340,7 @@ public class BrainCloudClient {
     public void enableLogging(boolean shouldEnable) {
         _restClient.enableLogging(shouldEnable);
         _rttComms.enableLogging(shouldEnable);
+        _lobbyService.enableLogging(shouldEnable);
     }
 
     /**

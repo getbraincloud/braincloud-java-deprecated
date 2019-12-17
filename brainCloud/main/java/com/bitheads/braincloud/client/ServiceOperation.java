@@ -389,6 +389,7 @@ public enum ServiceOperation {
     UPDATE_SETTINGS,
     CANCEL_FIND_REQUEST,
     GET_REGIONS_FOR_LOBBIES,
+    PING_REGIONS,
 
     //messaging
     DELETE_MESSAGES,
