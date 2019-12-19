@@ -188,6 +188,20 @@ public class AuthenticationService {
     }
 
     /**
+     * Authenticate the user using a google userid(email address) and google
+     * openid token.
+     *
+     * @param googleUserId    String representation of google+ userid (email)
+     * @param googleAuthToken The openid token derived via the google apis.
+     * @param forceCreate     Should a new profile be created for this user if the account
+     *                        does not exist?
+     * @param callback        The callback handler
+     */
+    public void authenticateGoogleOpenId(String googleUserId, String googleAuthToken, boolean forceCreate, IServerCallback callback) {
+        authenticate(googleUserId, googleAuthToken, AuthenticationType.GoogleOpenId, null, forceCreate, callback);
+    }
+
+    /**
      * Authenticate the user using a steam userid and session ticket (without
      * any validation on the userid).
      *

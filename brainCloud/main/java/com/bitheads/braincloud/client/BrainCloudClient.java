@@ -67,7 +67,8 @@ public class BrainCloudClient {
     private double _timeZoneOffset;
 
 
-    private final static String BRAINCLOUD_VERSION = "4.3.0";
+    private final static String BRAINCLOUD_VERSION = "4.3.5";
+
 
     private BrainCloudRestClient _restClient;
     private RTTComms _rttComms;
@@ -303,6 +304,7 @@ public class BrainCloudClient {
      */
     public void runCallbacks() {
         _restClient.runCallbacks();
+        _lobbyService.runPingCallbacks();
         _rttComms.runCallbacks();
     }
 
@@ -339,6 +341,7 @@ public class BrainCloudClient {
     public void enableLogging(boolean shouldEnable) {
         _restClient.enableLogging(shouldEnable);
         _rttComms.enableLogging(shouldEnable);
+        _lobbyService.enableLogging(shouldEnable);
     }
 
     /**

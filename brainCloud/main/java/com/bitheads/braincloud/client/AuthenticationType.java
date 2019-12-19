@@ -13,6 +13,7 @@ public class AuthenticationType {
     public static final AuthenticationType GameCenter = new AuthenticationType("GameCenter");
     public static final AuthenticationType Steam = new AuthenticationType("Steam");
     public static final AuthenticationType Google = new AuthenticationType("Google");
+    public static final AuthenticationType GoogleOpenId = new AuthenticationType("GoogleOpenId");
     public static final AuthenticationType Twitter = new AuthenticationType("Twitter");
     public static final AuthenticationType Parse = new AuthenticationType("Parse");
     public static final AuthenticationType Handoff = new AuthenticationType("Handoff");

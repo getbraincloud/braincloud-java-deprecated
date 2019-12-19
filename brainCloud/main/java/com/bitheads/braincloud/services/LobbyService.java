@@ -15,6 +15,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.HashMap;
 
 import java.io.BufferedReader;
@@ -50,10 +51,97 @@ public class LobbyService implements IServerCallback{
         pingData
     }
 
+    class ErrorCallbackEvent {
+        public IServerCallback callback;
+        public ServiceName serviceName;
+        public ServiceOperation serviceOperation;
+        public int statusCode;
+        public int reasonCode;
+        public String jsonError;
+    };
+
+    class ActivePing {
+        public ActivePing(String regionName, String regionURL, Object sync) {
+            _regionName = regionName;
+            _regionURL = regionURL;
+            _sync = sync;
+            _ping = -1;
+
+            _thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        // Ping as many times as required (MAX_PING_CALLS)
+                        ArrayList<Integer> pings = new ArrayList<Integer>();
+                        String fullURL = "http://" + _regionURL;
+                        for (int i = 0; i < MAX_PING_CALLS; ++i) {
+                            pings.add(new Integer(pingHost(fullURL)));
+                        }
+
+                        // Sort results from faster to slowest
+                        pings.sort(null);
+                                
+                        // Calculate the average, minus the slowest one (MAX_PING_CALLS - 1)
+                        int pingResult = 0;
+                        for (int i = 0; i < MAX_PING_CALLS - 1; ++i) {
+                            pingResult += pings.get(i);
+                        }
+                        pingResult /= MAX_PING_CALLS - 1;
+
+                        // Notify
+                        _ping = pingResult;
+                        synchronized(_sync) {
+                            _sync.notify();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return;
+                    }
+                }
+            });
+            _thread.start();
+        }
+
+        public String getRegion() {
+            return _regionName;
+        }
+
+        public int getPing() {
+            return _ping;
+        }
+
+        public boolean isFinished() {
+            return _ping != -1;
+        }
+
+        private String _regionName;
+        private String _regionURL;
+        private Object _sync;
+        private int _ping;
+        private Thread _thread;
+    }
+
     private BrainCloudClient _client;
+    private boolean _loggingEnabled = false;
+
+    private JSONObject _pingData = null;
+    private JSONObject _pingRegions = null;
+    private Thread _pingRegionsThread = null;
+    private IServerCallback _pingCallback = null;
+    private AtomicBoolean _isPingRunning = new AtomicBoolean(false);
+    private Object _pingSync = new Object();
+    private IServerCallback _getRegionsForLobbiesCallback = null;
+    private ArrayList<ErrorCallbackEvent> _errorCallbackQueue = new ArrayList<ErrorCallbackEvent>();
+
+    private final int MAX_PING_CALLS = 4;
+    private final int NUM_PING_CALLS_IN_PARALLEL = 2;
 
     public LobbyService(BrainCloudClient client) {
         _client = client;
+    }
+
+    public void enableLogging(boolean isEnabled) {
+        _loggingEnabled = isEnabled;
     }
 
     /**
@@ -423,7 +511,7 @@ public class LobbyService implements IServerCallback{
                 data.put(Parameter.otherUserCxIds.name(), new JSONArray(otherUserCxIds));
             }
 
-            attachPingDataAndSend(data, ServiceOperation.FIND_OR_CREATE_LOBBY_WITH_PING_DATA, callback);
+            attachPingDataAndSend(data, ServiceOperation.JOIN_LOBBY_WITH_PING_DATA, callback);
 
         } catch (JSONException je) {
             je.printStackTrace();
@@ -572,192 +660,156 @@ public class LobbyService implements IServerCallback{
         }
     }
 
-    public void getRegionsForLobbies(String[] in_lobbyTypes, IServerCallback callback)
-    {
-        try {    
-        _regionsForLobbiesCallback = callback;
-        JSONObject data = new JSONObject();
-        data.put(Parameter.lobbyTypes.name(), in_lobbyTypes);
+    public void getRegionsForLobbies(String[] in_lobbyTypes, IServerCallback callback) {
+        try {
+            _pingData = null;
+            _pingRegions = null;
+            _getRegionsForLobbiesCallback = callback;
+            JSONObject data = new JSONObject();
+            data.put(Parameter.lobbyTypes.name(), in_lobbyTypes);
 
-        ServerCall sc = new ServerCall(ServiceName.lobby,
-        ServiceOperation.GET_REGIONS_FOR_LOBBIES, data, this);
-        _client.sendRequest(sc);
-
-        } catch (JSONException je) 
-        {
+            ServerCall sc = new ServerCall(ServiceName.lobby,
+            ServiceOperation.GET_REGIONS_FOR_LOBBIES, data, this);
+            _client.sendRequest(sc);
+        } catch (JSONException je) {
             je.printStackTrace();
         }
-    }   
+    }
 
-    public void pingRegions(IServerCallback callback)
-    {
-        //we have our regions data, so now we can start pinging each region and its target if its PING type
-        //Doing a fresh set of pinging on regions
-        if(callback != null)
-        {
-            _pingSuccessCallback = callback;
-        }
-
-        for (Map.Entry<String, ArrayList<Long>> entry : m_cachedPingResponses.entrySet()) {
-            m_cachedPingResponses.remove(entry);
-        }
-
-        //reset the ping data
-        Iterator pingDataKeys = m_pingData.keys();
-        while(pingDataKeys.hasNext())
-            m_pingData.remove((String)m_pingData.keys().next());
+    private void startPingThread() {
+        _pingData = new JSONObject();
         
-        //make temp variables for extra storage purposes
-        String targetStr;
+        // Run the thread
+        _isPingRunning.set(true);
+        _pingRegionsThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    // Build a map of regions to ping
+                    Map<String, String> regionsToPing = new HashMap<String, String>();
+                    for (int i = 0; i < _pingRegions.names().length(); ++i) {
+                        String regionName = _pingRegions.names().getString(i);
+                        JSONObject jsonRegion = _pingRegions.getJSONObject(regionName);
+                        String type = jsonRegion.getString("type");
+                        String target = jsonRegion.getString("target");
+                        if (type != null && type.equals("PING")) {
+                            regionsToPing.put(regionName, target);
+                        }
+                    }
 
-        //interpret the ping data
-        if(m_regionPingData.length() > 0)
-        {
-            //grab the keys and iterate through them 
-            Iterator <String> keys = m_regionPingData.keys();
-            while (keys.hasNext()) {
-                String key = keys.next();
-                try{
-                    if (m_regionPingData.get(key) instanceof JSONObject) 
-                    {
-                        //is the key of type PING?
-                        if(m_regionPingData.getJSONObject(key).getString("type").equals("PING"))
-                        {
-                            //update our cache with the regions so we can stroe ping values in individual arrays
-                            ArrayList<Long> tempArr = new ArrayList<Long>();
-                            m_cachedPingResponses.put(key, tempArr);
-                            targetStr = m_regionPingData.getJSONObject(key).getString("target");
+                    ArrayList<ActivePing> activePings = new ArrayList<ActivePing>();
 
-                            //now we want to setup the regions we want to process, and have a number based on the amount of ping calls we want to make
-                            for(int i = 0; i < MAX_PING_CALLS; i++)
-                            {
-                                //get region and target and prepare to test
-                                JSONObject keyValuePair = new JSONObject();
-                                keyValuePair.put(key, targetStr);
-                                m_regionTargetsToProcess.add(keyValuePair);
+                    synchronized(_pingSync) {
+                        while (_isPingRunning.get()) {
+                            // Make sure we have the desired active pings count in parrallel
+                            while (!regionsToPing.isEmpty() && activePings.size() < NUM_PING_CALLS_IN_PARALLEL) {
+                                String regionName = (String)regionsToPing.keySet().toArray()[0];
+                                String regionURL = regionsToPing.get(regionName);
+                                ActivePing activePing = new ActivePing(regionName, regionURL, _pingSync);
+                                activePings.add(activePing);
+                                regionsToPing.remove(regionName);
+                            }
+
+                            // Check for completed active pings
+                            for (int i = 0; i < activePings.size(); ++i) {
+                                ActivePing activePing = activePings.get(i);
+                                if (activePing.isFinished()) {
+                                    _pingData.put(activePing.getRegion(), activePing.getPing());
+                                    activePings.remove(i);
+                                    --i;
+                                }
+                            }
+
+                            // Check if we completed all the regions
+                            if (regionsToPing.isEmpty() && activePings.isEmpty()) {
+                                _isPingRunning.set(false);
+                                break;
+                            }
+				
+				            // Otherwise, wait for an active ping to complete
+                            if (!activePings.isEmpty()) {
+                                _pingSync.wait();
                             }
                         }
                     }
-                }catch(JSONException je)
-                {}
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    queueErrorEvent(_pingCallback, ServiceName.lobby, ServiceOperation.PING_REGIONS, StatusCodes.BAD_REQUEST, ReasonCodes.MISSING_REQUIRED_PARAMETER, "Required message parameter 'pingData' is missing. Please ensure PingData exists by first calling GetRegionsForLobbies and PingRegions, and waiting for response before proceeding.");
+                    return;
+                }
             }
-            //start pinging
-            PingNextItemToProcess();
-        }
-        else
-        {
-            _client.getRestClient().fakeErrorResponse(StatusCodes.BAD_REQUEST, ReasonCodes.MISSING_REQUIRED_PARAMETER, "No Regions to ping. Please call GetRegionsForLobbies and await the response before calling PingRegions");
-        }
-
+        });
+        _pingRegionsThread.start();
     }
 
-    private void PingNextItemToProcess()
-    {
-        //check that there's regions to process
-        if(m_regionTargetsToProcess.size() > 0)
-        {
-            String region;
-            String target;
-            for(int i = 0; i < NUM_PING_CALLS_IN_PARALLEL && m_regionTargetsToProcess.size() > 0; i++)
-            {
-                Iterator keys = m_regionTargetsToProcess.get(i).keys();
-                region = keys.next().toString();
-                try{
-                target = m_regionTargetsToProcess.get(i).getString(region);
-                
-                m_cachedRegionArr =(ArrayList<Long>) m_cachedPingResponses.get(region);
-
-                m_regionTargetsToProcess.remove(0);
-
-                pingHost(region, target, m_cachedRegionArr.size());
-
-                }catch(JSONException je){}
+    private void stopPingThread() {
+        if (_pingRegionsThread != null) {
+            _isPingRunning.set(false);
+            synchronized(_pingSync) {
+                _pingSync.notify();
             }
-        }
-        else if(m_regionPingData.length() == m_pingData.length() && _pingSuccessCallback != null && _pingSuccessCallback.toString() != "undefined")
-        {
-            _pingSuccessCallback.serverCallback(ServiceName.lobby, ServiceOperation.PING_DATA, m_pingData);
+            try {
+                _pingRegionsThread.join();
+            } catch(InterruptedException e) {}
+            _pingRegionsThread = null;
         }
     }
 
-    private void pingHost(String region, String target, int index)
+    public void pingRegions(IServerCallback callback) {
+        if (_pingRegions == null) {
+            if (callback != null) {
+                queueErrorEvent(callback, ServiceName.lobby, ServiceOperation.PING_REGIONS, StatusCodes.BAD_REQUEST, ReasonCodes.MISSING_REQUIRED_PARAMETER, "Required message parameter 'pingData' is missing. Please ensure PingData exists by first calling GetRegionsForLobbies and PingRegions, and waiting for response before proceeding.");
+            }
+            return;
+        }
+        if (_pingRegionsThread == null) {
+            _pingCallback = callback;
+            startPingThread();
+        }
+        else if (callback != null) {
+            queueErrorEvent(callback, ServiceName.lobby, ServiceOperation.PING_REGIONS, StatusCodes.BAD_REQUEST, ReasonCodes.MISSING_REQUIRED_PARAMETER, "'pingRegions' is already running. Please wait for callback before calling this again.");
+        }
+    }
+
+    private int pingHost(String targetURL)
     {
-        //set up target
-        String targetURL = "https://" + target;
-
-        //store a start time for each region to allow parallel
-        ArrayList<Long> arr;
-        arr = (ArrayList<Long>) m_cachedPingResponses.get(region);
-        arr.add(System.currentTimeMillis());
-
-        //make http request
-        HttpURLConnection connection = null;
-        try{
-            connection = (HttpURLConnection) new URL(targetURL).openConnection();
+        // Make http request
+        try {
+            HttpURLConnection connection = (HttpURLConnection) new URL(targetURL).openConnection();
             try {
                 connection.setRequestMethod("GET");
-            }catch(java.net.ProtocolException pe){}
-
-            if(connection.getResponseCode() == 200)
-            {
-                handlePingResponse(region, index);
+            } catch(java.net.ProtocolException pe) {
+                return 999;
             }
-        }catch(java.io.IOException io){}
-    }
 
-    private void handlePingResponse(String region, int index)
-    {
-        //get the ping time
-        try{
-            ArrayList<Long> cachedArr;
-            cachedArr = (ArrayList<Long>) m_cachedPingResponses.get(region);
-            long time = System.currentTimeMillis() - cachedArr.get(index);
-            cachedArr.set(index, time);
-
-            //we've reached our desired number of ping calls, so we now need to do some logic to get the average ping
-            if(cachedArr.size() == MAX_PING_CALLS)
-            {
-                long totalAccumulated = 0;
-                long highestValue = 0;
-
-                for (Long pingResponse : cachedArr) 
-                {
-                    totalAccumulated += pingResponse;
-                    if(pingResponse > highestValue)
-                    {
-                        highestValue = pingResponse;
-                    }    
+            long timeStart = System.currentTimeMillis();
+            if (connection.getResponseCode() == 200) {
+                long timeEnd = System.currentTimeMillis();
+                int resultPing = (int)(timeEnd - timeStart);
+                if (resultPing > 999) {
+                    resultPing = 999;
                 }
-
-                //accumulated all, now subtract the highest value
-                totalAccumulated -= highestValue;
-                m_pingData.put(region, totalAccumulated / (cachedArr.size() - 1));
+                return resultPing;
             }
 
-            PingNextItemToProcess();
-
-        }catch(JSONException je){}
-
+            return 999;
+        } catch(java.io.IOException io) {
+            return 999;
+        }
     }
 
     private void attachPingDataAndSend(JSONObject in_data, ServiceOperation in_operation, IServerCallback callback)
     {
-        if(m_pingData != null && m_pingData.length() > 0)
-        {
-            try{
-            in_data.put(Parameter.pingData.name(), m_pingData);
-            ServerCall sc = new ServerCall(ServiceName.lobby,
-            in_operation, in_data, callback);
-            _client.sendRequest(sc);
-            }catch(JSONException je){
+        if (_pingData != null && _pingData.length() > 0) {
+            try {
+                in_data.put(Parameter.pingData.name(), _pingData);
+                ServerCall sc = new ServerCall(ServiceName.lobby, in_operation, in_data, callback);
+                _client.sendRequest(sc);
+            } catch(JSONException je) {
                 je.printStackTrace();
             }
-        }
-        else
-        {
-            //fake error response
-            _client.getRestClient().fakeErrorResponse(StatusCodes.BAD_REQUEST, ReasonCodes.MISSING_REQUIRED_PARAMETER, 
-            "Required parameter 'pingData' is missing. Please ensure 'pingData' exists by first calling GetRegionsForLobbies, then wait for the response and then call PingRegions");
+        } else {
+            queueErrorEvent(callback, ServiceName.lobby, in_operation, StatusCodes.BAD_REQUEST, ReasonCodes.MISSING_REQUIRED_PARAMETER, "Required parameter 'pingData' is missing. Please ensure 'pingData' exists by first calling GetRegionsForLobbies, then wait for the response and then call PingRegions");
         }
     }
 
@@ -766,14 +818,14 @@ public class LobbyService implements IServerCallback{
         if(serviceName.toString().equals("lobby") && serviceOperation.toString().equals("GET_REGIONS_FOR_LOBBIES"))
         {
             try {
-                m_regionPingData = jsonData.getJSONObject("data").getJSONObject("regionPingData");
+                _pingRegions = jsonData.getJSONObject("data").getJSONObject("regionPingData");
             }
             catch (JSONException je)
             {}
 
-            if(_regionsForLobbiesCallback != null)
+            if(_getRegionsForLobbiesCallback != null)
             {
-                _regionsForLobbiesCallback.serverCallback(serviceName, serviceOperation, jsonData);
+                _getRegionsForLobbiesCallback.serverCallback(serviceName, serviceOperation, jsonData);
             }
         }
     }
@@ -782,20 +834,48 @@ public class LobbyService implements IServerCallback{
     {
         if(serviceName.toString().equals("lobby") && serviceOperation.toString().equals("GET_REGIONS_FOR_LOBBIES"))
         {
-            _regionsForLobbiesCallback.serverError(serviceName, serviceOperation, statusCode, reasonCode, jsonError);
+            _getRegionsForLobbiesCallback.serverError(serviceName, serviceOperation, statusCode, reasonCode, jsonError);
         }
     }
 
-    private JSONObject m_pingData = new JSONObject();
-    private JSONObject m_regionPingData = new JSONObject();
-    private JSONObject m_lobbyTypeRegions = new JSONObject();
-    private Map<String, ArrayList<Long>> m_cachedPingResponses = new HashMap<String, ArrayList<Long>>();
-    private ArrayList<Long> m_cachedRegionArr = new ArrayList<Long>();
-    private ArrayList<JSONObject> m_regionTargetsToProcess = new ArrayList<JSONObject>();
-    private Object m_pingRegionObject;
-    private IServerCallback _regionsForLobbiesCallback;
-    private IServerCallback _pingSuccessCallback;
-    private final Object _lock = new Object();
-    private final int MAX_PING_CALLS = 4;
-    private final int NUM_PING_CALLS_IN_PARALLEL = 2;
+    public void runPingCallbacks() {
+		// pingRegions callback
+		if (!_isPingRunning.get() && _pingCallback != null)
+		{
+			if (_loggingEnabled)
+			{
+                String dataStr = _pingData.toString();
+                System.out.println("#PING RESULTS " + dataStr);
+            }
+			_pingCallback.serverCallback(ServiceName.lobby, ServiceOperation.PING_REGIONS, _pingData);
+            _pingCallback = null;
+            stopPingThread();
+		}
+
+        // Trigger delayed events
+        synchronized(_errorCallbackQueue) {
+            for (int i = 0; i < _errorCallbackQueue.size(); ++i) {
+                ErrorCallbackEvent evt = _errorCallbackQueue.get(i);
+                evt.callback.serverError(evt.serviceName, evt.serviceOperation, evt.statusCode, evt.reasonCode, evt.jsonError);
+            }
+            _errorCallbackQueue.clear();
+        }
+    }
+
+    private void queueErrorEvent(IServerCallback callback, ServiceName serviceName, ServiceOperation serviceOperation, int statusCode, int reasonCode, String jsonError) {
+        ErrorCallbackEvent evt = new ErrorCallbackEvent();
+        evt.callback = callback;
+        evt.serviceName = serviceName;
+        evt.serviceOperation = serviceOperation;
+        evt.statusCode = statusCode;
+        evt.reasonCode = reasonCode;
+        evt.jsonError = jsonError;
+        synchronized(_errorCallbackQueue) {
+            _errorCallbackQueue.add(evt);
+        }
+    }
+
+    public JSONObject getPingData() {
+        return _pingData;
+    }
 }
