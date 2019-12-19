@@ -16,6 +16,24 @@ public class LobbyServiceTest extends TestFixtureBase
     static private String _lobbyId = "";
 
     @Test
+    public void testGetRegionsForLobbies() throws Exception {
+
+        String[] lobbyTypes = new String[1];
+        //String[] lobbyTypes = new String[2];
+        lobbyTypes[0] = "MATCH_UNRANKED";
+        //lobbyTypes[1] = "4v4";
+        TestResult tr = new TestResult(_wrapper);
+        _wrapper.getLobbyService().getRegionsForLobbies(lobbyTypes, tr);
+        tr.Run();
+
+        _wrapper.getLobbyService().pingRegions(null);
+
+        TestResult tr2 = new TestResult(_wrapper);
+        _wrapper.getLobbyService().findOrCreateLobbyWithPingData("MATCH_UNRANKED", 0, 1, "{\"strategy\":\"ranged-absolute\",\"alignment\":\"center\",\"ranges\":[1000]}", "{}", null, "{}", true, "{}", "all", tr2);
+        tr2.Run();
+    }
+
+    @Test
     public void testCreateLobby() throws Exception {
         TestResult tr = new TestResult(_wrapper);
 
