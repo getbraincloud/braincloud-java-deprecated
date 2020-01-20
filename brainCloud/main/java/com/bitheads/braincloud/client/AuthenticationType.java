@@ -52,6 +52,9 @@ public class AuthenticationType {
         if (s.equals(Google.toString())) {
             return Google;
         }
+        if (s.equals(GoogleOpenId.toString())) {
+            return GoogleOpenId;
+        }
         if (s.equals(Twitter.toString())) {
             return Twitter;
         }
