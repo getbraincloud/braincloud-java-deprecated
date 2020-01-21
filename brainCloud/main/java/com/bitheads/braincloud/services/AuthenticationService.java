@@ -178,6 +178,19 @@ public class AuthenticationService {
     }
 
     /**
+     *Authenticate the user using an apple id
+     *
+     * @param appleUserId  This can be the user id OR the email of the user for the account
+     * @param identityToken The token confirming the user's identity
+     * @param forceCreate     Should a new profile be created for this user if the account
+     *                        does not exist?
+     * @param callback        The callback handler
+     */
+    public void authenticateApple(String appleUserId, String identityToken, boolean forceCreate, IServerCallback callback) {
+        authenticate(appleUserId, identityToken, AuthenticationType.Apple, null, forceCreate, callback);
+    }
+
+    /**
      * Authenticate the user using a google userid(email address) and google
      * authentication token.
      *
