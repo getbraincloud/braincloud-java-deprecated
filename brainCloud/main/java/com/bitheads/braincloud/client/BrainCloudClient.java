@@ -1,8 +1,11 @@
 package com.bitheads.braincloud.client;
 
+import com.bitheads.braincloud.client.IRelayCallback;
+import com.bitheads.braincloud.client.IRelayConnectCallback;
 import com.bitheads.braincloud.client.IRTTCallback;
 import com.bitheads.braincloud.client.IRTTConnectCallback;
 import com.bitheads.braincloud.comms.BrainCloudRestClient;
+import com.bitheads.braincloud.comms.RelayComms;
 import com.bitheads.braincloud.comms.RTTComms;
 import com.bitheads.braincloud.comms.ServerCall;
 import com.bitheads.braincloud.services.AppStoreService;
@@ -34,6 +37,7 @@ import com.bitheads.braincloud.services.ProductService;
 import com.bitheads.braincloud.services.ProfanityService;
 import com.bitheads.braincloud.services.PushNotificationService;
 import com.bitheads.braincloud.services.RedemptionCodeService;
+import com.bitheads.braincloud.services.RelayService;
 import com.bitheads.braincloud.services.RTTService;
 import com.bitheads.braincloud.services.S3HandlingService;
 import com.bitheads.braincloud.services.ScriptService;
@@ -71,6 +75,7 @@ public class BrainCloudClient {
 
     private BrainCloudRestClient _restClient;
     private RTTComms _rttComms;
+    private RelayComms _relayComms;
 
     private AppStoreService _appStoreService = new AppStoreService(this);
     private AuthenticationService _authenticationService = new AuthenticationService(this);
@@ -101,6 +106,7 @@ public class BrainCloudClient {
     private ProfanityService _profanityService = new ProfanityService(this);
     private PushNotificationService _pushNotificationService = new PushNotificationService(this);
     private RedemptionCodeService _redemptionCodeService = new RedemptionCodeService(this);
+    private RelayService _relayService = new RelayService(this);
     private RTTService _rttService = new RTTService(this);
     private S3HandlingService _s3HandlingService = new S3HandlingService(this);
     private ScriptService _scriptService = new ScriptService(this);
@@ -120,6 +126,7 @@ public class BrainCloudClient {
     public BrainCloudClient() {
         _restClient = new BrainCloudRestClient(this);
         _rttComms = new RTTComms(this);
+        _relayComms = new RelayComms(this);
     }
 
     public String getRttConnectionId()
@@ -152,6 +159,10 @@ public class BrainCloudClient {
 
     public RTTComms getRTTComms() {
         return _rttComms;
+    }
+
+    public RelayComms getRelayComms() {
+        return _relayComms;
     }
 
     /**
@@ -294,6 +305,7 @@ public class BrainCloudClient {
     }
 
     public void resetCommunication() {
+        _relayComms.disconnect();
         _rttComms.disableRTT();
         _restClient.resetCommunication();
     }
@@ -305,6 +317,7 @@ public class BrainCloudClient {
         _restClient.runCallbacks();
         _lobbyService.runPingCallbacks();
         _rttComms.runCallbacks();
+        _relayComms.runCallbacks();
     }
 
     /**
@@ -340,6 +353,7 @@ public class BrainCloudClient {
     public void enableLogging(boolean shouldEnable) {
         _restClient.enableLogging(shouldEnable);
         _rttComms.enableLogging(shouldEnable);
+        _relayComms.enableLogging(shouldEnable);
         _lobbyService.enableLogging(shouldEnable);
     }
 
@@ -888,6 +902,10 @@ public class BrainCloudClient {
 
     public RedemptionCodeService getRedemptionCodeService() {
         return _redemptionCodeService;
+    }
+
+    public RelayService getRelayService() {
+        return _relayService;
     }
 
     public RTTService getRTTService() {
