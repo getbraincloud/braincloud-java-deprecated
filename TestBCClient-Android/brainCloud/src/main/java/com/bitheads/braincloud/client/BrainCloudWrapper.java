@@ -32,6 +32,7 @@ import com.bitheads.braincloud.services.ProductService;
 import com.bitheads.braincloud.services.ProfanityService;
 import com.bitheads.braincloud.services.PushNotificationService;
 import com.bitheads.braincloud.services.RedemptionCodeService;
+import com.bitheads.braincloud.services.RelayService;
 import com.bitheads.braincloud.services.RTTService;
 import com.bitheads.braincloud.services.S3HandlingService;
 import com.bitheads.braincloud.services.ScriptService;
@@ -751,6 +752,10 @@ public class BrainCloudWrapper implements IServerCallback {
 
     public RedemptionCodeService getRedemptionCodeService() {
         return _client.getRedemptionCodeService();
+    }
+
+    public RelayService getRelayService() {
+        return _client.getRelayService();
     }
 
     public RTTService getRTTService() {
