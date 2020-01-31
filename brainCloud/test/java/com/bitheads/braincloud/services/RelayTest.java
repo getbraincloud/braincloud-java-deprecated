@@ -9,6 +9,8 @@ import com.bitheads.braincloud.client.IRelaySystemCallback;
 import com.bitheads.braincloud.client.IRTTCallback;
 import com.bitheads.braincloud.client.IRTTConnectCallback;
 import com.bitheads.braincloud.client.ReasonCodes;
+import com.bitheads.braincloud.client.RelayConnectionType;
+import com.bitheads.braincloud.client.RelayConnectionType;
 import com.bitheads.braincloud.client.StatusCodes;
 
 import junit.framework.Assert;
@@ -28,7 +30,7 @@ public class RelayTest extends TestFixtureBase
     @Test
     public void testConnectWithNullOptions() throws Exception {
         RelayConnectionTestResult tr = new RelayConnectionTestResult(_wrapper);
-        _wrapper.getRelayService().connect(null, tr);
+        _wrapper.getRelayService().connect(RelayConnectionType.WEBSOCKET, null, tr);
         tr.RunExpectFail();
     }
 
@@ -36,7 +38,7 @@ public class RelayTest extends TestFixtureBase
     public void testConnectWithEmptyOptions() throws Exception {
         RelayConnectionTestResult tr = new RelayConnectionTestResult(_wrapper);
         JSONObject options = new JSONObject();
-        _wrapper.getRelayService().connect(options, tr);
+        _wrapper.getRelayService().connect(RelayConnectionType.WEBSOCKET, options, tr);
         tr.RunExpectFail();
     }
     @Test
@@ -54,13 +56,11 @@ public class RelayTest extends TestFixtureBase
         options.put("port", 1234);
         options.put("passcode", "invalid_passcode");
         options.put("lobbyId", "invalid_lobbyId");
-        _wrapper.getRelayService().connect(options, tr);
+        _wrapper.getRelayService().connect(RelayConnectionType.WEBSOCKET, options, tr);
         tr.RunExpectFail();
     }
 
-    @Test
-    public void testFullFlow() throws Exception {
-
+    private void fullFlow(RelayConnectionType connectionType) throws Exception {
         RTTLobbyResults lobbyTR = new RTTLobbyResults(_wrapper);
         JSONObject server;
 
@@ -93,10 +93,13 @@ public class RelayTest extends TestFixtureBase
             JSONObject options = new JSONObject();
             options.put("ssl", false);
             options.put("host", server.getJSONObject("connectData").getString("address"));
-            options.put("port", server.getJSONObject("connectData").getJSONObject("ports").getInt("ws"));
+            if (connectionType == RelayConnectionType.WEBSOCKET)
+                options.put("port", server.getJSONObject("connectData").getJSONObject("ports").getInt("ws"));
+            else if (connectionType == RelayConnectionType.TCP)
+                options.put("port", server.getJSONObject("connectData").getJSONObject("ports").getInt("tcp"));
             options.put("passcode", server.getString("passcode"));
             options.put("lobbyId", server.getString("lobbyId"));
-            _wrapper.getRelayService().connect(options, tr);
+            _wrapper.getRelayService().connect(connectionType, options, tr);
             tr.Run();
         }
 
@@ -122,6 +125,21 @@ public class RelayTest extends TestFixtureBase
         }
         Assert.assertTrue(_wrapper.getRelayService().isConnected());
     }
+
+    @Test
+    public void testFullFlowWS() throws Exception {
+        fullFlow(RelayConnectionType.WEBSOCKET);
+    }
+
+    @Test
+    public void testFullFlowTCP() throws Exception {
+        fullFlow(RelayConnectionType.TCP);
+    }
+
+    // @Test
+    // public void testFullFlowUDP() throws Exception {
+    //     fullFlow(RelayConnectionType.UDP);
+    // }
 
     public class RelayConnectSystemCheck implements IRelaySystemCallback {
         public boolean _received = false;
