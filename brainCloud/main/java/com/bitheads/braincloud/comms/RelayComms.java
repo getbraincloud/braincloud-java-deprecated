@@ -32,6 +32,8 @@ import com.bitheads.braincloud.client.IRelayCallback;
 import com.bitheads.braincloud.client.IRelayConnectCallback;
 import com.bitheads.braincloud.client.IRelaySystemCallback;
 import com.bitheads.braincloud.client.IServerCallback;
+import com.bitheads.braincloud.client.RelayConnectionType;
+import com.bitheads.braincloud.client.RelayConnectionType;
 import com.bitheads.braincloud.client.ServiceName;
 import com.bitheads.braincloud.client.ServiceOperation;
 import com.bitheads.braincloud.services.AuthenticationService;
@@ -162,8 +164,9 @@ public class RelayComms {
     private int _pingIntervalMS = 1000;
     private long _lastPingTime = 0;
     
-    private boolean _useWebSocket = false;
+    private RelayConnectionType _connectionType = RelayConnectionType.WEBSOCKET;
     private WSClient _webSocketClient;
+    private Socket _tcpSocket;
     private Object _lock = new Object();
 
     private IRelayCallback _relayCallback = null;
@@ -181,11 +184,12 @@ public class RelayComms {
         _loggingEnabled = isEnabled;
     }
 
-    public void connect(JSONObject options, IRelayConnectCallback callback) {
+    public void connect(RelayConnectionType connectionType, JSONObject options, IRelayConnectCallback callback) {
         if (_isConnected) {
             disconnect();
         }
 
+        _connectionType = connectionType;
         _isConnected = false;
         _connectCallback = callback;
         _ping = 999;
@@ -200,11 +204,11 @@ public class RelayComms {
             return;
         }
 
-        boolean ssl;
-        String host;
-        int port;
-        String passcode;
-        String lobbyId;
+        final boolean ssl;
+        final String host;
+        final int port;
+        final String passcode;
+        final String lobbyId;
 
         try {
             ssl = options.has("ssl") ? options.getBoolean("ssl") : false;
@@ -220,35 +224,73 @@ public class RelayComms {
 
         _connectInfo = new ConnectInfo(passcode, lobbyId);
 
-        // Build url
-        String uri = (ssl ? "wss://" : "ws://") + host + ":" + port;
-
         // connect...
-        _useWebSocket = true;
-        try {
-            _webSocketClient = new WSClient(uri);
+        switch (_connectionType) {
+            case WEBSOCKET: {
+                try {
+                    String uri = (ssl ? "wss://" : "ws://") + host + ":" + port;
 
-            if (ssl) {
-                setupSSL();
+                    _webSocketClient = new WSClient(uri);
+        
+                    if (ssl) {
+                        setupSSL();
+                    }
+                    
+                    _webSocketClient.connect();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    _callbackEventQueue.add(new RelayCallback(RelayCallbackType.ConnectFailure, "Failed to connect"));
+                    disconnect();
+                    return;
+                }
+                break;
             }
-            
-            _webSocketClient.connect();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            _callbackEventQueue.add(new RelayCallback(RelayCallbackType.ConnectFailure, "Failed to connect"));
-            disconnect();
-            return;
+            case TCP: {
+                Thread connectionThread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            _tcpSocket = new Socket(InetAddress.getByName(host), port);
+                            _tcpSocket.setTcpNoDelay(true);
+                            if (_loggingEnabled) {
+                                System.out.println("RELAY TCP: Connected");
+                            }
+                            onTCPConnected();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            _callbackEventQueue.add(new RelayCallback(RelayCallbackType.ConnectFailure, "Failed to connect"));
+                            disconnect();
+                            return;
+                        }
+                    }
+                });
+                connectionThread.start();
+                break;
+            }
+            default: {
+                _callbackEventQueue.add(new RelayCallback(RelayCallbackType.ConnectFailure, "Protocol Unimplemented"));
+            }
         }
     }
     
     public void disconnect() {
         synchronized(_lock) {
             _isConnected = false;
+
             if (_webSocketClient != null) {
                 _webSocketClient.close();
                 _webSocketClient = null;
             }
+
+            try {
+                if (_tcpSocket != null) {
+                    _tcpSocket.close();
+                    _tcpSocket = null;
+                }
+            } catch (Exception e) {
+                _tcpSocket = null;
+            }
+
             for (int i = 0; i < 4; ++i) _packetIdPerChannel[i] = 0;
             _connectInfo = null;
         }
@@ -327,7 +369,20 @@ public class RelayComms {
 
     private void onWSConnected() {
         try {
-            sendWS(CL2RS_CONNECTION, buildConnectionRequest());
+            send(CL2RS_CONNECTION, buildConnectionRequest());
+        } catch(Exception e) {
+            e.printStackTrace();
+            disconnect();
+            synchronized(_callbackEventQueue) {
+                _callbackEventQueue.add(new RelayCallback(RelayCallbackType.ConnectFailure, "Failed to build Connection Request"));
+            }
+        }
+    }
+
+    private void onTCPConnected() {
+        try {
+            startTCPReceivingThread();
+            send(CL2RS_CONNECTION, buildConnectionRequest());
         } catch(Exception e) {
             e.printStackTrace();
             disconnect();
@@ -347,41 +402,55 @@ public class RelayComms {
         return json;
     }
 
-    private void sendWS(ByteBuffer buffer) {
+    private void send(int netId, JSONObject json) {
+        send(netId, json.toString());
+    }
+
+    private void send(int netId, String text) {
+        if (_loggingEnabled) {
+            System.out.println("RELAY SEND: " + text);
+        }
+
+        byte[] textBytes = text.getBytes(StandardCharsets.US_ASCII);
+        int bufferSize = textBytes.length + 3;
+        
+        ByteBuffer buffer = ByteBuffer.allocate(bufferSize);
+        buffer.order(ByteOrder.BIG_ENDIAN);
+        buffer.putShort((short)bufferSize);
+        buffer.put((byte)netId);
+        buffer.put(textBytes, 0, textBytes.length);
         buffer.rewind();
-        synchronized(_lock) {
-            if (_webSocketClient != null) {
-                _webSocketClient.send(buffer);
-            }
-        }
+
+        send(buffer);
     }
 
-    private void sendWS(int netId, JSONObject json) {
-        sendWS(netId, json.toString());
-    }
+    private void send(ByteBuffer buffer) {
+        buffer.rewind();
 
-    private void sendWS(int netId, String text) {
         try {
-            if (_loggingEnabled) {
-                System.out.println("RELAY SEND: " + text);
+            synchronized(_lock) {
+                switch (_connectionType) {
+                    case WEBSOCKET: {
+                        if (_webSocketClient != null) {
+                            _webSocketClient.send(buffer);
+                        }
+                        break;
+                    }
+                    case TCP: {
+                        if (_tcpSocket != null) {
+                            byte[] bytes = buffer.array();
+                            _tcpSocket.getOutputStream().write(bytes, 0, bytes.length);
+                            _tcpSocket.getOutputStream().flush();
+                        }
+                        break;
+                    }
+                }
             }
-
-            byte[] textBytes = text.getBytes(StandardCharsets.US_ASCII);
-            int bufferSize = textBytes.length + 3;
-            
-            ByteBuffer buffer = ByteBuffer.allocate(bufferSize);
-            buffer.order(ByteOrder.BIG_ENDIAN);
-            buffer.putShort((short)bufferSize);
-            buffer.put((byte)netId);
-            buffer.put(textBytes, 0, textBytes.length);
-
-            sendWS(buffer);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             disconnect();
             synchronized(_callbackEventQueue) {
-                _callbackEventQueue.add(new RelayCallback(RelayCallbackType.ConnectFailure, "WS Send Failed"));
+                _callbackEventQueue.add(new RelayCallback(RelayCallbackType.ConnectFailure, "RELAY Send Failed"));
             }
         }
     }
@@ -391,23 +460,66 @@ public class RelayComms {
 
         int bufferSize = data.length + 5;
 
+        // Relay Header
+        int rh = 0;
+        if (reliable) rh |= RELIABLE_BIT;
+        if (ordered) rh |= ORDERED_BIT;
+        rh |= channel << 12;
+        rh |= _packetIdPerChannel[channel];
+        _packetIdPerChannel[channel] = (_packetIdPerChannel[channel] + 1) % 0x1000;
+
         ByteBuffer buffer = ByteBuffer.allocate(bufferSize);
         buffer.order(ByteOrder.BIG_ENDIAN);
         buffer.putShort((short)bufferSize);
         buffer.put((byte)toNetId);
-        // Relay Header
-        {
-            int rh = 0;
-            if (reliable) rh |= RELIABLE_BIT;
-            if (ordered) rh |= ORDERED_BIT;
-            rh |= channel << 12;
-            rh |= _packetIdPerChannel[channel];
-            _packetIdPerChannel[channel] = (_packetIdPerChannel[channel] + 1) % 0x1000;
-            buffer.putShort((short)rh);
-        }
+        buffer.putShort((short)rh);
         buffer.put(data, 0, data.length);
+        send(buffer);
+    }
 
-        sendWS(buffer);
+    private void startTCPReceivingThread() {
+        Thread receiveThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                DataInputStream in;
+                try {
+                    synchronized(_lock) {
+                        in = new DataInputStream(_tcpSocket.getInputStream());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    disconnect();
+                    synchronized(_callbackEventQueue) {
+                        _callbackEventQueue.add(new RelayCallback(RelayCallbackType.ConnectFailure, "TCP Connect Failed"));
+                    }
+                    return;
+                }
+                while (true) {
+                    try {
+                        int len = in.readShort() & 0xFFFF;
+                        byte[] bytes = new byte[len - 2];
+                        in.readFully(bytes);
+
+                        ByteBuffer buffer = ByteBuffer.allocate(len);
+                        buffer.order(ByteOrder.BIG_ENDIAN);
+                        buffer.putShort((short)len);
+                        buffer.put(bytes, 0, bytes.length);
+                        buffer.rewind();
+                        
+                        onRecv(buffer);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        disconnect();
+                        synchronized(_callbackEventQueue) {
+                            _callbackEventQueue.add(new RelayCallback(RelayCallbackType.ConnectFailure, "TCP Connect Failed"));
+                        }
+                        return;
+                    }
+                }
+            }
+        });
+
+        receiveThread.start();
     }
 
     private void sendPing() {
@@ -421,10 +533,10 @@ public class RelayComms {
         buffer.putShort((short)5);
         buffer.put((byte)CL2RS_PING);
         buffer.putShort((short)_ping);
-
+        send(buffer);
+        
         _lastPingTime = System.currentTimeMillis();
         _pingInFlight = true;
-        sendWS(buffer);
     }
 
     private void onRecv(ByteBuffer buffer) {
@@ -458,7 +570,9 @@ public class RelayComms {
             onPONG();
         }
         else if (netId == RS2CL_ACKNOWLEDGE) {
-            if (_useWebSocket) return;
+            if (_connectionType == RelayConnectionType.UDP) {
+                // ...
+            }
         }
         else if (netId < MAX_PLAYERS) {
             // if (_loggingEnabled) { // This is overkill
@@ -499,6 +613,8 @@ public class RelayComms {
 
     private void onRSMG(ByteBuffer buffer, int size) {
         try {
+            int rsmgPacketId = buffer.getShort() & 0xFFFF;
+            size -= 2;
             byte[] bytes = new byte[size];
             buffer.get(bytes, 0, size);
             String jsonString = new String(bytes, StandardCharsets.US_ASCII);
