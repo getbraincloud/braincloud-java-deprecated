@@ -26,6 +26,7 @@ public class AuthenticationService {
         emailAddress,
         authenticationToken,
         authenticationType,
+        tokenTtlInMinutes,
         appId,
         gameId,
         forceCreate,
