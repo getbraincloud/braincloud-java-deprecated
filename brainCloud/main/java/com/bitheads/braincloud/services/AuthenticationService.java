@@ -26,6 +26,7 @@ public class AuthenticationService {
         emailAddress,
         authenticationToken,
         authenticationType,
+        tokenTtlInMinutes,
         appId,
         gameId,
         forceCreate,
@@ -360,6 +361,65 @@ public class AuthenticationService {
     }
 
     /**
+     * Reset Email password with expiry - Sends a password reset email to the specified
+     * address
+     *
+     * @param email    The email address to send the reset email to.
+     * @param tokenTtlInMinutes,   expiry token in mins
+     * @param callback The callback handler
+     *
+     * Note the follow error reason codes:
+     * SECURITY_ERROR (40209) - If the email address cannot be found.
+     */
+    public void resetEmailPasswordWithExpiry(String email, String tokenTtlInMinutes, IServerCallback callback) {
+        try {
+            JSONObject message = new JSONObject();
+            message.put(Parameter.externalId.name(), email);
+            message.put(Parameter.tokenTtlInMinutes.name(), tokenTtlInMinutes);
+            message.put(Parameter.gameId.name(), _client.getAppId());
+
+            ServerCall serverCall = new ServerCall(
+                    ServiceName.authenticationV2,
+                    ServiceOperation.RESET_EMAIL_PASSWORD_WITH_EXPIRY, message,
+                    callback);
+            _client.sendRequest(serverCall);
+        } catch (JSONException ignored) {
+        }
+    }
+
+    /**
+     * Reset Email password with service parameters and expiry token - sends a password reset email to the
+     * specified address
+     *
+     * @param email the email address to send the reset email to
+     * @param serviceParams parameters to send to the email service. see documentation for full
+     *                      list. http://getbraincloud.com/apidocs/apiref/#capi-mail
+     * @param tokenTtlInMinutes,   expiry token in mins
+     * @param callback The callback handler
+     *
+     * Note the follow error reason codes:
+     * SECURITY_ERROR (40209) - If the email address cannot be found.
+     */
+    public void resetEmailPasswordAdvancedWithExpiry(String email, String serviceParams, String tokenTtlInMinutes, IServerCallback callback) {
+        try {
+            String appId = _client.getAppId();
+
+            JSONObject message = new JSONObject();
+            message.put(Parameter.gameId.name(), appId);
+            message.put(Parameter.emailAddress.name(), email);
+            message.put(Parameter.serviceParams.name(), new JSONObject(serviceParams));
+            message.put(Parameter.tokenTtlInMinutes.name(), tokenTtlInMinutes);
+
+            ServerCall serverCall = new ServerCall(
+                    ServiceName.authenticationV2,
+                    ServiceOperation.RESET_EMAIL_PASSWORD_ADVANCED_WITH_EXPIRY, message,
+                    callback);
+            _client.sendRequest(serverCall);
+        } catch (JSONException ignored) {
+        }
+    }
+
+    /**
      * Reset password of universalId
      *
      * @param universalId    The users universalId
@@ -401,6 +461,58 @@ public class AuthenticationService {
             ServerCall serverCall = new ServerCall(
                     ServiceName.authenticationV2,
                     ServiceOperation.RESET_UNIVERSAL_ID_PASSWORD_ADVANCED, message,
+                    callback);
+            _client.sendRequest(serverCall);
+        } catch (JSONException ignored) {
+        }
+    }
+
+    /**
+     * Reset password of universalId with expiry token
+     *
+     * @param universalId    The users universalId
+     * @param tokenTtlInMinutes,   expiry token in mins
+     * @param callback The callback handler
+     */
+    public void resetUniversalIdPasswordWithExpiry(String universalId, String tokenTtlInMinutes, IServerCallback callback) {
+        try {
+            JSONObject message = new JSONObject();
+            message.put(Parameter.universalId.name(), universalId);
+            message.put(Parameter.gameId.name(), _client.getAppId());
+            message.put(Parameter.tokenTtlInMinutes.name(), tokenTtlInMinutes);
+
+            ServerCall serverCall = new ServerCall(
+                    ServiceName.authenticationV2,
+                    ServiceOperation.RESET_UNIVERSAL_ID_PASSWORD_WITH_EXPIRY, message,
+                    callback);
+            _client.sendRequest(serverCall);
+        } catch (JSONException ignored) {
+        }
+    }
+
+    /**
+     * Reset universal Ids password of universalId with template options with expiry token
+     *
+     * @param universalId the email address to send the reset email to
+     * @param serviceParams parameters to send to the service. see documentation for full
+     *                      list. http://getbraincloud.com/apidocs/apiref/#capi-mail
+     * @param tokenTtlInMinutes,   expiry token in mins
+     * @param callback The callback handler
+     *
+     */
+    public void resetUniversalIdPasswordAdvancedWithExpiry(String universalId, String serviceParams, String tokenTtlInMinutes, IServerCallback callback) {
+        try {
+            String appId = _client.getAppId();
+
+            JSONObject message = new JSONObject();
+            message.put(Parameter.gameId.name(), appId);
+            message.put(Parameter.universalId.name(), universalId);
+            message.put(Parameter.serviceParams.name(), new JSONObject(serviceParams));
+            message.put(Parameter.tokenTtlInMinutes.name(), tokenTtlInMinutes);
+
+            ServerCall serverCall = new ServerCall(
+                    ServiceName.authenticationV2,
+                    ServiceOperation.RESET_UNIVERSAL_ID_PASSWORD_ADVANCED_WITH_EXPIRY, message,
                     callback);
             _client.sendRequest(serverCall);
         } catch (JSONException ignored) {
