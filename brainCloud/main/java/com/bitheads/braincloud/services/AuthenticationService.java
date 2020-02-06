@@ -360,13 +360,12 @@ public class AuthenticationService {
         }
     }
 
-    ////////////////////////////////////new stuff here////////////////////////////////////////////
-
     /**
-     * Reset Email password - Sends a password reset email to the specified
+     * Reset Email password with expiry - Sends a password reset email to the specified
      * address
      *
      * @param email    The email address to send the reset email to.
+     * @param tokenTtlInMinutes,   expiry token in mins
      * @param callback The callback handler
      *
      * Note the follow error reason codes:
@@ -389,12 +388,13 @@ public class AuthenticationService {
     }
 
     /**
-     * Reset Email password with service parameters - sends a password reset email to the
+     * Reset Email password with service parameters and expiry token - sends a password reset email to the
      * specified address
      *
      * @param email the email address to send the reset email to
      * @param serviceParams parameters to send to the email service. see documentation for full
      *                      list. http://getbraincloud.com/apidocs/apiref/#capi-mail
+     * @param tokenTtlInMinutes,   expiry token in mins
      * @param callback The callback handler
      *
      * Note the follow error reason codes:
@@ -467,12 +467,11 @@ public class AuthenticationService {
         }
     }
 
-    //////////////////////////////////////////and here//////////////////////////////////////
-
     /**
-     * Reset password of universalId
+     * Reset password of universalId with expiry token
      *
      * @param universalId    The users universalId
+     * @param tokenTtlInMinutes,   expiry token in mins
      * @param callback The callback handler
      */
     public void resetUniversalIdPasswordWithExpiry(String universalId, String tokenTtlInMinutes, IServerCallback callback) {
@@ -492,11 +491,12 @@ public class AuthenticationService {
     }
 
     /**
-     * Reset universal Ids password of universalId with template options
+     * Reset universal Ids password of universalId with template options with expiry token
      *
      * @param universalId the email address to send the reset email to
      * @param serviceParams parameters to send to the service. see documentation for full
      *                      list. http://getbraincloud.com/apidocs/apiref/#capi-mail
+     * @param tokenTtlInMinutes,   expiry token in mins
      * @param callback The callback handler
      *
      */
