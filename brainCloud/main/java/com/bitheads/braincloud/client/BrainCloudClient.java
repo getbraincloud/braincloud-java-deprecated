@@ -57,6 +57,15 @@ import java.util.TimeZone;
 
 public class BrainCloudClient {
 
+    public enum BrainCloudUpdateType
+    {
+        ALL,
+        REST,   // REST Api calls
+        RTT,    // Real-time tech
+        RS,     // Relay server
+        PING    // Lobby Pings
+    };
+
     public static final boolean EnableSingletonMode = false;
     public static final String SingletonUseErrorMessage =
             "Singleton usage is disabled. If called by mistake, use your own variable that holds an instance of the bcWrapper/bcClient.";
@@ -314,10 +323,33 @@ public class BrainCloudClient {
      * Run callbacks, to be called every so often (e.g. once per frame) from your main thread.
      */
     public void runCallbacks() {
-        _restClient.runCallbacks();
-        _lobbyService.runPingCallbacks();
-        _rttComms.runCallbacks();
-        _relayComms.runCallbacks();
+        runCallbacks(BrainCloudUpdateType.ALL);
+    }
+
+    /**
+     * Run callbacks, to be called every so often (e.g. once per frame) from your main thread.
+     */
+    public void runCallbacks(BrainCloudUpdateType updateType) {
+        switch (updateType) {
+            case REST:
+                _restClient.runCallbacks();
+                break;
+            case RTT:
+                _rttComms.runCallbacks();
+                break;
+            case PING:
+                _lobbyService.runPingCallbacks();
+                break;
+            case RS:
+                _relayComms.runCallbacks();
+                break;
+            case ALL:
+                _restClient.runCallbacks();
+                _lobbyService.runPingCallbacks();
+                _rttComms.runCallbacks();
+                _relayComms.runCallbacks();
+                break;
+        }
     }
 
     /**
