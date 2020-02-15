@@ -179,7 +179,7 @@ public class AuthenticationServiceTest extends TestFixtureNoAuth
 
         TestResult tr = new TestResult(_wrapper);
         _wrapper.getClient().getAuthenticationService().resetEmailPasswordWithExpiry(
-                email, "1", tr);
+                email, 1 , tr);
         tr.Run();
     }
 
@@ -196,7 +196,7 @@ public class AuthenticationServiceTest extends TestFixtureNoAuth
         _wrapper.getClient().getAuthenticationService().resetEmailPasswordAdvancedWithExpiry(
                 "braincloudunittest@gmail.com",
                 content,
-                "1",
+                1,
                 tr2);
 
         tr2.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.INVALID_FROM_ADDRESS);
@@ -251,7 +251,7 @@ public class AuthenticationServiceTest extends TestFixtureNoAuth
         TestResult tr = new TestResult(_wrapper);
         _wrapper.getClient().getAuthenticationService().resetUniversalIdPasswordWithExpiry(
         //an example universal ID of userB
-        "userb-1177370719", "1", tr);
+        "userb-1177370719", 1 , tr);
         tr.Run();
     }
 
@@ -271,7 +271,7 @@ public class AuthenticationServiceTest extends TestFixtureNoAuth
             //an example universalId of userB
                 "userb-1177370719",
                 content,
-                "1",
+                1,
                 tr);
 
         tr.Run();

@@ -371,7 +371,7 @@ public class AuthenticationService {
      * Note the follow error reason codes:
      * SECURITY_ERROR (40209) - If the email address cannot be found.
      */
-    public void resetEmailPasswordWithExpiry(String email, String tokenTtlInMinutes, IServerCallback callback) {
+    public void resetEmailPasswordWithExpiry(String email, int tokenTtlInMinutes, IServerCallback callback) {
         try {
             JSONObject message = new JSONObject();
             message.put(Parameter.externalId.name(), email);
@@ -400,7 +400,7 @@ public class AuthenticationService {
      * Note the follow error reason codes:
      * SECURITY_ERROR (40209) - If the email address cannot be found.
      */
-    public void resetEmailPasswordAdvancedWithExpiry(String email, String serviceParams, String tokenTtlInMinutes, IServerCallback callback) {
+    public void resetEmailPasswordAdvancedWithExpiry(String email, String serviceParams, int tokenTtlInMinutes, IServerCallback callback) {
         try {
             String appId = _client.getAppId();
 
@@ -474,7 +474,7 @@ public class AuthenticationService {
      * @param tokenTtlInMinutes,   expiry token in mins
      * @param callback The callback handler
      */
-    public void resetUniversalIdPasswordWithExpiry(String universalId, String tokenTtlInMinutes, IServerCallback callback) {
+    public void resetUniversalIdPasswordWithExpiry(String universalId, int tokenTtlInMinutes, IServerCallback callback) {
         try {
             JSONObject message = new JSONObject();
             message.put(Parameter.universalId.name(), universalId);
@@ -500,7 +500,7 @@ public class AuthenticationService {
      * @param callback The callback handler
      *
      */
-    public void resetUniversalIdPasswordAdvancedWithExpiry(String universalId, String serviceParams, String tokenTtlInMinutes, IServerCallback callback) {
+    public void resetUniversalIdPasswordAdvancedWithExpiry(String universalId, String serviceParams, int tokenTtlInMinutes, IServerCallback callback) {
         try {
             String appId = _client.getAppId();
 

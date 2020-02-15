@@ -218,4 +218,28 @@ public class PlayerStateServiceTest extends TestFixtureBase
 
         tr.Run();
     }
+
+    @Test
+    public void testUpdateTimeZoneOffset() throws Exception
+    {
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.getPlayerStateService().updateTimeZoneOffset(
+                1,
+                tr);
+
+        tr.Run();
+    }
+
+    @Test
+    public void testUpdateLanguageCode() throws Exception
+    {
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.getPlayerStateService().updateLanguageCode(
+                "fr",
+                tr);
+
+        tr.Run();
+    }
 }
