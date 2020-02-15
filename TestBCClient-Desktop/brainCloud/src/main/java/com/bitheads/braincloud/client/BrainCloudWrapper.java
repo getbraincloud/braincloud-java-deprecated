@@ -413,6 +413,48 @@ public class BrainCloudWrapper implements IServerCallback {
     }
 
     /**
+     * Authenticate the user using a google userid(email address) and google
+     * authentication token.
+     *
+     * @param googleOpenId    String representation of google+ userid (email)
+     * @param googleAuthToken The authentication token derived via the google apis.
+     * @param forceCreate     Should a new profile be created for this user if the account
+     *                        does not exist?
+     * @param callback        The callback handler
+     */
+    public void authenticateGoogleOpenId(String googleOpenId,
+                                   String googleAuthToken,
+                                   boolean forceCreate,
+                                   IServerCallback callback) {
+        _authenticateCallback = callback;
+
+        initializeIdentity(false);
+
+        getClient().getAuthenticationService().authenticateGoogleOpenId(googleOpenId, googleAuthToken, forceCreate, this);
+    }
+
+    /**
+     * Authenticate the user using a google userid(email address) and google
+     * authentication token.
+     *
+     * @param appleId    String representation of google+ userid (email)
+     * @param token The authentication token derived via the google apis.
+     * @param forceCreate     Should a new profile be created for this user if the account
+     *                        does not exist?
+     * @param callback        The callback handler
+     */
+    public void authenticateApple(String appleUserId,
+                                   String token,
+                                   boolean forceCreate,
+                                   IServerCallback callback) {
+        _authenticateCallback = callback;
+
+        initializeIdentity(false);
+
+        getClient().getAuthenticationService().authenticateApple(appleUserId, token, forceCreate, this);
+    }
+
+    /**
      * Authenticate the user using a steam userid and session ticket (without
      * any validation on the userid).
      *
@@ -490,6 +532,159 @@ public class BrainCloudWrapper implements IServerCallback {
     public void reconnect(IServerCallback callback) {
         authenticateAnonymous(callback);
     }
+
+        /**
+     * Authenticate the user with a custom Email and Password. Note that the
+     * client app is responsible for collecting (and storing) the e-mail and
+     * potentially password (for convenience) in the client data. For the
+     * greatest security, force the user to re-enter their * password at each
+     * login. (Or at least give them that option).
+     * <p>
+     * Note that the password sent from the client to the server is protected
+     * via SSL.
+     *
+     * @param email       The e-mail address of the user
+     * @param callback    The callback handler
+     */
+    public void resetEmailPassword(String email,
+                                          IServerCallback callback) {
+        getClient().getAuthenticationService().resetEmailPassword(email, this);
+    }
+
+            /**
+     * Authenticate the user with a custom Email and Password. Note that the
+     * client app is responsible for collecting (and storing) the e-mail and
+     * potentially password (for convenience) in the client data. For the
+     * greatest security, force the user to re-enter their * password at each
+     * login. (Or at least give them that option).
+     * <p>
+     * Note that the password sent from the client to the server is protected
+     * via SSL.
+     *
+     * @param email       The e-mail address of the user
+     * @param serviceParams
+     * @param callback    The callback handler
+     */
+    public void resetEmailPasswordAdvanced(String email, String serviceParams,
+                                          IServerCallback callback) {
+        getClient().getAuthenticationService().resetEmailPasswordAdvanced(email, serviceParams, this);
+    }
+
+            /**
+     * Authenticate the user with a custom Email and Password. Note that the
+     * client app is responsible for collecting (and storing) the e-mail and
+     * potentially password (for convenience) in the client data. For the
+     * greatest security, force the user to re-enter their * password at each
+     * login. (Or at least give them that option).
+     * <p>
+     * Note that the password sent from the client to the server is protected
+     * via SSL.
+     *
+     * @param email       The e-mail address of the user
+     *  * @param tokenTtlInMinutes
+     * @param callback    The callback handler
+     */
+    public void resetEmailPasswordWithExpiry(String email, int tokenTtlInMinutes,
+                                          IServerCallback callback) {
+        getClient().getAuthenticationService().resetEmailPasswordWithExpiry(email, tokenTtlInMinutes, this);
+    }
+
+            /**
+     * Authenticate the user with a custom Email and Password. Note that the
+     * client app is responsible for collecting (and storing) the e-mail and
+     * potentially password (for convenience) in the client data. For the
+     * greatest security, force the user to re-enter their * password at each
+     * login. (Or at least give them that option).
+     * <p>
+     * Note that the password sent from the client to the server is protected
+     * via SSL.
+     *
+     * @param email       The e-mail address of the user
+     * @param serviceParams
+     * @param tokenTtlInMinutes
+     * @param callback    The callback handler
+     */
+    public void resetEmailPasswordAdvancedWithExpiry(String email, String serviceParams, Integer tokenTtlInMinutes,
+                                          IServerCallback callback) {
+        getClient().getAuthenticationService().resetEmailPasswordAdvancedWithExpiry(email, serviceParams, tokenTtlInMinutes, this);
+    }
+
+            /**
+     * Authenticate the user with a custom Email and Password. Note that the
+     * client app is responsible for collecting (and storing) the e-mail and
+     * potentially password (for convenience) in the client data. For the
+     * greatest security, force the user to re-enter their * password at each
+     * login. (Or at least give them that option).
+     * <p>
+     * Note that the password sent from the client to the server is protected
+     * via SSL.
+     *
+     * @param universalId       The e-mail address of the user
+     * @param callback    The callback handler
+     */
+    public void resetUniversalIdPassword(String universalId,
+                                          IServerCallback callback) {
+        getClient().getAuthenticationService().resetUniversalIdPassword(universalId, this);
+    }
+
+            /**
+     * Authenticate the user with a custom Email and Password. Note that the
+     * client app is responsible for collecting (and storing) the e-mail and
+     * potentially password (for convenience) in the client data. For the
+     * greatest security, force the user to re-enter their * password at each
+     * login. (Or at least give them that option).
+     * <p>
+     * Note that the password sent from the client to the server is protected
+     * via SSL.
+     *
+     * @param universalId       The e-mail address of the user
+     * @param serviceParams
+     * @param callback    The callback handler
+     */
+    public void resetUniversalIdPasswordAdvanced(String universalId, String serviceParams,
+                                          IServerCallback callback) {
+        getClient().getAuthenticationService().resetUniversalIdPasswordAdvanced(universalId, serviceParams, this);
+    }
+
+            /**
+     * Authenticate the user with a custom Email and Password. Note that the
+     * client app is responsible for collecting (and storing) the e-mail and
+     * potentially password (for convenience) in the client data. For the
+     * greatest security, force the user to re-enter their * password at each
+     * login. (Or at least give them that option).
+     * <p>
+     * Note that the password sent from the client to the server is protected
+     * via SSL.
+     *
+     * @param universalId       The e-mail address of the user
+     *  * @param tokenTtlInMinutes
+     * @param callback    The callback handler
+     */
+    public void resetUniversalIdPasswordWithExpiry(String universalId, int tokenTtlInMinutes,
+                                          IServerCallback callback) {
+        getClient().getAuthenticationService().resetUniversalIdPasswordWithExpiry(universalId, tokenTtlInMinutes, this);
+    }
+
+            /**
+     * Authenticate the user with a custom Email and Password. Note that the
+     * client app is responsible for collecting (and storing) the e-mail and
+     * potentially password (for convenience) in the client data. For the
+     * greatest security, force the user to re-enter their * password at each
+     * login. (Or at least give them that option).
+     * <p>
+     * Note that the password sent from the client to the server is protected
+     * via SSL.
+     *
+     * @param universalId       The e-mail address of the user
+     * @param serviceParams
+     * @param tokenTtlInMinutes
+     * @param callback    The callback handler
+     */
+    public void resetUniversalIdPasswordAdvancedWithExpiry(String universalId, String serviceParams, Integer tokenTtlInMinutes,
+                                          IServerCallback callback) {
+        getClient().getAuthenticationService().resetUniversalIdPasswordAdvancedWithExpiry(universalId, serviceParams, tokenTtlInMinutes, this);
+    }
+
 
     /**
      * Run callbacks, to be called once per frame from your main thread
