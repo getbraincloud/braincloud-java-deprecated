@@ -9,6 +9,8 @@ import com.bitheads.braincloud.client.IRelaySystemCallback;
 import com.bitheads.braincloud.client.IRTTCallback;
 import com.bitheads.braincloud.client.IRTTConnectCallback;
 import com.bitheads.braincloud.client.ReasonCodes;
+import com.bitheads.braincloud.client.RelayConnectionType;
+import com.bitheads.braincloud.client.RelayConnectionType;
 import com.bitheads.braincloud.client.StatusCodes;
 
 import junit.framework.Assert;
@@ -25,42 +27,40 @@ import java.util.ArrayList;
  */
 public class RelayTest extends TestFixtureBase
 {
-    @Test
-    public void testConnectWithNullOptions() throws Exception {
-        RelayConnectionTestResult tr = new RelayConnectionTestResult(_wrapper);
-        _wrapper.getRelayService().connect(null, tr);
-        tr.RunExpectFail();
-    }
+    // @Test
+    // public void testConnectWithNullOptions() throws Exception {
+    //     RelayConnectionTestResult tr = new RelayConnectionTestResult(_wrapper);
+    //     _wrapper.getRelayService().connect(RelayConnectionType.WEBSOCKET, null, tr);
+    //     tr.RunExpectFail();
+    // }
 
-    @Test
-    public void testConnectWithEmptyOptions() throws Exception {
-        RelayConnectionTestResult tr = new RelayConnectionTestResult(_wrapper);
-        JSONObject options = new JSONObject();
-        _wrapper.getRelayService().connect(options, tr);
-        tr.RunExpectFail();
-    }
-    @Test
-    public void testInvalidProfileIdForNetId() throws Exception {
-        String profileId = _wrapper.getRelayService().getProfileIdForNetId(0); // Just make sure the dictionary returns null and doesn't asserts
-        Assert.assertTrue(profileId == null);
-    }
+    // @Test
+    // public void testConnectWithEmptyOptions() throws Exception {
+    //     RelayConnectionTestResult tr = new RelayConnectionTestResult(_wrapper);
+    //     JSONObject options = new JSONObject();
+    //     _wrapper.getRelayService().connect(RelayConnectionType.WEBSOCKET, options, tr);
+    //     tr.RunExpectFail();
+    // }
+    // @Test
+    // public void testInvalidProfileIdForNetId() throws Exception {
+    //     String profileId = _wrapper.getRelayService().getProfileIdForNetId(0); // Just make sure the dictionary returns null and doesn't asserts
+    //     Assert.assertTrue(profileId == null);
+    // }
 
-    @Test
-    public void testConnectWithBadURL() throws Exception {
-        RelayConnectionTestResult tr = new RelayConnectionTestResult(_wrapper);
-        JSONObject options = new JSONObject();
-        options.put("ssl", false);
-        options.put("host", "ws://192.168.1.0");
-        options.put("port", 1234);
-        options.put("passcode", "invalid_passcode");
-        options.put("lobbyId", "invalid_lobbyId");
-        _wrapper.getRelayService().connect(options, tr);
-        tr.RunExpectFail();
-    }
+    // @Test
+    // public void testConnectWithBadURL() throws Exception {
+    //     RelayConnectionTestResult tr = new RelayConnectionTestResult(_wrapper);
+    //     JSONObject options = new JSONObject();
+    //     options.put("ssl", false);
+    //     options.put("host", "ws://192.168.1.0");
+    //     options.put("port", 1234);
+    //     options.put("passcode", "invalid_passcode");
+    //     options.put("lobbyId", "invalid_lobbyId");
+    //     _wrapper.getRelayService().connect(RelayConnectionType.WEBSOCKET, options, tr);
+    //     tr.RunExpectFail();
+    // }
 
-    @Test
-    public void testFullFlow() throws Exception {
-
+    private void fullFlow(RelayConnectionType connectionType) throws Exception {
         RTTLobbyResults lobbyTR = new RTTLobbyResults(_wrapper);
         JSONObject server;
 
@@ -93,10 +93,15 @@ public class RelayTest extends TestFixtureBase
             JSONObject options = new JSONObject();
             options.put("ssl", false);
             options.put("host", server.getJSONObject("connectData").getString("address"));
-            options.put("port", server.getJSONObject("connectData").getJSONObject("ports").getInt("ws"));
+            if (connectionType == RelayConnectionType.WEBSOCKET)
+                options.put("port", server.getJSONObject("connectData").getJSONObject("ports").getInt("ws"));
+            else if (connectionType == RelayConnectionType.TCP)
+                options.put("port", server.getJSONObject("connectData").getJSONObject("ports").getInt("tcp"));
+            else if (connectionType == RelayConnectionType.UDP)
+                options.put("port", server.getJSONObject("connectData").getJSONObject("ports").getInt("udp"));
             options.put("passcode", server.getString("passcode"));
             options.put("lobbyId", server.getString("lobbyId"));
-            _wrapper.getRelayService().connect(options, tr);
+            _wrapper.getRelayService().connect(connectionType, options, tr);
             tr.Run();
         }
 
@@ -121,6 +126,22 @@ public class RelayTest extends TestFixtureBase
             t += 100;
         }
         Assert.assertTrue(_wrapper.getRelayService().isConnected());
+        _wrapper.getRelayService().disconnect();
+    }
+
+    @Test
+    public void testFullFlowWS() throws Exception {
+        fullFlow(RelayConnectionType.WEBSOCKET);
+    }
+
+    @Test
+    public void testFullFlowTCP() throws Exception {
+        fullFlow(RelayConnectionType.TCP);
+    }
+
+    @Test
+    public void testFullFlowUDP() throws Exception {
+        fullFlow(RelayConnectionType.UDP);
     }
 
     public class RelayConnectSystemCheck implements IRelaySystemCallback {
@@ -137,6 +158,8 @@ public class RelayTest extends TestFixtureBase
             try {
                 if (jsonData.getString("op").equals("CONNECT")) {
                     _received = true;
+
+                    System.out.println("crotte boudin");
                 }
             } catch (JSONException e) {}
         }
@@ -170,6 +193,7 @@ public class RelayTest extends TestFixtureBase
         public void relayCallback(int netId, byte[] data) {
             String str = new String(data, StandardCharsets.US_ASCII);
             
+            System.out.println("relayCallback: " + str);
             if (str.equals("Hello World!")) {
                 _received = true;
             }
@@ -288,6 +312,7 @@ public class RelayTest extends TestFixtureBase
         public void relayConnectFailure(String errorMessage) {
             m_result = false;
             m_done = true;
+            System.out.println("relayConnectFailure: " + errorMessage);
         }
 
         public boolean IsDone()

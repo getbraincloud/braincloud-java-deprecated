@@ -467,24 +467,61 @@ public class BrainCloudWrapper implements IServerCallback {
     }
 
     /**
+     *Authenticate the user using an apple id
+     *
+     * @param appleUserId  This can be the user id OR the email of the user for the account
+     * @param identityToken The token confirming the user's identity
+     * @param forceCreate     Should a new profile be created for this user if the account
+     *                        does not exist?
+     * @param callback        The callback handler
+     */
+    public void authenticateApple(String appleUserId, String identityToken, boolean forceCreate, IServerCallback callback) {
+        _authenticateCallback = callback;
+
+        initializeIdentity(false);
+
+        getClient().getAuthenticationService().authenticateApple(appleUserId, identityToken, forceCreate, this);
+    }
+
+    /**
      * Authenticate the user using a google userid(email address) and google
      * authentication token.
      *
-     * @param googleUserId    String representation of google+ userid (email)
-     * @param googleAuthToken The authentication token derived via the google apis.
+     * @param googleUserId    String representation of google+ userId. Gotten with calls like RequestUserId
+     * @param serverAuthCode The server authentication token derived via the google apis. Gotten with calls like RequestServerAuthCode
      * @param forceCreate     Should a new profile be created for this user if the account
      *                        does not exist?
      * @param callback        The callback handler
      */
     public void authenticateGoogle(String googleUserId,
-                                   String googleAuthToken,
+                                   String serverAuthCode,
                                    boolean forceCreate,
                                    IServerCallback callback) {
         _authenticateCallback = callback;
 
         initializeIdentity(false);
 
-        getClient().getAuthenticationService().authenticateGoogle(googleUserId, googleAuthToken, forceCreate, this);
+        getClient().getAuthenticationService().authenticateGoogle(googleUserId, serverAuthCode, forceCreate, this);
+    }
+
+    /**
+     * Authenticate the user using a google openId
+     *
+     * @param googleUserAccountEmail    The email associated with the google user
+     * @param IdToken The id token of the google account. Can get with calls like requestIdToken
+     * @param forceCreate     Should a new profile be created for this user if the account
+     *                        does not exist?
+     * @param callback        The callback handler
+     */
+    public void authenticateGoogleOpenId(String googleUserAccountEmail,
+                                   String IdToken,
+                                   boolean forceCreate,
+                                   IServerCallback callback) {
+        _authenticateCallback = callback;
+
+        initializeIdentity(false);
+
+        getClient().getAuthenticationService().authenticateGoogleOpenId(googleUserAccountEmail, IdToken, forceCreate, this);
     }
 
     /**

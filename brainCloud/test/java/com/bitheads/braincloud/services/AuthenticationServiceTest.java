@@ -169,6 +169,40 @@ public class AuthenticationServiceTest extends TestFixtureNoAuth
     }
 
     @Test
+    public void testResetEmailPasswordWithExpiry() throws Exception
+    {
+            TestResult tr2 = new TestResult(_wrapper);
+            _wrapper.getClient().getAuthenticationService().authenticateUniversal("abc", "abc", true, tr2);
+            tr2.Run();
+
+        String email = "braincloudunittest@gmail.com";
+
+        TestResult tr = new TestResult(_wrapper);
+        _wrapper.getClient().getAuthenticationService().resetEmailPasswordWithExpiry(
+                email, 1 , tr);
+        tr.Run();
+    }
+
+    @Test
+    public void testResetEmailPasswordAdvancedWithExpiry() throws Exception
+    {
+        TestResult tr = new TestResult(_wrapper);
+        _wrapper.getClient().getAuthenticationService().authenticateUniversal("abc", "abc", true, tr);
+        tr.Run();
+        
+        TestResult tr2 = new TestResult(_wrapper);
+
+        String content = "{\"fromAddress\": \"fromAddress\",\"fromName\": \"fromName\",\"replyToAddress\": \"replyToAddress\",\"replyToName\": \"replyToName\", \"templateId\": \"8f14c77d-61f4-4966-ab6d-0bee8b13d090\",\"subject\": \"subject\",\"body\": \"Body goes here\", \"substitutions\": { \":name\": \"John Doe\",\":resetLink\": \"www.dummuyLink.io\"}, \"categories\": [\"category1\",\"category2\" ]}";
+        _wrapper.getClient().getAuthenticationService().resetEmailPasswordAdvancedWithExpiry(
+                "braincloudunittest@gmail.com",
+                content,
+                1,
+                tr2);
+
+        tr2.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.INVALID_FROM_ADDRESS);
+    }
+
+    @Test
     public void testResetUniversalIdPassword() throws Exception
     {
         TestResult tr2 = new TestResult(_wrapper);
@@ -200,6 +234,44 @@ public class AuthenticationServiceTest extends TestFixtureNoAuth
             //an example universalId of userB
                 "userb-1177370719",
                 content,
+                tr);
+
+        tr.Run();
+    }
+
+    @Test
+    public void testResetUniversalIdPasswordWithExpiry() throws Exception
+    {
+        TestResult tr2 = new TestResult(_wrapper);
+
+        _wrapper.getClient().getAuthenticationService().authenticateUniversal(getUser(Users.UserB).id, getUser(Users.UserB).password, true, tr2);
+        
+        tr2.Run();
+
+        TestResult tr = new TestResult(_wrapper);
+        _wrapper.getClient().getAuthenticationService().resetUniversalIdPasswordWithExpiry(
+        //an example universal ID of userB
+        "userb-1177370719", 1 , tr);
+        tr.Run();
+    }
+
+    @Test
+    public void testResetUniversalIdPasswordAdvancedWithExpiry() throws Exception
+    {
+        TestResult tr2 = new TestResult(_wrapper);
+
+        _wrapper.getClient().getAuthenticationService().authenticateUniversal(getUser(Users.UserB).id, getUser(Users.UserB).password, true, tr2);
+        
+        tr2.Run();
+
+        TestResult tr = new TestResult(_wrapper);
+
+        String content = "{\"templateId\": \"d-template-id-guid\", \"substitutions\": { \":name\": \"John Doe\",\":resetLink\": \"www.dummuyLink.io\"}, \"categories\": [\"category1\",\"category2\" ]}"; 
+        _wrapper.getClient().getAuthenticationService().resetUniversalIdPasswordAdvancedWithExpiry(
+            //an example universalId of userB
+                "userb-1177370719",
+                content,
+                1,
                 tr);
 
         tr.Run();
