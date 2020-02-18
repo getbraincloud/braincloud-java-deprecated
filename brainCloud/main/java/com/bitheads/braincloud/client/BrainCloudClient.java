@@ -80,7 +80,7 @@ public class BrainCloudClient {
     private double _timeZoneOffset;
 
 
-    private final static String BRAINCLOUD_VERSION = "4.3.6";
+    private final static String BRAINCLOUD_VERSION = "4.4.0";
 
     private BrainCloudRestClient _restClient;
     private RTTComms _rttComms;
