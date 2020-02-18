@@ -153,6 +153,43 @@ public class ScriptService {
         }
     }
 
+        /**
+     * Allows cloud script executions to be scheduled
+     *
+     * Service Name - Script
+     * Service Operation - ScheduleCloudScript
+     *
+     * @param startTimeUTC The start date as a Date object
+     * See The API documentation site for more details on cloud code
+     */
+    public void getScheduledCloudScripts(Date startTimeUTC, IServerCallback callback) {
+
+        try {
+            JSONObject data = new JSONObject();
+
+
+            data.put(Parameter.startDateUTC.name(), startTimeUTC.getTime());
+
+            ServerCall sc = new ServerCall(ServiceName.script, ServiceOperation.GET_SCHEDULED_CLOUD_SCRIPTS, data, callback);
+            _client.sendRequest(sc);
+        } catch (JSONException je) {
+            je.printStackTrace();
+        }
+    }
+
+    /**
+     * Allows cloud script executions to be scheduled
+     *
+     * Service Name - Script
+     * Service Operation - ScheduleCloudScript
+     *
+     * See The API documentation site for more details on cloud code
+     */
+    public void getRunningOrQueuedCloudScripts(IServerCallback callback) {
+            ServerCall sc = new ServerCall(ServiceName.script, ServiceOperation.GET_RUNNING_OR_QUEUED_CLOUD_SCRIPTS, null, callback);
+            _client.sendRequest(sc);
+    }
+
     /**
      * Cancels a scheduled cloud code script
      *

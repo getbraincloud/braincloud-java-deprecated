@@ -5,6 +5,7 @@ import com.bitheads.braincloud.client.IRelayCallback;
 import com.bitheads.braincloud.client.IRelayConnectCallback;
 import com.bitheads.braincloud.client.IRelaySystemCallback;
 import com.bitheads.braincloud.client.IServerCallback;
+import com.bitheads.braincloud.client.RelayConnectionType;
 import com.bitheads.braincloud.client.ServiceName;
 import com.bitheads.braincloud.client.ServiceOperation;
 import com.bitheads.braincloud.comms.ServerCall;
@@ -30,6 +31,7 @@ public class RelayService {
     * brainClouds Relay Servers. Connect options come in
     * from ROOM_ASSIGNED lobby callback.
     * 
+    * @param connectionType
     * @param options {
     *   ssl: false,
     *   host: "168.0.1.192"
@@ -38,9 +40,11 @@ public class RelayService {
     *   lobbyId: "55555:v5v:001"
     * }
     * @param callback Callback objects that report Success or Failure|Disconnect.
+    *
+    * @note SSL option will only work with WEBSOCKET connetion type.
     */
-    public void connect(JSONObject options, IRelayConnectCallback callback) {
-        _client.getRelayComms().connect(options, callback);
+    public void connect(RelayConnectionType connectionType, JSONObject options, IRelayConnectCallback callback) {
+        _client.getRelayComms().connect(connectionType, options, callback);
     }
     
     /**
