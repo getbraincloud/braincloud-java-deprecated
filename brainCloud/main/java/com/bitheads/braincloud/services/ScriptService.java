@@ -183,17 +183,11 @@ public class ScriptService {
      * Service Name - Script
      * Service Operation - ScheduleCloudScript
      *
-     * @param startTimeUTC The start date as a Date object
      * See The API documentation site for more details on cloud code
      */
     public void getRunningOrQueuedCloudScripts(IServerCallback callback) {
-
-        try {
             ServerCall sc = new ServerCall(ServiceName.script, ServiceOperation.GET_RUNNING_OR_QUEUED_CLOUD_SCRIPTS, null, callback);
             _client.sendRequest(sc);
-        } catch (JSONException je) {
-            je.printStackTrace();
-        }
     }
 
     /**
