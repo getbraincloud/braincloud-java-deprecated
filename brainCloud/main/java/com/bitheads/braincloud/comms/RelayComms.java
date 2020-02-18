@@ -606,7 +606,6 @@ public class RelayComms {
         int packetId = _sendPacketId[channelIdx];
         rh |= packetId;
         _sendPacketId[channelIdx] = (packetId + 1) & 0xFFF;
-
         ByteBuffer buffer = ByteBuffer.allocate(bufferSize);
         buffer.order(ByteOrder.BIG_ENDIAN);
         buffer.putShort((short)bufferSize);
@@ -906,7 +905,6 @@ public class RelayComms {
             _callbackEventQueue.add(new RelayCallback(RelayCallbackType.Relay, netId, eventBuffer));
         }
     }
-
     private void onPONG() {
         if (_pingInFlight) {
             _pingInFlight = false;
