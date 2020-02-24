@@ -141,8 +141,19 @@ public class BrainCloudRestClient implements Runnable {
         _secretMap.put(appId, secretKey);
 
         String suffix = "/dispatcherv2";
-        _uploadUrl = _serverUrl.endsWith(suffix) ? _serverUrl.substring(0, _serverUrl.length() - suffix.length()) : _serverUrl;
-        _uploadUrl += "/uploader";
+
+        if (_serverUrl.endsWith(suffix))
+        {
+            _serverUrl = _serverUrl.substring(0, _serverUrl.length() - suffix.length());
+        }
+
+        while (_serverUrl.length() > 0 && _serverUrl.charAt(_serverUrl.length() - 1) == '/')
+        {
+            _serverUrl = _serverUrl.substring(0, _serverUrl.length() - 1);
+        }
+
+        _uploadUrl = _serverUrl + "/uploader";
+        _serverUrl = _serverUrl + "/dispatcherv2";
 
         if (_thread == null) {
             _thread = new Thread(this);
