@@ -340,6 +340,7 @@ public class RelayComms {
                 try {
                     _udpAddr = InetAddress.getByName(host);
                     _udpSocket = new DatagramSocket();
+                    _udpSocket.setSoTimeout(0);
                     _udpPort = port;
                     if (_loggingEnabled) {
                         System.out.println("RELAY UDP: Socket Open");
@@ -640,9 +641,23 @@ public class RelayComms {
                 }
                 while (true) {
                     try {
-                        int len = in.readShort() & 0xFFFF;
+                        // Read len
+                        byte[] sizeBytes = new byte[2];
+                        while (in.read(sizeBytes, 0, 1) == 0); // Byte 0
+                        while (in.read(sizeBytes, 1, 1) == 0); // Byte 1
+                        int len = ((sizeBytes[0] & 0xFF) << 8) | ((sizeBytes[1] & 0xFF));
+
+                        // Read packet
                         byte[] bytes = new byte[len - 2];
-                        in.readFully(bytes);
+                        int byteRead = 2;
+                        while (byteRead < len)
+                        {
+                            int ret = in.read(bytes, byteRead - 2, len - byteRead);
+                            if (ret > 0)
+                            {
+                                byteRead += ret;
+                            }
+                        }
 
                         ByteBuffer buffer = ByteBuffer.allocate(len);
                         buffer.order(ByteOrder.BIG_ENDIAN);

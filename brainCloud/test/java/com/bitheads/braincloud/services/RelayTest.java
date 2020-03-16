@@ -27,38 +27,38 @@ import java.util.ArrayList;
  */
 public class RelayTest extends TestFixtureBase
 {
-    // @Test
-    // public void testConnectWithNullOptions() throws Exception {
-    //     RelayConnectionTestResult tr = new RelayConnectionTestResult(_wrapper);
-    //     _wrapper.getRelayService().connect(RelayConnectionType.WEBSOCKET, null, tr);
-    //     tr.RunExpectFail();
-    // }
+    @Test
+    public void testConnectWithNullOptions() throws Exception {
+        RelayConnectionTestResult tr = new RelayConnectionTestResult(_wrapper);
+        _wrapper.getRelayService().connect(RelayConnectionType.WEBSOCKET, null, tr);
+        tr.RunExpectFail();
+    }
 
-    // @Test
-    // public void testConnectWithEmptyOptions() throws Exception {
-    //     RelayConnectionTestResult tr = new RelayConnectionTestResult(_wrapper);
-    //     JSONObject options = new JSONObject();
-    //     _wrapper.getRelayService().connect(RelayConnectionType.WEBSOCKET, options, tr);
-    //     tr.RunExpectFail();
-    // }
-    // @Test
-    // public void testInvalidProfileIdForNetId() throws Exception {
-    //     String profileId = _wrapper.getRelayService().getProfileIdForNetId(0); // Just make sure the dictionary returns null and doesn't asserts
-    //     Assert.assertTrue(profileId == null);
-    // }
+    @Test
+    public void testConnectWithEmptyOptions() throws Exception {
+        RelayConnectionTestResult tr = new RelayConnectionTestResult(_wrapper);
+        JSONObject options = new JSONObject();
+        _wrapper.getRelayService().connect(RelayConnectionType.WEBSOCKET, options, tr);
+        tr.RunExpectFail();
+    }
+    @Test
+    public void testInvalidProfileIdForNetId() throws Exception {
+        String profileId = _wrapper.getRelayService().getProfileIdForNetId(0); // Just make sure the dictionary returns null and doesn't asserts
+        Assert.assertTrue(profileId == null);
+    }
 
-    // @Test
-    // public void testConnectWithBadURL() throws Exception {
-    //     RelayConnectionTestResult tr = new RelayConnectionTestResult(_wrapper);
-    //     JSONObject options = new JSONObject();
-    //     options.put("ssl", false);
-    //     options.put("host", "ws://192.168.1.0");
-    //     options.put("port", 1234);
-    //     options.put("passcode", "invalid_passcode");
-    //     options.put("lobbyId", "invalid_lobbyId");
-    //     _wrapper.getRelayService().connect(RelayConnectionType.WEBSOCKET, options, tr);
-    //     tr.RunExpectFail();
-    // }
+    @Test
+    public void testConnectWithBadURL() throws Exception {
+        RelayConnectionTestResult tr = new RelayConnectionTestResult(_wrapper);
+        JSONObject options = new JSONObject();
+        options.put("ssl", false);
+        options.put("host", "ws://192.168.1.0");
+        options.put("port", 1234);
+        options.put("passcode", "invalid_passcode");
+        options.put("lobbyId", "invalid_lobbyId");
+        _wrapper.getRelayService().connect(RelayConnectionType.WEBSOCKET, options, tr);
+        tr.RunExpectFail();
+    }
 
     private void fullFlow(RelayConnectionType connectionType) throws Exception {
         RTTLobbyResults lobbyTR = new RTTLobbyResults(_wrapper);
