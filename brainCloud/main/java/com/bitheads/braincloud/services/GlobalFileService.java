@@ -6,6 +6,9 @@ import com.bitheads.braincloud.client.ServiceName;
 import com.bitheads.braincloud.client.ServiceOperation;
 import com.bitheads.braincloud.comms.ServerCall;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class GlobalFileService {
 
     private BrainCloudClient _client;
@@ -18,7 +21,7 @@ public class GlobalFileService {
         fileId,
         folderPath,
         filename,
-
+        recurse
     }
 
     /**
@@ -35,7 +38,7 @@ public class GlobalFileService {
             JSONObject data = new JSONObject();
             data.put(Parameter.fileId.name(), fileId);
 
-            ServerCall sc = new ServerCall(ServiceName.globalFile,
+            ServerCall sc = new ServerCall(ServiceName.globalFileV3,
                     ServiceOperation.GET_FILE_INFO, data, callback);
             _client.sendRequest(sc);
 
@@ -60,7 +63,7 @@ public class GlobalFileService {
             data.put(Parameter.folderPath.name(), folderPath);
             data.put(Parameter.filename.name(), filename);
 
-            ServerCall sc = new ServerCall(ServiceName.globalFile,
+            ServerCall sc = new ServerCall(ServiceName.globalFileV3,
                     ServiceOperation.GET_FILE_INFO_SIMPLE, data, callback);
             _client.sendRequest(sc);
 
@@ -83,7 +86,7 @@ public class GlobalFileService {
             JSONObject data = new JSONObject();
             data.put(Parameter.fileId.name(), fileId);
 
-            ServerCall sc = new ServerCall(ServiceName.globalFile,
+            ServerCall sc = new ServerCall(ServiceName.globalFileV3,
                     ServiceOperation.GET_GLOBAL_CDN_URL, data, callback);
             _client.sendRequest(sc);
 
@@ -108,7 +111,7 @@ public class GlobalFileService {
             data.put(Parameter.folderPath.name(), folderPath);
             data.put(Parameter.recurse.name(), recurse);
 
-            ServerCall sc = new ServerCall(ServiceName.globalFile,
+            ServerCall sc = new ServerCall(ServiceName.globalFileV3,
                     ServiceOperation.GET_GLOBAL_FILE_LIST, data, callback);
             _client.sendRequest(sc);
 

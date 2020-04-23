@@ -42,7 +42,7 @@ public class GlobalFileServiceTest extends TestFixtureBase
     {
         TestResult tr = new TestResult(_wrapper);
 
-        _wrapper.getGlobalFileService().getBlobalCDNUrl(
+        _wrapper.getGlobalFileService().getGlobalCDNUrl(
                 testFileId,
                 tr);
 
