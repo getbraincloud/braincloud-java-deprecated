@@ -39,6 +39,7 @@ import com.bitheads.braincloud.services.ScriptService;
 import com.bitheads.braincloud.services.SocialLeaderboardService;
 import com.bitheads.braincloud.services.TimeService;
 import com.bitheads.braincloud.services.TournamentService;
+import com.bitheads.braincloud.services.GlobalFileService;
 import com.bitheads.braincloud.services.CustomEntityService;
 import com.bitheads.braincloud.services.VirtualCurrencyService;
 import com.bitheads.braincloud.services.ItemCatalogService;
@@ -818,6 +819,10 @@ public class BrainCloudWrapper implements IServerCallback {
 
     public TournamentService getTournamentService() {
         return _client.getTournamentService();
+    }
+
+    public GlobalFileService getGlobalFileService() {
+        return _client.getGlobalFileService();
     }
 
     public CustomEntityService getCustomEntityService() {
