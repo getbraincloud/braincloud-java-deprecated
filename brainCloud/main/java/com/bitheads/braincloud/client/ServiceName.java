@@ -40,6 +40,7 @@ public enum ServiceName {
     leaderboard,
     time,
     tournament,
+    globalFile,
     customEntity,
     virtualCurrency,
     itemCatalog,
