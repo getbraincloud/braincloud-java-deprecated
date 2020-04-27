@@ -159,7 +159,7 @@ public class RelayTest extends TestFixtureBase
                 if (jsonData.getString("op").equals("CONNECT")) {
                     _received = true;
 
-                    System.out.println("crotte boudin");
+                    System.out.println("relaySystemCallback CONNECT");
                 }
             } catch (JSONException e) {}
         }
@@ -274,7 +274,7 @@ public class RelayTest extends TestFixtureBase
                 } catch(InterruptedException ie)
                 {}
                 t += 100;
-                if (t > 120000) {
+                if (t > 5 * 60 * 1000) {
                     Assert.assertTrue(false);
                 }
             }
