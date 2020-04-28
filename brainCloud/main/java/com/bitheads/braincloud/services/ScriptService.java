@@ -96,6 +96,36 @@ public class ScriptService {
      *
      * @param scriptName The name of the script to be run
      * @param jsonScriptData JSON bundle to pass to script
+     * @param startTimeUTC The start date as a Date object
+     * See The API documentation site for more details on cloud code
+     */
+    public void scheduleRunScriptMillisUTC(String scriptName, String jsonScriptData, long startTimeUTC, IServerCallback callback) {
+        try {
+            JSONObject data = new JSONObject();
+            data.put(Parameter.scriptName.name(), scriptName);
+
+            if (StringUtil.IsOptionalParameterValid(jsonScriptData)) {
+                JSONObject jsonData = new JSONObject(jsonScriptData);
+                data.put(Parameter.scriptData.name(), jsonData);
+            }
+
+            data.put(Parameter.startDateUTC.name(), startTimeUTC);
+
+            ServerCall sc = new ServerCall(ServiceName.script, ServiceOperation.SCHEDULE_CLOUD_SCRIPT, data, callback);
+            _client.sendRequest(sc);
+        } catch (JSONException je) {
+            je.printStackTrace();
+        }
+    }
+
+    /**
+     * Allows cloud script executions to be scheduled
+     *
+     * Service Name - Script
+     * Service Operation - ScheduleCloudScript
+     *
+     * @param scriptName The name of the script to be run
+     * @param jsonScriptData JSON bundle to pass to script
      * @param minutesFromNow Number of minutes from now to run script
      * See The API documentation site for more details on cloud code
      */
