@@ -110,3 +110,24 @@ _wrapper.getIdentityService().attachEmailIdentity(_email, _password, _callback);
 ```
 There are many authentication types. You can also merge profiles and detach idenities. See the brainCloud documentation for more information:
 http://getbraincloud.com/apidocs/apiref/?java#capi-auth
+
+## TimeUtils
+Most of our APIs suggest using UTC time, so we have added utility functions for better handling local and UTC time.
+```
+long UTCDateTimeToUTCMillis(Date utcDate) //returns the UTC time in milliseconds as an Int64.
+Date UTCMillisToUTCDateTime(long utcMillis) //returns a Date in UTC based on the milliseconds passed in
+Date LocalTimeToUTCTime(Date localDate) //Converts a Local time to UTC time
+Date UTCTimeToLocalTime (Date utcDate) //Converts a UTC time to Local time
+```
+examples of use:
+```
+        Date date = new Date();
+        date.setTime(date.getTime() + 120 * 1000);
+        long dateAsLong = TimeUtil.UTCDateTimeToUTCMillis(date); //convert date into UTC milliseconds
+
+        _wrapper.getScriptService().scheduleRunScriptMillisUTC(
+                _scriptName,
+                Helpers.createJsonPair("testParm1", 1),
+                dateAsLong, //use it in our UTC calls
+                tr);
+```

@@ -187,6 +187,24 @@ public class SocialLeaderboardServiceTest extends TestFixtureBase
     }
 
     @Test
+    public void testPostScoreToDynamicLeaderboardUTC() throws Exception
+    {
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.getSocialLeaderboardService().postScoreToDynamicLeaderboardUTC(
+                _dynamicLeaderboardId + "_" + (int)(Math.random() * 10000000),
+                100,
+                Helpers.createJsonPair("testDataKey", 400),
+                SocialLeaderboardService.SocialLeaderboardType.LAST_VALUE.toString(),
+                SocialLeaderboardService.RotationType.NEVER.toString(),
+                0,
+                5,
+                tr);
+
+        tr.Run();
+    }
+
+    @Test
     public void testPostScoreToDynamicLeaderboardDays() throws Exception
     {
         TestResult tr = new TestResult(_wrapper);
@@ -197,6 +215,24 @@ public class SocialLeaderboardServiceTest extends TestFixtureBase
                 Helpers.createJsonPair("testDataKey", 400),
                 SocialLeaderboardService.SocialLeaderboardType.LOW_VALUE.toString(),
                 null,
+                5,
+                3,
+                tr);
+
+        tr.Run();
+    }
+
+    @Test
+    public void testPostScoreToDynamicLeaderboardDaysUTC() throws Exception
+    {
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.getSocialLeaderboardService().postScoreToDynamicLeaderboardDaysUTC(
+                _dynamicLeaderboardId + "_" + "DAYS",
+                100,
+                Helpers.createJsonPair("testDataKey", 400),
+                SocialLeaderboardService.SocialLeaderboardType.LOW_VALUE.toString(),
+                100,
                 5,
                 3,
                 tr);
@@ -467,9 +503,50 @@ public class SocialLeaderboardServiceTest extends TestFixtureBase
 
         tr.Run();
 
+        Date date = new Date();
+        date.setTime(date.getTime() + 120 * 1000);
+
         JSONObject data = tr.m_response.getJSONObject("data");
         String groupId = data.getString("groupId");
         _wrapper.getSocialLeaderboardService().postScoreToDynamicGroupLeaderboard(
+                _groupLeaderboardId,
+                groupId,
+                0, 
+                Helpers.createJsonPair("test", "stuff"),
+                "HIGH_VALUE",
+                "WEEKLY",
+                date,
+                2,
+                tr);
+        tr.Run();
+
+        _wrapper.getGroupService().deleteGroup(
+                groupId,
+                -1,
+                tr);
+        tr.Run();
+    }
+
+    @Test
+    public void testPostScoreToDynamicGroupLeaderboardUTC() throws Exception
+    {
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.getGroupService().createGroup(
+                "testGroup",
+                "test",
+                false,
+                new GroupACL(GroupACL.Access.ReadWrite, GroupACL.Access.ReadWrite),
+                Helpers.createJsonPair("testInc", 123),
+                Helpers.createJsonPair("test", "test"),
+                Helpers.createJsonPair("test", "test"),
+                tr);
+
+        tr.Run();
+
+        JSONObject data = tr.m_response.getJSONObject("data");
+        String groupId = data.getString("groupId");
+        _wrapper.getSocialLeaderboardService().postScoreToDynamicGroupLeaderboardUTC(
                 _groupLeaderboardId,
                 groupId,
                 0, 
