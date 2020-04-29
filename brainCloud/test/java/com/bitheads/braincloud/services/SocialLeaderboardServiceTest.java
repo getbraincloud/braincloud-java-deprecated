@@ -232,7 +232,7 @@ public class SocialLeaderboardServiceTest extends TestFixtureBase
                 100,
                 Helpers.createJsonPair("testDataKey", 400),
                 SocialLeaderboardService.SocialLeaderboardType.LOW_VALUE.toString(),
-                0,
+                100,
                 5,
                 3,
                 tr);
