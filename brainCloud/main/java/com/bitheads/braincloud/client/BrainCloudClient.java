@@ -44,6 +44,7 @@ import com.bitheads.braincloud.services.ScriptService;
 import com.bitheads.braincloud.services.SocialLeaderboardService;
 import com.bitheads.braincloud.services.TimeService;
 import com.bitheads.braincloud.services.TournamentService;
+import com.bitheads.braincloud.services.GlobalFileService;
 import com.bitheads.braincloud.services.CustomEntityService;
 import com.bitheads.braincloud.services.VirtualCurrencyService;
 import com.bitheads.braincloud.services.ItemCatalogService;
@@ -80,7 +81,7 @@ public class BrainCloudClient {
     private double _timeZoneOffset;
 
 
-    private final static String BRAINCLOUD_VERSION = "4.4.0";
+    private final static String BRAINCLOUD_VERSION = "4.5.0";
 
     private BrainCloudRestClient _restClient;
     private RTTComms _rttComms;
@@ -122,6 +123,7 @@ public class BrainCloudClient {
     private SocialLeaderboardService _socialLeaderboardService = new SocialLeaderboardService(this);
     private TimeService _timeService = new TimeService(this);
     private TournamentService _tournamentService = new TournamentService(this);
+    private GlobalFileService _globalFileService = new GlobalFileService(this);
     private CustomEntityService _customEntityService = new CustomEntityService(this);
     private VirtualCurrencyService _virtualCurrencyService = new VirtualCurrencyService(this);
     private ItemCatalogService _itemCatalogService = new ItemCatalogService(this);
@@ -962,6 +964,10 @@ public class BrainCloudClient {
 
     public TournamentService getTournamentService() {
         return _tournamentService;
+    }
+
+    public GlobalFileService getGlobalFileService() {
+        return _globalFileService;
     }
 
     public CustomEntityService getCustomEntityService() {

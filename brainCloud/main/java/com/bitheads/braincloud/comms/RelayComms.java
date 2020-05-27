@@ -404,7 +404,8 @@ public class RelayComms {
                 _orderedReliablePackets.get(i).clear();
             }
             _connectInfo = null;
-
+            
+            _reliables.clear();
             _udpRsmgPackets.clear();
             _nextExpectedUdpRsmgPacketId = 0;
         }
@@ -594,6 +595,21 @@ public class RelayComms {
 
     public void sendRelay(byte[] data, int toNetId, boolean reliable, boolean ordered, int channel) {
         if (!isConnected()) return;
+
+        if (!((toNetId >= 0 && toNetId < MAX_PLAYERS) || toNetId == CL2RS_RELAY))
+        {
+            synchronized(_callbackEventQueue) {
+                _callbackEventQueue.add(new RelayCallback(RelayCallbackType.ConnectFailure, "Invalid Net Id: " + toNetId));
+            }
+            return;
+        }
+        if (data.length > 1024)
+        {
+            synchronized(_callbackEventQueue) {
+                _callbackEventQueue.add(new RelayCallback(RelayCallbackType.ConnectFailure, "Packet too big " + data.length + " > max 1024"));
+            }
+            return;
+        }
 
         int bufferSize = data.length + 5;
 
@@ -887,6 +903,7 @@ public class RelayComms {
                             }
                             break; // Out of order
                         }
+                        return;
                     }
                     else {
                         // Just drop out of order packets for unreliables
