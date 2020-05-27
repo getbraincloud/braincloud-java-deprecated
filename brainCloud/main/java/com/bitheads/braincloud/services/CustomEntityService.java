@@ -19,6 +19,7 @@ public class CustomEntityService {
         isOwned,
         entityType,
         version,
+        deleteCriteria,
         whereJson,
         rowsPerPage,
         searchJson,
@@ -334,6 +335,32 @@ public class CustomEntityService {
             _client.sendRequest(serverCall);
 
         } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * deletes Entities based on the criteria
+     *
+     * @param entityType The entity type as defined by the user
+     * @param deleteCriteria
+     * @param callback Callback.
+     */
+    public void deleteEntities(String entityType, String deleteCriteria,
+                         IServerCallback callback) {
+
+        try {
+            JSONObject data = new JSONObject();
+            data.put(Parameter.entityType.name(), entityType);
+            JSONObject Data = new JSONObject(deleteCriteria);
+            data.put(Parameter.deleteCriteria.name(), Data);
+
+            ServerCall serverCall = new ServerCall(ServiceName.customEntity,
+                    ServiceOperation.DELETE_ENTITIES, data, callback);
+            _client.sendRequest(serverCall);
+
+        }
+         catch (JSONException e) {
             e.printStackTrace();
         }
     }

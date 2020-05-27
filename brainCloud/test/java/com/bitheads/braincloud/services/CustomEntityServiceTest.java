@@ -131,6 +131,17 @@ public class CustomEntityServiceTest extends TestFixtureBase {
         tr.Run();
     }
 
+    @Test
+    public void testDeleteEntities() throws Exception {
+        TestResult tr = new TestResult(_wrapper);
+        String entityId = createDefaultEntity(ACL.Access.None);
+        _wrapper.getCustomEntityService().deleteEntities(
+                _defaultEntityType,
+                "{\"entityId\": \"Testing\"}",
+                tr);
+        tr.Run();
+    }
+
     /// <summary>
     /// Creates a default entity on the server
     /// </summary>
