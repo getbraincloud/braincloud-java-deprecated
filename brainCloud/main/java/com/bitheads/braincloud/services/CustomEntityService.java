@@ -364,4 +364,125 @@ public class CustomEntityService {
             e.printStackTrace();
         }
     }
+
+        /**
+     * deletes Entities based on the criteria
+     *
+     * @param entityType The entity type as defined by the user
+     * @param version
+     * @param callback Callback.
+     */
+    public void deleteSingleton(String entityType, int version,
+                         IServerCallback callback) {
+
+        try {
+            JSONObject data = new JSONObject();
+            data.put(Parameter.entityType.name(), entityType);
+            //JSONObject Data = new JSONObject(version);
+            data.put(Parameter.version.name(), version);
+
+            ServerCall serverCall = new ServerCall(ServiceName.customEntity,
+                    ServiceOperation.DELETE_SINGLETON, data, callback);
+            _client.sendRequest(serverCall);
+
+        }
+         catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+        /**
+     * deletes Entities based on the criteria
+     *
+     * @param entityType The entity type as defined by the user
+     * @param version
+     * @param dataJson
+     * @param acl
+     * @param timeToLive
+     * @param callback Callback.
+     */
+    public void updateSingleton(String entityType, int version, String dataJson, String acl, long timeToLive,
+                         IServerCallback callback) {
+
+        try {
+            JSONObject data = new JSONObject();
+            data.put(Parameter.entityType.name(), entityType);
+            //JSONObject data = new JSONObject();
+            data.put(Parameter.version.name(), version);
+
+            JSONObject jsonData = new JSONObject(dataJson);
+            data.put(Parameter.dataJson.name(), jsonData);
+
+            if (StringUtil.IsOptionalParameterValid(acl)) {
+                JSONObject jsonAcl;
+                jsonAcl = new JSONObject(acl);
+                data.put(Parameter.acl.name(), jsonAcl);
+            }
+
+            data.put(Parameter.timeToLive.name(), timeToLive);
+
+            ServerCall serverCall = new ServerCall(ServiceName.customEntity,
+                    ServiceOperation.UPDATE_SINGLETON, data, callback);
+            _client.sendRequest(serverCall);
+
+        }
+         catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+        /**
+     * deletes Entities based on the criteria
+     *
+     * @param entityType The entity type as defined by the user
+     * @param version
+     * @param fieldsJson
+     * @param callback Callback.
+     */
+    public void updateSingletonFields(String entityType, int version,String fieldsJson,
+                         IServerCallback callback) {
+
+        try {
+            JSONObject data = new JSONObject();
+            data.put(Parameter.entityType.name(), entityType);
+            //JSONObject data = new JSONObject();
+            data.put(Parameter.version.name(), version);
+
+            JSONObject fieldsData = new JSONObject(fieldsJson);
+            data.put(Parameter.fieldsJson.name(), fieldsData);
+
+            ServerCall serverCall = new ServerCall(ServiceName.customEntity,
+                    ServiceOperation.UPDATE_SINGLETON_FIELDS, data, callback);
+            _client.sendRequest(serverCall);
+
+        }
+         catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+        /**
+     * deletes Entities based on the criteria
+     *
+     * @param entityType The entity type as defined by the user
+     * @param callback Callback.
+     */
+    public void readSingleton(String entityType,
+                         IServerCallback callback) {
+
+        try {
+            JSONObject data = new JSONObject();
+            data.put(Parameter.entityType.name(), entityType);
+
+            ServerCall serverCall = new ServerCall(ServiceName.customEntity,
+                    ServiceOperation.READ_SINGLETON, data, callback);
+            _client.sendRequest(serverCall);
+
+        }
+         catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 }
+
+    
