@@ -365,8 +365,8 @@ public class CustomEntityService {
         }
     }
 
-        /**
-     * deletes Entities based on the criteria
+    /**
+     * Deletes the specified custom entity singleton, owned by the session's user, for the specified entity type, on the server.
      *
      * @param entityType The entity type as defined by the user
      * @param version
@@ -391,8 +391,8 @@ public class CustomEntityService {
         }
     }
 
-        /**
-     * deletes Entities based on the criteria
+    /**
+     * Updates the singleton owned by the user for the specified custom entity type on the server, creating the singleton if it does not exist. This operation results in the owned singleton's data being completely replaced by the passed in JSON object.
      *
      * @param entityType The entity type as defined by the user
      * @param version
@@ -431,8 +431,8 @@ public class CustomEntityService {
         }
     }
 
-        /**
-     * deletes Entities based on the criteria
+    /**
+     * Partially updates the data, of the singleton owned by the user for the specified custom entity type, with the specified fields, on the server
      *
      * @param entityType The entity type as defined by the user
      * @param version
@@ -445,7 +445,6 @@ public class CustomEntityService {
         try {
             JSONObject data = new JSONObject();
             data.put(Parameter.entityType.name(), entityType);
-            //JSONObject data = new JSONObject();
             data.put(Parameter.version.name(), version);
 
             JSONObject fieldsData = new JSONObject(fieldsJson);
@@ -461,8 +460,37 @@ public class CustomEntityService {
         }
     }
 
-        /**
-     * deletes Entities based on the criteria
+    /**
+     * Increments the specified fields by the specified amount within custom entity data on the server, enforcing ownership/ACL permissions.
+     *
+     * @param entityType The entity type as defined by the user
+     * @param entityId
+     * @param fieldsJson
+     * @param callback Callback.
+     */
+    public void incrementData(String entityType, String entityId, String fieldsJson,
+                         IServerCallback callback) {
+
+        try {
+            JSONObject data = new JSONObject();
+            data.put(Parameter.entityType.name(), entityType);
+            data.put(Parameter.entityId.name(), entityId);
+
+            JSONObject fieldsData = new JSONObject(fieldsJson);
+            data.put(Parameter.fieldsJson.name(), fieldsData);
+
+            ServerCall serverCall = new ServerCall(ServiceName.customEntity,
+                    ServiceOperation.UPDATE_SINGLETON_FIELDS, data, callback);
+            _client.sendRequest(serverCall);
+
+        }
+         catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Reads the custom entity singleton owned by the session's user.
      *
      * @param entityType The entity type as defined by the user
      * @param callback Callback.
