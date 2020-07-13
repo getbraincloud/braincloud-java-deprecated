@@ -480,7 +480,7 @@ public class CustomEntityService {
             data.put(Parameter.fieldsJson.name(), fieldsData);
 
             ServerCall serverCall = new ServerCall(ServiceName.customEntity,
-                    ServiceOperation.UPDATE_SINGLETON_FIELDS, data, callback);
+                    ServiceOperation.INCREMENT_DATA, data, callback);
             _client.sendRequest(serverCall);
 
         }
