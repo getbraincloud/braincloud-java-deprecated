@@ -192,7 +192,6 @@ public class SocialLeaderboardServiceTest extends TestFixtureBase
         TestResult tr = new TestResult(_wrapper);
 
         long date = TimeUtil.UTCDateTimeToUTCMillis(addDays(new Date(), 3));
-
         _wrapper.getSocialLeaderboardService().postScoreToDynamicLeaderboardUTC(
                 _dynamicLeaderboardId + "_" + (int)(Math.random() * 10000000),
                 100,
