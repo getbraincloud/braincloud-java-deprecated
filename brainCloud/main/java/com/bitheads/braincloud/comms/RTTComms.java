@@ -106,6 +106,7 @@ public class RTTComms implements IServerCallback {
         public void onClose(int code, String reason, boolean remote) {
             System.out.println("RTT WS onClose: " + reason + ", code: " + Integer.toString(code) + ", remote: " + Boolean.toString(remote));
             synchronized(_callbackEventQueue) {
+                disconnect();
                 _callbackEventQueue.add(new RTTCallback(RTTCallbackType.ConnectFailure, "webSocket onClose: " + reason));
             }
         }
@@ -114,6 +115,7 @@ public class RTTComms implements IServerCallback {
         public void onError(Exception e) {
             e.printStackTrace();
             synchronized(_callbackEventQueue) {
+                disconnect();
                 _callbackEventQueue.add(new RTTCallback(RTTCallbackType.ConnectFailure, "webSocket onError"));
             }
         }
@@ -228,7 +230,12 @@ public class RTTComms implements IServerCallback {
                     JSONObject json = new JSONObject();
                     json.put("operation", "HEARTBEAT");
                     json.put("service", "rtt");
-                    sendWS(json);
+                    if (_useWebSocket) {
+                        sendWS(json);
+                    }
+                    else {
+                        send(json);
+                    }
                 }
                 catch (Exception e) {
                     e.printStackTrace();
@@ -544,6 +551,7 @@ public class RTTComms implements IServerCallback {
         }
         catch (Exception e) {
             synchronized(_callbackEventQueue) {
+                disconnect();
                 _callbackEventQueue.add(new RTTCallback(RTTCallbackType.ConnectFailure, "Bad message: " + message));
             }
             throw(e);
@@ -556,6 +564,7 @@ public class RTTComms implements IServerCallback {
             case "CONNECT": {
                 _isConnected = true;
                 _heartbeatSeconds = json.getJSONObject("data").getInt("heartbeatSeconds");
+                _lastHeartbeatTime = System.currentTimeMillis();
                 _connectionId = json.getJSONObject("data").getString("cxId");
                 if (json.getString("service").equals("rtt")) {
                     synchronized(_callbackEventQueue) {
@@ -563,6 +572,7 @@ public class RTTComms implements IServerCallback {
                     }
                 } else {
                     synchronized(_callbackEventQueue) {
+                        disconnect();
                         _callbackEventQueue.add(new RTTCallback(RTTCallbackType.ConnectFailure));
                     }
                 }
@@ -628,6 +638,7 @@ public class RTTComms implements IServerCallback {
                     JSONObject data = jsonData.getJSONObject("data");
                     _endpoint = getEndpointToUse(data.getJSONArray("endpoints"));
                     if (_endpoint == null) {
+                        disconnect();
                         _connectCallback.rttConnectFailure("No endpoint available");
                         return;
                     }
@@ -642,6 +653,7 @@ public class RTTComms implements IServerCallback {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
+                    disconnect();
                     _connectCallback.rttConnectFailure("Failed to establish connection");
                     return;
                 }
