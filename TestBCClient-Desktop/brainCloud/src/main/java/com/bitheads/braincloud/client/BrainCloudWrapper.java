@@ -112,7 +112,6 @@ public class BrainCloudWrapper implements IServerCallback {
     {
         //detect os being used
         setReleasePlatform(getReleasePlatform().detectGenericPlatform(System.getProperty("os.name").toLowerCase()));
-        System.out.print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
     }
 
     /**

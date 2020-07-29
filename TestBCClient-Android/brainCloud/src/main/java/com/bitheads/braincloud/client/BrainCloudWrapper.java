@@ -259,6 +259,10 @@ public class BrainCloudWrapper implements IServerCallback {
             _client = new BrainCloudClient();
         }
 
+        //need to do detection in the wrapper because java doesn't recognize defines or precompiler statements... 
+        //Both java_desktop and java_android have lib specific ways of detecting platforms and they are not cross compatible.  
+        detectPlatform();
+
         getClient().initializeWithApps(url, defaultAppId, secretMap, version);
     } 
 
