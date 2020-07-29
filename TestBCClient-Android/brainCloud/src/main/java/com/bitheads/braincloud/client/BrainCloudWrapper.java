@@ -151,7 +151,7 @@ public class BrainCloudWrapper implements IServerCallback {
     {
         //detect amazon. This is needed to distinguish between google android devices and amazon android devices.
         if(Build.MANUFACTURER.equals("Amazon")) {
-            setReleasePlatform(getReleasePlatform().detectGenericPlatform(Build.MANUFACTURER);
+            setReleasePlatform(getReleasePlatform().detectGenericPlatform(Build.MANUFACTURER));
         }
         else
         {
