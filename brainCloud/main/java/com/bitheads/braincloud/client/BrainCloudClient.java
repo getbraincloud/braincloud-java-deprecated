@@ -55,8 +55,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Locale;
 import java.util.TimeZone;
-import android.os.Build;
-import java.lang.System;
+//import android.os.Build;
 
 public class BrainCloudClient {
 
@@ -225,15 +224,16 @@ public class BrainCloudClient {
         _appId = appId;
         _appVersion = appVersion;
         _secretMap.put(_appId, secretKey);
+        //_releasePlatform = Platform.GooglePlayAndroid;
         
-        //detect amazon. Will need to revisit so we no longer assume java apps are android if not amazon
-        if(Build.MANUFACTURER.equals("Amazon")) {
-            _releasePlatform = _releasePlatform.fromString(Build.MANUFACTURER);
-        }
-        else
-        {
-            _releasePlatform = Platform.GooglePlayAndroid;
-        }
+        // //detect amazon. Will need to revisit so we no longer assume java apps are android if not amazon
+        // if(Build.MANUFACTURER.equals("Amazon")) {
+        //     _releasePlatform = _releasePlatform.fromString(Build.MANUFACTURER);
+        // }
+        // else
+        // {
+        //     _releasePlatform = Platform.GooglePlayAndroid;
+        // }
 
         Locale locale = Locale.getDefault();
         if (_countryCode == null || _countryCode.isEmpty()) _countryCode = locale.getCountry();
@@ -296,14 +296,14 @@ public class BrainCloudClient {
         _appVersion = appVersion;
         _secretMap = secretMap;
         
-        //detect amazon. Will need to revisit so we no longer assume java apps are android if not amazon
-        if(Build.MANUFACTURER.equals("Amazon")) {
-            _releasePlatform = _releasePlatform.fromString(Build.MANUFACTURER);
-        }
-        else
-        {
-            _releasePlatform = Platform.GooglePlayAndroid;
-        }
+        //_releasePlatform = _releasePlatform.detectGenericPlatform(System.getProperty("os.name").toLowerCase());
+        //System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAHHHHHH" + System.getProperty("os.name").toLowerCase());
+
+        //the wrapper should handle this, whether it be android or desktop, but in the case its not discovered, it will default to Java Platform
+        // if(_releasePlatform == null)
+        // {
+        //     _releasePlatform = Platform.Unknown;
+        // }
 
         Locale locale = Locale.getDefault();
         if (_countryCode == null || _countryCode.isEmpty()) _countryCode = locale.getCountry();
