@@ -103,6 +103,43 @@ public class BrainCloudWrapperTest extends TestFixtureNoAuth
 
         Logout();
     }
+        @Test
+    public void testReInitWrapper() throws Exception
+    {
+        //case 1 Multiple init on client
+        int initCounter = 1;
+        _wrapper.initializeWithApps(m_serverUrl, m_appId, originalAppSecretMap, m_appVersion);
+        Assert.assertTrue(initCounter == 1);
+        initCounter++;
+
+         _wrapper.initializeWithApps(m_serverUrl, m_appId, originalAppSecretMap, m_appVersion);
+        Assert.assertTrue(initCounter == 2);
+        initCounter++;
+
+         _wrapper.initializeWithApps(m_serverUrl, m_appId, originalAppSecretMap, m_appVersion);
+        Assert.assertTrue(initCounter == 3);
+
+        //case 2 
+        //Auth 
+        TestResult tr1 = new TestResult(_wrapper);
+        _wrapper.getAuthenticationService().authenticateUniversal(getUser(Users.UserB).id, getUser(Users.UserB).password, true, tr1);
+        tr1.Run();
+
+        //Call
+        TestResult tr2 = new TestResult(_wrapper);
+        _wrapper.getTimeService().readServerTime(
+                tr2);
+        tr2.Run();
+
+        //reinit
+        _wrapper.initializeWithApps(m_serverUrl, m_appId, originalAppSecretMap, m_appVersion);
+
+        //call without auth - expecting it to fail because we need to reauth after init
+        TestResult tr3 = new TestResult(_wrapper);
+        _wrapper.getTimeService().readServerTime(
+                tr3);
+        tr3.RunExpectFail(StatusCodes.FORBIDDEN, ReasonCodes.NO_SESSION);
+    }
 /*
     @Test
     public void testVerifyAlwaysAllowProfileFalse()

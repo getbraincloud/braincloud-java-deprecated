@@ -130,18 +130,16 @@ public class BrainCloudRestClient implements Runnable {
     }
 
     public void initialize(String serverUrl, String appId, String secretKey) {
-        _packetId = 0;
+        resetCommunication();
         _expectedPacketId = NO_PACKET_EXPECTED;
         _serverUrl = serverUrl;
         _appId = appId;
         _secretKey = secretKey;
-        _sessionId = "";
         _retryCount = 0;
         _isInitialized = true;
         _secretMap.put(appId, secretKey);
 
         String suffix = "/dispatcherv2";
-
         if (_serverUrl.endsWith(suffix))
         {
             _serverUrl = _serverUrl.substring(0, _serverUrl.length() - suffix.length());
@@ -151,7 +149,6 @@ public class BrainCloudRestClient implements Runnable {
         {
             _serverUrl = _serverUrl.substring(0, _serverUrl.length() - 1);
         }
-
         _uploadUrl = _serverUrl + "/uploader";
         _serverUrl = _serverUrl + "/dispatcherv2";
 
@@ -163,9 +160,7 @@ public class BrainCloudRestClient implements Runnable {
 
     public void initializeWithApps(String serverUrl, String appId, Map<String, String> secretMap) {
 
-        //clear the map
-        _secretMap.clear();
-        //update the map
+        //update the map - getting rid of _secretMap.clear() because of unwanted loss of data occuring on multiple inits 
         _secretMap = secretMap;
 
         initialize(serverUrl, appId, secretMap.get(appId));
@@ -323,7 +318,9 @@ public class BrainCloudRestClient implements Runnable {
             _eventResponses.clear();
             _rewardResponses.clear();
             _isAuthenticated = false;
+            _isInitialized = false;
             _sessionId = "";
+            _packetId = 0;
             _blockingQueue = false;
             _networkErrorCallbackReadyToBeSent = false;
 

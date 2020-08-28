@@ -206,6 +206,7 @@ public class BrainCloudClient {
      */
     public void initialize(String serverURL, String appId, String secretKey, String appVersion)
     {
+        resetCommunication();
         String error = null;
         if (isNullOrEmpty(serverURL))
             error = "serverUrl was null or empty";
@@ -284,7 +285,7 @@ public class BrainCloudClient {
      */
     public void initializeWithApps(String serverUrl, String appId, Map<String, String> secretMap, String appVersion)
     {
-
+        resetCommunication();
         String error = null;
         if (isNullOrEmpty(serverUrl))
             error = "serverUrl was null or empty";
