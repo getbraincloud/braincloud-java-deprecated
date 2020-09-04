@@ -55,9 +55,9 @@ public class IdentityServiceTest extends TestFixtureBase {
                 tr);
         tr.Run();
         tr.Reset();
-
-        _wrapper.getIdentityService().switchToSingletonChildProfile(m_childAppId, true, tr);
-        tr.Run();
+        TestResult tr2 = new TestResult(_wrapper);
+        _wrapper.getIdentityService().switchToSingletonChildProfile(m_childAppId, true, tr2);
+        tr2.Run();
     }
 
     @Test
