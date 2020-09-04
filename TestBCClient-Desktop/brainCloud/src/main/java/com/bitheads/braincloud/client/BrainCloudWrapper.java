@@ -157,6 +157,10 @@ public class BrainCloudWrapper implements IServerCallback {
      */
     private void initializeWithApps(String url, String defaultAppId, Map<String, String> secretMap, String version, String companyName, String appName)
     {
+        if(_client == null)
+        {
+            _client = new BrainCloudClient();
+        }
         //need to do detection in the wrapper because java doesn't recognize defines or precompiler statements... 
         //Both java_desktop and java_android have lib specific ways of detecting platforms and they are not cross compatible.  
         detectPlatform();
@@ -174,6 +178,10 @@ public class BrainCloudWrapper implements IServerCallback {
      */
     private void initializeWithApps(String url, String defaultAppId, Map<String, String> secretMap, String version)
     {
+        if(_client == null)
+        {
+            _client = new BrainCloudClient();
+        }
         //need to do detection in the wrapper because java doesn't recognize defines or precompiler statements... 
         //Both java_desktop and java_android have lib specific ways of detecting platforms and they are not cross compatible.  
         detectPlatform();
