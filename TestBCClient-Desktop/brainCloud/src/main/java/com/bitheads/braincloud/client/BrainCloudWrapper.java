@@ -114,20 +114,6 @@ public class BrainCloudWrapper implements IServerCallback {
         setReleasePlatform(getReleasePlatform().detectGenericPlatform(System.getProperty("os.name").toLowerCase()));
     }
 
-    public void resetWrapper(boolean resetWrapperName)
-    {
-        resetStoredAnonymousId();
-        resetStoredAuthenticationType();
-        resetStoredProfileId();
-
-        _client = null;
-        _client = new BrainCloudClient();
-        _client.resetCommunication();
-
-        if(resetWrapperName)
-            _wrapperName = "";
-    }
-
     /**
      * Method initializes the BrainCloudClient.
      *
@@ -136,7 +122,6 @@ public class BrainCloudWrapper implements IServerCallback {
      * @param appVersion The app version
      */
     public void initialize(String appId, String secretKey, String appVersion) {
-        resetWrapper(false);
         //need to do detection in the wrapper because java doesn't recognize defines or precompiler statements... 
         //Both java_desktop and java_android have lib specific ways of detecting platforms and they are not cross compatible.  
         detectPlatform();
@@ -153,7 +138,6 @@ public class BrainCloudWrapper implements IServerCallback {
      * @param serverUrl  The url to the brainCloud server
      */
     public void initialize(String appId, String secretKey, String appVersion, String serverUrl) {
-        resetWrapper(false);
         //need to do detection in the wrapper because java doesn't recognize defines or precompiler statements... 
         //Both java_desktop and java_android have lib specific ways of detecting platforms and they are not cross compatible.  
         detectPlatform();
@@ -173,8 +157,6 @@ public class BrainCloudWrapper implements IServerCallback {
      */
     private void initializeWithApps(String url, String defaultAppId, Map<String, String> secretMap, String version, String companyName, String appName)
     {
-        resetWrapper(false);
-
         //need to do detection in the wrapper because java doesn't recognize defines or precompiler statements... 
         //Both java_desktop and java_android have lib specific ways of detecting platforms and they are not cross compatible.  
         detectPlatform();
@@ -192,8 +174,6 @@ public class BrainCloudWrapper implements IServerCallback {
      */
     private void initializeWithApps(String url, String defaultAppId, Map<String, String> secretMap, String version)
     {
-        resetWrapper(false);
-
         //need to do detection in the wrapper because java doesn't recognize defines or precompiler statements... 
         //Both java_desktop and java_android have lib specific ways of detecting platforms and they are not cross compatible.  
         detectPlatform();

@@ -160,7 +160,9 @@ public class BrainCloudRestClient implements Runnable {
 
     public void initializeWithApps(String serverUrl, String appId, Map<String, String> secretMap) {
 
-        //update the map - getting rid of _secretMap.clear() because of unwanted loss of data occuring on multiple inits 
+        _secretMap = null; //clean up _secretMaps data
+
+        //update the map with new map passed in
         _secretMap = secretMap;
 
         initialize(serverUrl, appId, secretMap.get(appId));
