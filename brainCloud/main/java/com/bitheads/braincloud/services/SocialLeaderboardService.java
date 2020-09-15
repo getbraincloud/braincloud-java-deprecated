@@ -6,6 +6,7 @@ import com.bitheads.braincloud.client.ServiceName;
 import com.bitheads.braincloud.client.ServiceOperation;
 import com.bitheads.braincloud.comms.ServerCall;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -699,7 +700,7 @@ public class SocialLeaderboardService {
         try {
             JSONObject data = new JSONObject();
             data.put(Parameter.leaderboardId.name(), leaderboardId);
-            data.put(Parameter.profileIds.name(), profileIds);
+            data.put(Parameter.profileIds.name(), new JSONArray(profileIds));
 
             ServerCall sc = new ServerCall(ServiceName.leaderboard,
                     ServiceOperation.GET_PLAYERS_SOCIAL_LEADERBOARD, data, callback);
@@ -725,7 +726,7 @@ public class SocialLeaderboardService {
         try {
             JSONObject data = new JSONObject();
             data.put(Parameter.leaderboardId.name(), leaderboardId);
-            data.put(Parameter.profileIds.name(), profileIds);
+            data.put(Parameter.profileIds.name(), new JSONArray(profileIds));
             data.put(Parameter.versionId.name(), versionId);
 
             ServerCall sc = new ServerCall(ServiceName.leaderboard,
