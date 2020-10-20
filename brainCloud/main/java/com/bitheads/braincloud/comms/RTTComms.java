@@ -70,6 +70,7 @@ public class RTTComms implements IServerCallback {
         public void onMessage(String message) {
             try {
                 onRecv(message);
+                _webSocketStatus = RTTComms.WebsocketStatus.Message;
             } catch (Exception e) {
                 e.printStackTrace();
                 disconnect();
@@ -82,6 +83,7 @@ public class RTTComms implements IServerCallback {
             String message = new String(bytes.array());
             try {
                 onRecv(message);
+                _webSocketStatus = RTTComms.WebsocketStatus.Message;
             } catch (Exception e) {
                 e.printStackTrace();
                 disconnect();
@@ -95,6 +97,7 @@ public class RTTComms implements IServerCallback {
 
             try {
                 onWSConnected();
+                _webSocketStatus = RTTComms.WebsocketStatus.Open;
             } catch (Exception e) {
                 e.printStackTrace();
                 failedToConnect();
@@ -107,6 +110,7 @@ public class RTTComms implements IServerCallback {
             System.out.println("RTT WS onClose: " + reason + ", code: " + Integer.toString(code) + ", remote: " + Boolean.toString(remote));
             synchronized(_callbackEventQueue) {
                 disconnect();
+                _webSocketStatus = RTTComms.WebsocketStatus.Closed;
                 _callbackEventQueue.add(new RTTCallback(RTTCallbackType.ConnectFailure, "webSocket onClose: " + reason));
             }
         }
@@ -116,9 +120,27 @@ public class RTTComms implements IServerCallback {
             e.printStackTrace();
             synchronized(_callbackEventQueue) {
                 disconnect();
+                _webSocketStatus = RTTComms.WebsocketStatus.Error;
                 _callbackEventQueue.add(new RTTCallback(RTTCallbackType.ConnectFailure, "webSocket onError"));
             }
         }
+    }
+
+    public enum RttConnectionStatus
+    {
+        Connected,
+        Disconnected,
+        Connecting, 
+        Disconnecting
+    }
+
+    public enum WebsocketStatus
+    {
+        Open, 
+        Closed, 
+        Message,
+        Error,
+        None
     }
 
     private BrainCloudClient _client;
@@ -134,11 +156,13 @@ public class RTTComms implements IServerCallback {
     private String _profileId;
     private String _connectionId;
 
+    private RTTComms.WebsocketStatus _webSocketStatus = RTTComms.WebsocketStatus.None;
+    private RTTComms.RttConnectionStatus _rttConnectionStatus = RTTComms.RttConnectionStatus.Disconnected;
+
     private JSONObject _auth;
     private JSONObject _endpoint;
     
     private Socket _socket = null;
-    private boolean _isConnected = false;
     
     private boolean _useWebSocket = false;
     private WSClient _webSocketClient;
@@ -153,20 +177,31 @@ public class RTTComms implements IServerCallback {
     }
 
     public void enableRTT(IRTTConnectCallback callback, boolean useWebSocket) {
-        _connectCallback = callback;
-        _useWebSocket = useWebSocket;
+        if(isRTTEnabled())
+        {
+            return;
+        }
+        else
+        {
+            _connectCallback = callback;
+            _useWebSocket = useWebSocket;
 
-        BrainCloudRestClient restClient = _client.getRestClient();
-        _appId = restClient.getAppId();
-        _sessionId = restClient.getSessionId();
+            BrainCloudRestClient restClient = _client.getRestClient();
+            _appId = restClient.getAppId();
+            _sessionId = restClient.getSessionId();
 
-        AuthenticationService authenticationService = _client.getAuthenticationService();
-        _profileId = authenticationService.getProfileId();
+            AuthenticationService authenticationService = _client.getAuthenticationService();
+            _profileId = authenticationService.getProfileId();
 
-        _client.getRTTService().requestClientConnection(this);
+            _client.getRTTService().requestClientConnection(this);
+        }
     }
 
     public void disableRTT() {
+        if(!isRTTEnabled())
+        {
+            return;
+        }
         if (_webSocketClient != null) {
             _webSocketClient.close();
             _webSocketClient = null;
@@ -178,7 +213,12 @@ public class RTTComms implements IServerCallback {
      */
     public boolean isRTTEnabled()
     {
-        return _isConnected;
+        return _rttConnectionStatus == RTTComms.RttConnectionStatus.Connected;
+    }
+
+    public RTTComms.RttConnectionStatus GetConnectionStatus()
+    {
+        return _rttConnectionStatus;
     }
 
     public boolean getLoggingEnabled() {
@@ -223,7 +263,7 @@ public class RTTComms implements IServerCallback {
         }
 
         // Heartbeat
-        if (_isConnected) {
+        if (isRTTEnabled()) {
             if (System.currentTimeMillis() - _lastHeartbeatTime >= _heartbeatSeconds * 1000) {
                 _lastHeartbeatTime = System.currentTimeMillis();
                 try {
@@ -318,13 +358,14 @@ public class RTTComms implements IServerCallback {
                 try {
                     if (_loggingEnabled) {
                         System.out.println("RTT TCP: Connecting...");
+                        _rttConnectionStatus = RTTComms.RttConnectionStatus.Connecting;
                     }
 
                     // Create socket
                     InetAddress serverIP = InetAddress.getByName(_endpoint.getString("host"));
                     int port = _endpoint.getInt("port");
                     _socket = new Socket(serverIP, port);
-                    _isConnected = true;
+                    _rttConnectionStatus = RTTComms.RttConnectionStatus.Connected;
                     _lastHeartbeatTime = System.currentTimeMillis();
 
                     if (_loggingEnabled) {
@@ -371,6 +412,7 @@ public class RTTComms implements IServerCallback {
 
         if (_loggingEnabled) {
             System.out.println("RTT WS: Connecting " + uri);
+            _rttConnectionStatus = RTTComms.RttConnectionStatus.Connecting;
         }
         
         try {
@@ -387,6 +429,7 @@ public class RTTComms implements IServerCallback {
             failedToConnect();
             return;
         }
+        _rttConnectionStatus = RTTComms.RttConnectionStatus.Connected;
 
         /*
         // Create socket
@@ -471,8 +514,7 @@ public class RTTComms implements IServerCallback {
     }
 
     private void disconnect() {
-        _isConnected = false;
-
+        _rttConnectionStatus = RTTComms.RttConnectionStatus.Disconnecting;
         try {
             if (_socket != null) {
                 synchronized(_socket) {
@@ -485,6 +527,8 @@ public class RTTComms implements IServerCallback {
             if (_webSocketClient != null) {
                 _webSocketClient = null;
             }
+            _rttConnectionStatus = RTTComms.RttConnectionStatus.Disconnected;
+
         } catch (Exception e) {
         }
     }
@@ -562,7 +606,7 @@ public class RTTComms implements IServerCallback {
         String operation = json.getString("operation");
         switch (operation) {
             case "CONNECT": {
-                _isConnected = true;
+                _rttConnectionStatus = RTTComms.RttConnectionStatus.Connected;
                 _heartbeatSeconds = json.getJSONObject("data").getInt("heartbeatSeconds");
                 _lastHeartbeatTime = System.currentTimeMillis();
                 _connectionId = json.getJSONObject("data").getString("cxId");
@@ -596,10 +640,10 @@ public class RTTComms implements IServerCallback {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    _isConnected = false;
+                    _rttConnectionStatus = RTTComms.RttConnectionStatus.Disconnected;
                     return;
                 }
-                while (_isConnected) {
+                while (isRTTEnabled()) {
                     try {
                         int len = in.readInt();
 
