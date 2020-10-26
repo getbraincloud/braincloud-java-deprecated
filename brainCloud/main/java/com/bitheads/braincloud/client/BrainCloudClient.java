@@ -33,7 +33,6 @@ import com.bitheads.braincloud.services.PlayerStateService;
 import com.bitheads.braincloud.services.PlayerStatisticsEventService;
 import com.bitheads.braincloud.services.PlayerStatisticsService;
 import com.bitheads.braincloud.services.PresenceService;
-import com.bitheads.braincloud.services.ProductService;
 import com.bitheads.braincloud.services.ProfanityService;
 import com.bitheads.braincloud.services.PushNotificationService;
 import com.bitheads.braincloud.services.RedemptionCodeService;
@@ -113,7 +112,6 @@ public class BrainCloudClient {
     private PlayerStatisticsService _playerStatisticsService = new PlayerStatisticsService(this);
     private PlayerStatisticsEventService _playerStatisticsEventService = new PlayerStatisticsEventService(this);
     private PresenceService _presenceService = new PresenceService(this);
-    private ProductService _productService = new ProductService(this);
     private ProfanityService _profanityService = new ProfanityService(this);
     private PushNotificationService _pushNotificationService = new PushNotificationService(this);
     private RedemptionCodeService _redemptionCodeService = new RedemptionCodeService(this);
@@ -744,17 +742,6 @@ public class BrainCloudClient {
         _restClient.getSessionId();
     }
 
-    /**
-     * @deprecated Use getAppId instead - removal after September 1 2017
-     */
-    @Deprecated
-    public String getGameId() {
-        if (_restClient == null) {
-            return null;
-        }
-        return _restClient.getAppId();
-    }
-
     public String getAppId() {
         if (_restClient == null) {
             return null;
@@ -771,38 +758,8 @@ public class BrainCloudClient {
         this._releasePlatform = _releasePlatform;
     }
 
-
-    /**
-     * @deprecated Use getAppVersion instead - removal after September 1 2017
-     */
-    @Deprecated
-    public String getGameVersion() {
-        return _appVersion;
-    }
-
-    /**
-     * @deprecated Use getAppVersion instead - removal after September 1 2017
-     */
-    public String getVersion() {
-        return _appVersion;
-    }
-
     public String getAppVersion() {
         return _appVersion;
-    }
-
-    /**
-     * @deprecated Use setAppVersion instead - removal after September 1 2017
-     */
-    public void setGameVersion(String appVersion) {
-        this._appVersion = appVersion;
-    }
-
-    /**
-     * @deprecated Use setAppVersion instead - removal after September 1 2017
-     */
-    public void setVersion(String appVersion) {
-        this._appVersion = appVersion;
     }
 
     public void setAppVersion(String appVersion) {
@@ -952,10 +909,6 @@ public class BrainCloudClient {
     public PresenceService getPresenceService()
     {
         return _presenceService;
-    }
-
-    public ProductService getProductService() {
-        return _productService;
     }
 
     public VirtualCurrencyService getVirtualCurrencyService() {
