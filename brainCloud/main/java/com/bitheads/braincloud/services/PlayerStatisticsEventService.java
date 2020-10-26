@@ -25,22 +25,6 @@ public class PlayerStatisticsEventService {
     }
 
     /**
-     * @deprecated Use triggerUserStatsEvent() instead - Removal after September 1 2017
-     */
-    public void triggerPlayerStatisticsEvent(String eventName, int eventMultiplier, IServerCallback callback) {
-        try {
-            JSONObject data = new JSONObject();
-            data.put(Parameter.eventName.name(), eventName);
-            data.put(Parameter.eventMultiplier.name(), eventMultiplier);
-
-            ServerCall sc = new ServerCall(ServiceName.playerStatisticsEvent, ServiceOperation.TRIGGER, data, callback);
-            _client.sendRequest(sc);
-
-        } catch (JSONException ignored) {
-        }
-    }
-
-    /**
      * Trigger an event server side that will increase the user statistics.
      * This may cause one or more awards to be sent back to the user -
      * could be achievements, experience, etc. Achievements will be sent by this
@@ -64,21 +48,6 @@ public class PlayerStatisticsEventService {
             ServerCall sc = new ServerCall(ServiceName.playerStatisticsEvent, ServiceOperation.TRIGGER, data, callback);
             _client.sendRequest(sc);
 
-        } catch (JSONException ignored) {
-        }
-    }
-
-    /**
-     * @deprecated Use triggerUserStatsEvents() instead - Removal after September 1 2017
-     */
-    public void triggerPlayerStatisticsEvents(String jsonData, IServerCallback callback) {
-        try {
-            JSONObject data = new JSONObject();
-            JSONArray jsonArray = new JSONArray(jsonData);
-            data.put(Parameter.events.name(), jsonArray);
-
-            ServerCall sc = new ServerCall(ServiceName.playerStatisticsEvent, ServiceOperation.TRIGGER_MULTIPLE, data, callback);
-            _client.sendRequest(sc);
         } catch (JSONException ignored) {
         }
     }

@@ -28,7 +28,6 @@ import com.bitheads.braincloud.services.PlayerStateService;
 import com.bitheads.braincloud.services.PlayerStatisticsEventService;
 import com.bitheads.braincloud.services.PlayerStatisticsService;
 import com.bitheads.braincloud.services.PresenceService;
-import com.bitheads.braincloud.services.ProductService;
 import com.bitheads.braincloud.services.ProfanityService;
 import com.bitheads.braincloud.services.PushNotificationService;
 import com.bitheads.braincloud.services.RedemptionCodeService;
@@ -843,10 +842,6 @@ public class BrainCloudWrapper implements IServerCallback {
 
     public PresenceService getPresenceService() {
         return _client.getPresenceService();
-    }
-
-    public ProductService getProductService() {
-        return _client.getProductService();
     }
 
     public VirtualCurrencyService getVirtualCurrencyService() {

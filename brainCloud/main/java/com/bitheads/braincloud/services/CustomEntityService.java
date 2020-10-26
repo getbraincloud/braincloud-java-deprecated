@@ -137,7 +137,7 @@ public class CustomEntityService {
      * @param callback Callback.
      */
     /**
-     * @deprecated Use getEntityPage instead
+     * @deprecated Use getEntityPage instead - removal after October 26 2021
      */
     @Deprecated
     public void getPage(String entityType, int rowsPerPage, String searchJson, String sortJson, Boolean doCount,
@@ -196,7 +196,7 @@ public class CustomEntityService {
      * @param callback Callback.
      */
     /**
-     * @deprecated Use getEntityPageOffset instead
+     * @deprecated Use getEntityPageOffset instead - removal after October 26 2021
      */
     @Deprecated
     public void getPageOffset(String entityType, String context, int pageOffset,
