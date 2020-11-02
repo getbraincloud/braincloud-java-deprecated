@@ -177,12 +177,13 @@ public class RTTComms implements IServerCallback {
     }
 
     public void enableRTT(IRTTConnectCallback callback, boolean useWebSocket) {
-        if(isRTTEnabled())
+        if(isRTTEnabled() || _rttConnectionStatus == RTTComms.RttConnectionStatus.Connecting)
         {
             return;
         }
         else
         {
+            _rttConnectionStatus = RTTComms.RttConnectionStatus.Connecting; //need this here in java to stop enableRTT spam and the accidental forming of two rtt connection threads that conflict with eachother.
             _connectCallback = callback;
             _useWebSocket = useWebSocket;
 
@@ -198,11 +199,12 @@ public class RTTComms implements IServerCallback {
     }
 
     public void disableRTT() {
-        if(!isRTTEnabled())
+        if(!isRTTEnabled() || _rttConnectionStatus == RTTComms.RttConnectionStatus.Disconnecting)
         {
             return;
         }
         if (_webSocketClient != null) {
+            _rttConnectionStatus = RTTComms.RttConnectionStatus.Disconnecting; //to mirror the functionality of enableRTT
             _webSocketClient.close();
             _webSocketClient = null;
         }
@@ -352,13 +354,13 @@ public class RTTComms implements IServerCallback {
 //    }
 
     private void connect() {
+        _rttConnectionStatus = RTTComms.RttConnectionStatus.Connecting;
         Thread connectionThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     if (_loggingEnabled) {
                         System.out.println("RTT TCP: Connecting...");
-                        _rttConnectionStatus = RTTComms.RttConnectionStatus.Connecting;
                     }
 
                     // Create socket
@@ -386,7 +388,7 @@ public class RTTComms implements IServerCallback {
     }
 
     private void connectWebSocket() throws JSONException {
-
+        _rttConnectionStatus = RTTComms.RttConnectionStatus.Connecting;
         boolean sslEnabled = _endpoint.getBoolean("ssl");
 
         String scheme = sslEnabled ? "wss://" : "ws://";
@@ -412,7 +414,6 @@ public class RTTComms implements IServerCallback {
 
         if (_loggingEnabled) {
             System.out.println("RTT WS: Connecting " + uri);
-            _rttConnectionStatus = RTTComms.RttConnectionStatus.Connecting;
         }
         
         try {

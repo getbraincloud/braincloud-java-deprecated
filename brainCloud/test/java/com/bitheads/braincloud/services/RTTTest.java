@@ -32,7 +32,11 @@ public class RTTTest extends TestFixtureBase
         RTTConnectionTestResult tr = new RTTConnectionTestResult(_wrapper);
 
         _wrapper.getClient().getRTTService().enableRTT(tr, true);
-        //we should be abel to call this twice without worry
+        //we should be able to call this twice without worry
+        _wrapper.getClient().getRTTService().enableRTT(tr, true);
+        _wrapper.getClient().getRTTService().disableRTT();
+        _wrapper.getClient().getRTTService().disableRTT();
+
         _wrapper.getClient().getRTTService().enableRTT(tr, true);
         tr.Run();
     }
@@ -42,8 +46,12 @@ public class RTTTest extends TestFixtureBase
         RTTConnectionTestResult tr = new RTTConnectionTestResult(_wrapper);
 
         _wrapper.getClient().getRTTService().enableRTT(tr, false);
-        //we should be abel to call this twice without worry
+        //we should be able to call this twice without worry
         _wrapper.getClient().getRTTService().enableRTT(tr, false);
+        _wrapper.getClient().getRTTService().disableRTT();
+        _wrapper.getClient().getRTTService().disableRTT();
+
+        _wrapper.getClient().getRTTService().enableRTT(tr, true);
         tr.Run();
     }
 
