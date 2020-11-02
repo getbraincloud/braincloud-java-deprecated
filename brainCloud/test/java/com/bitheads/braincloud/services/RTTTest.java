@@ -32,6 +32,8 @@ public class RTTTest extends TestFixtureBase
         RTTConnectionTestResult tr = new RTTConnectionTestResult(_wrapper);
 
         _wrapper.getClient().getRTTService().enableRTT(tr, true);
+        //we should be abel to call this twice without worry
+        _wrapper.getClient().getRTTService().enableRTT(tr, true);
         tr.Run();
     }
 
@@ -39,6 +41,8 @@ public class RTTTest extends TestFixtureBase
     public void testEnableRTTWithTCP() throws Exception {
         RTTConnectionTestResult tr = new RTTConnectionTestResult(_wrapper);
 
+        _wrapper.getClient().getRTTService().enableRTT(tr, false);
+        //we should be abel to call this twice without worry
         _wrapper.getClient().getRTTService().enableRTT(tr, false);
         tr.Run();
     }
