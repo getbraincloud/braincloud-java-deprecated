@@ -64,7 +64,7 @@ public class CustomEntityServiceTest extends TestFixtureBase {
         _wrapper.getCustomEntityService().getRandomEntitiesMatching(
                 _defaultEntityType,
                 "{\"data.position\": \"defense\"}",
-                1,
+                100,
                 tr);
 
         tr.Run();
