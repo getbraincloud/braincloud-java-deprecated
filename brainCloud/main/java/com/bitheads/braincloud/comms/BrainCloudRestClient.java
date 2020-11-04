@@ -429,15 +429,7 @@ public class BrainCloudRestClient implements Runnable {
             _cacheMessagesOnNetworkError = in_enabled;
         }
     }
-
-    /**
-     * @deprecated Use getAppId instead - removal after September 1 2017
-     */
-    @Deprecated
-    public String getGameId() {
-        return _appId;
-    }
-
+    
     public String getAppId() {
         return _appId;
     }
