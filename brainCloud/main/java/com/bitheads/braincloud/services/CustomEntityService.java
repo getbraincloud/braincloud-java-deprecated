@@ -21,6 +21,7 @@ public class CustomEntityService {
         version,
         deleteCriteria,
         whereJson,
+        maxReturn,
         rowsPerPage,
         searchJson,
         sortJson,
@@ -121,6 +122,33 @@ public class CustomEntityService {
 
             ServerCall serverCall = new ServerCall(ServiceName.customEntity,
                     ServiceOperation.GET_COUNT, data, callback);
+            _client.sendRequest(serverCall);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Gets a list of up to maxReturn randomly selected custom entities from the server based on the entity type and where condition.
+     * 
+     * @param entityType The entity type as defined by the user
+     * @param whereJson mongo style query string
+     * @param maxReturn max number of returns
+     * @param callback Callback.
+     */
+    public void getRandomEntitiesMatching(String entityType, String whereJson, int maxReturn,
+                         IServerCallback callback) {
+
+        try {
+            JSONObject data = new JSONObject();
+            data.put(Parameter.entityType.name(), entityType);
+            JSONObject whereData = new JSONObject(whereJson);
+            data.put(Parameter.whereJson.name(), whereData);
+            data.put(Parameter.maxReturn.name(), maxReturn);
+
+            ServerCall serverCall = new ServerCall(ServiceName.customEntity,
+                    ServiceOperation.GET_RANDOM_ENTITIES_MATCHING, data, callback);
             _client.sendRequest(serverCall);
 
         } catch (JSONException e) {
