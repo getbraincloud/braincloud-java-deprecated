@@ -41,6 +41,23 @@ public class RTTComms implements IServerCallback {
         Event
     }
 
+    public enum RttConnectionStatus
+    {
+        Connected,
+        Disconnected,
+        Connecting, 
+        Disconnecting
+    }
+
+    public enum WebsocketStatus
+    {
+        Open, 
+        Closed, 
+        Message,
+        Error,
+        None
+    }
+
     private class RTTCallback {
         public RTTCallbackType _type;
         public String _message;
@@ -126,23 +143,6 @@ public class RTTComms implements IServerCallback {
         }
     }
 
-    public enum RttConnectionStatus
-    {
-        Connected,
-        Disconnected,
-        Connecting, 
-        Disconnecting
-    }
-
-    public enum WebsocketStatus
-    {
-        Open, 
-        Closed, 
-        Message,
-        Error,
-        None
-    }
-
     private BrainCloudClient _client;
     private boolean _loggingEnabled = false;
     private IRTTConnectCallback _connectCallback = null;
@@ -218,7 +218,7 @@ public class RTTComms implements IServerCallback {
         return _rttConnectionStatus == RTTComms.RttConnectionStatus.Connected;
     }
 
-    public RTTComms.RttConnectionStatus GetConnectionStatus()
+    public RTTComms.RttConnectionStatus getConnectionStatus()
     {
         return _rttConnectionStatus;
     }
