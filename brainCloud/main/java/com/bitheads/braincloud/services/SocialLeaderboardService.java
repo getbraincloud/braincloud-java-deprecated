@@ -420,19 +420,7 @@ public class SocialLeaderboardService {
     }
 
     /**
-     * Post the players score to the given social leaderboard. Pass leaderboard
-     * config data to dynamically create if necessary. You can optionally send a
-     * user-defined json String of data with the posted score. This String could
-     * include information relevant to the posted score.
-     *
-     * @param leaderboardId The leaderboard to post to
-     * @param score The score to post
-     * @param jsonData Optional user-defined data to post with the score
-     * @param leaderboardType leaderboard type
-     * @param rotationType Type of rotation
-     * @param rotationReset Date to reset the leaderboard
-     * @param retainedCount How many rotations to keep
-     * @param callback The callback.
+     * @deprecated Use postScoreToDynamicLeaderboardUTC instead - Removal September 1, 2021
      */
     public void postScoreToDynamicLeaderboard(
             String leaderboardId,
@@ -514,19 +502,7 @@ public class SocialLeaderboardService {
     }
 
     /**
-     * Post the players score to the given social leaderboard. Pass leaderboard
-     * config data to dynamically create if necessary. You can optionally send a
-     * user-defined json String of data with the posted score. This String could
-     * include information relevant to the posted score.
-     *
-     * @param leaderboardId The leaderboard to post to
-     * @param score The score to post
-     * @param jsonData Optional user-defined data to post with the score
-     * @param leaderboardType leaderboard type
-     * @param rotationReset Date to reset the leaderboard
-     * @param retainedCount How many rotations to keep
-     * @param numDaysToRotate How many days between each rotation
-     * @param callback The callback.
+     * @deprecated Use postScoreToDynamicLeaderboardDays instead - Removal September 1, 2021
      */
     public void postScoreToDynamicLeaderboardDays(
             String leaderboardId,
@@ -827,20 +803,7 @@ public class SocialLeaderboardService {
     }
 
     /**
-     * Post the group score to the given group leaderboard and dynamically create if necessary. LeaderboardType, rotationType, rotationReset, and retainedCount are required.	 *
-     *
-     * Service Name - leaderboard
-     * Service Operation - POST_GROUP_SCORE_DYNAMIC
-     *
-     * @param leaderboardId the leaderboard
-     * @param groupId the groups id
-     * @param score the score you want to post
-     * @param data
-     * @param leaderboardType
-     * @param rotationType
-     * @param rotationReset
-     * @param retainedCount
-     * @param callback The method to be invoked when the server response is received
+     * @deprecated Use postScoreToDynamicGroupLeaderboardUTC instead - Removal September 1, 2021
      */
     public void postScoreToDynamicGroupLeaderboard(String leaderboardId, String groupId, long score, String data, String leaderboardType, String rotationType, Date rotationReset, int retainedCount, IServerCallback callback) {
         try {
