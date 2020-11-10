@@ -39,7 +39,7 @@ public class PlayerStatisticsEventService {
      *
      * @see PlayerStatisticsService
      * 
-     * @deprecated User triggerStatsEvent instead - removal September 1, 2021
+     * @deprecated Use triggerStatsEvent instead - removal September 1, 2021
      */
     public void triggerUserStatsEvent(String eventName, int eventMultiplier, IServerCallback callback) {
         try {
@@ -83,7 +83,7 @@ public class PlayerStatisticsEventService {
     }
 
     /**
-     * @deprecated User triggerStatsEvents instead - removal September 1, 2021
+     * @deprecated Use triggerStatsEvents instead - removal September 1, 2021
      */
     public void triggerUserStatsEvents(String jsonData, IServerCallback callback) {
         try {

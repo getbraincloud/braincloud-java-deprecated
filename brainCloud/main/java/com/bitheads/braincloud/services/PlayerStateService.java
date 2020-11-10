@@ -200,7 +200,7 @@ public class PlayerStateService {
      * @param name The name to be picked
      * @param callback The callback handler
      *
-     * @deprecated User updateUserName instead - removal September 1, 2021
+     * @deprecated Use updateUserName instead - removal September 1, 2021
      */
     public void updateName(String name,
                                IServerCallback callback) {
