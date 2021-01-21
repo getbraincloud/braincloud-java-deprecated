@@ -161,6 +161,7 @@ public class RTTComms implements IServerCallback {
 
     private JSONObject _auth;
     private JSONObject _endpoint;
+    private JSONObject _disconnectMessage;
     
     private Socket _socket = null;
     
@@ -172,11 +173,14 @@ public class RTTComms implements IServerCallback {
 
     private ArrayList<RTTCallback> _callbackEventQueue = new ArrayList<RTTCallback>();
 
+    private boolean _disconnectedWithReason = false;
+
     public RTTComms(BrainCloudClient client) {
         _client = client;
     }
 
     public void enableRTT(IRTTConnectCallback callback, boolean useWebSocket) {
+        _disconnectedWithReason = false;
         if(isRTTEnabled() || _rttConnectionStatus == RTTComms.RttConnectionStatus.Connecting)
         {
             return;
@@ -532,6 +536,13 @@ public class RTTComms implements IServerCallback {
 
         } catch (Exception e) {
         }
+
+        if (_loggingEnabled) {
+            if (_disconnectedWithReason == true)
+            {
+                System.out.println("RTT Disconnect:" + _disconnectMessage.toString());
+            }  
+        }
     }
 
     private boolean send(JSONObject jsonData) {
@@ -623,6 +634,12 @@ public class RTTComms implements IServerCallback {
                 }
                 break;
             }
+            case "DISCONNECT" : {
+                _disconnectedWithReason = true;
+                _disconnectMessage.put("severity", "ERROR");
+                _disconnectMessage.put("reason", json.getJSONObject("data").getString("reason"));
+                _disconnectMessage.put("reasonCode", json.getJSONObject("data").getString("reasonCode"));
+                }
         }
     }
 
