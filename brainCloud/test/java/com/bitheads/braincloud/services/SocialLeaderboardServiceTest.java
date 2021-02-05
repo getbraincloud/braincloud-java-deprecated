@@ -434,6 +434,22 @@ public class SocialLeaderboardServiceTest extends TestFixtureBase
     }
 
     @Test
+    public void testGetPlayerScores() throws Exception
+    {
+        postScoreToNonDynamicLeaderboard();
+
+        TestResult tr = new TestResult(_wrapper);
+        _wrapper.getSocialLeaderboardService().getPlayerScores(
+                _globalLeaderboardId,
+                -1,
+                 2,
+                tr);
+
+        tr.Run();
+    }
+
+
+    @Test
     public void testGetPlayerScoresFromLeaderboards() throws Exception
     {
         postScoreToDynamicLeaderboard();
