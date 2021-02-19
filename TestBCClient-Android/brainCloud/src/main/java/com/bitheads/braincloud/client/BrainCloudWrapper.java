@@ -813,6 +813,10 @@ public class BrainCloudWrapper implements IServerCallback {
         return _client.getSocialLeaderboardService();
     }
 
+    public SocialLeaderboardService getLeaderboardService() {
+        return _client.getSocialLeaderboardService();
+    }
+
     public TimeService getTimeService() {
         return _client.getTimeService();
     }
