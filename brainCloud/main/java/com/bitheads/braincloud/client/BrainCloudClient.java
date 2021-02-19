@@ -947,6 +947,10 @@ public class BrainCloudClient {
         return _socialLeaderboardService;
     }
 
+    public SocialLeaderboardService getLeaderboardService() {
+        return _socialLeaderboardService;
+    }
+
     public TimeService getTimeService() {
         return _timeService;
     }
