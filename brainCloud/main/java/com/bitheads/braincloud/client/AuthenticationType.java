@@ -10,6 +10,7 @@ public class AuthenticationType {
     public static final AuthenticationType Universal = new AuthenticationType("Universal");
     public static final AuthenticationType Email = new AuthenticationType("Email");
     public static final AuthenticationType Facebook = new AuthenticationType("Facebook");
+    public static final AuthenticationType FacebookLimited = new AuthenticationType("FacebookLimited");
     public static final AuthenticationType Oculus = new AuthenticationType("Oculus");
     public static final AuthenticationType GameCenter = new AuthenticationType("GameCenter");
     public static final AuthenticationType Steam = new AuthenticationType("Steam");
@@ -44,6 +45,9 @@ public class AuthenticationType {
         }
         if (s.equals(Facebook.toString())) {
             return Facebook;
+        }
+        if (s.equals(FacebookLimited.toString())) {
+            return FacebookLimited;
         }
         if (s.equals(Oculus.toString())) {
             return Oculus;

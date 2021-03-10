@@ -540,6 +540,27 @@ public class BrainCloudWrapper implements IServerCallback {
     }
 
     /**
+     * Authenticate the user with brainCloud using their FacebookLimited Credentials
+     *
+     * @param fbLimitedUserId    The facebookLimited id of the user
+     * @param fbAuthToken The validated token from the Facebook SDK (that will be
+     *                    further validated when sent to the bC service)
+     * @param forceCreate Should a new profile be created for this user if the account
+     *                    does not exist?
+     * @param callback    The callback handler
+     */
+    public void authenticateFacebookLimited(String fbLimitedUserId,
+                                     String fbAuthToken,
+                                     boolean forceCreate,
+                                     IServerCallback callback) {
+        _authenticateCallback = callback;
+
+        initializeIdentity(false);
+
+        getClient().getAuthenticationService().authenticateFacebookLimited(fbLimitedUserId, fbAuthToken, forceCreate, this);
+    }
+
+    /**
      *Authenticate the user using an apple id
      *
      * @param appleUserId  This can be the user id OR the email of the user for the account
