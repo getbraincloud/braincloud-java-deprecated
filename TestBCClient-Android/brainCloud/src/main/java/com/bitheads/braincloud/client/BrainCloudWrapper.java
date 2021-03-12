@@ -560,6 +560,27 @@ public class BrainCloudWrapper implements IServerCallback {
         getClient().getAuthenticationService().authenticateFacebookLimited(fbLimitedUserId, fbAuthToken, forceCreate, this);
     }
 
+        /**
+     * Authenticate the user with brainCloud using their Oculus Credentials
+     *
+     * @param oculusUserId    The oculus id of the user
+     * @param oculusNonce from the Oculus SDK (that will be
+     *                    further validated when sent to the bC service)
+     * @param forceCreate Should a new profile be created for this user if the account
+     *                    does not exist?
+     * @param callback    The callback handler
+     */
+    public void authenticateOculus(String oculusUserId,
+                                     String oculusNonce,
+                                     boolean forceCreate,
+                                     IServerCallback callback) {
+        _authenticateCallback = callback;
+
+        initializeIdentity(false);
+
+        getClient().getAuthenticationService().authenticateFacebook(fbUserId, fbAuthToken, forceCreate, this);
+    }
+
     /**
      *Authenticate the user using an apple id
      *
