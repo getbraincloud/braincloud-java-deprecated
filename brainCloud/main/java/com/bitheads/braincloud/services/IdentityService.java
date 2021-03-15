@@ -167,6 +167,67 @@ public class IdentityService {
         detachIdentity(facebookLimitedId, AuthenticationType.FacebookLimited, continueAnon, callback);
     }
 
+        /**** OCULUS Methods ***/
+
+    /**
+     * Attach the user's Oculus credentials to the current profile.
+     *
+     * Service Name - Identity
+     * Service Operation - Attach
+     *
+     * @param oculusId The Oculus id of the user
+     * @param oculusNonce token from the Oculus SDK
+     * @param callback The method to be invoked when the server response is received
+     *
+     * @returns performs the success callback on success, failure callback on failure
+     *
+     * Errors to watch for:  SWITCHING_PROFILES - this means that the Oculus identity you provided
+     * already points to a different profile.  You will likely want to offer the player the 
+     * choice to *SWITCH* to that profile, or *MERGE* the profiles.
+     *
+     * To switch profiles, call ClearSavedProfileID() and call AuthenticateOculus().
+     */
+    public void attachOculusIdentity(String oculusId, String oculusNonce, IServerCallback callback) {
+        attachIdentity(oculusId, oculusNonce, AuthenticationType.Oculus, callback);
+    }
+
+    /**
+     * Merge the profile associated with the provided Oculus credentials with the
+     * current profile.
+     *
+     * Service Name - Identity
+     * Service Operation - Merge
+     *
+     * @param oculusId The oculus id of the user
+     * @param oculusNonce token from the Oculus SDK
+     * @param callback The method to be invoked when the server response is received
+     *
+     * @returns performs the success callback on success, failure callback on failure
+     */
+    public void mergeOculusIdentity(String oculusId, String oculusNonce, IServerCallback callback) {
+        mergeIdentity(oculusId, oculusNonce, AuthenticationType.Oculus, callback);
+    }
+
+    /**
+     * Detach the Oculus identity from this profile.
+     *
+     * Service Name - Identity
+     * Service Operation - Detach
+     *
+     * @param oculusId The oculus id of the user
+     * @param continueAnon Proceed even if the profile will revert to anonymous?
+     * @param callback The method to be invoked when the server response is received
+     *
+     * @returns performs the success callback on success, failure callback on failure
+     *
+     * Watch for DOWNGRADING_TO_ANONYMOUS_ERROR - occurs if you set continueAnon to false, and
+     * disconnecting this identity would result in the profile being anonymous (which means that
+     * the profile wouldn't be retrievable if the user loses their device)
+     */
+    public void detachOculusIdentity(String oculusId, boolean continueAnon, IServerCallback callback) {
+        detachIdentity(oculusId, AuthenticationType.Oculus, continueAnon, callback);
+    }
+
     /**** GAME CENTER Methods ***/
 
     /**
