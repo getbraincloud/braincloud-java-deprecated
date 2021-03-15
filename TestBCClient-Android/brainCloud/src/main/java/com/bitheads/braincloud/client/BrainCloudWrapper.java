@@ -578,7 +578,7 @@ public class BrainCloudWrapper implements IServerCallback {
 
         initializeIdentity(false);
 
-        getClient().getAuthenticationService().authenticateFacebook(fbUserId, fbAuthToken, forceCreate, this);
+        getClient().getAuthenticationService().authenticateOculus(oculusUserId, oculusNonce, forceCreate, this);
     }
 
     /**
