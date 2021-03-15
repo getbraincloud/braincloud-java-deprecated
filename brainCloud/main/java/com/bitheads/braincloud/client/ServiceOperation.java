@@ -229,6 +229,7 @@ public enum ServiceOperation {
     LIST_FRIENDS,
     ADD_FRIENDS,
     REMOVE_FRIENDS,
+    GET_MY_SOCIAL_INFO,
     GET_USERS_ONLINE_STATUS,
 
     SUBMIT_TURN,
