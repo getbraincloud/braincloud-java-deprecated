@@ -45,7 +45,8 @@ public class RTTComms implements IServerCallback {
     {
         Connected,
         Disconnected,
-        Connecting, 
+        RequestingConnectionInfo,
+        Connecting,
         Disconnecting
     }
 
@@ -133,6 +134,7 @@ public class RTTComms implements IServerCallback {
             }
             switch (_rttConnectionStatus)
             {
+                case RequestingConnectionInfo:
                 case Connecting:
                 case Connected:
                 {
@@ -208,7 +210,7 @@ public class RTTComms implements IServerCallback {
             }
             case Disconnected:
             {
-                _rttConnectionStatus = RTTComms.RttConnectionStatus.Connecting; //need this here in java to stop enableRTT spam and the accidental forming of two rtt connection threads that conflict with eachother.
+                _rttConnectionStatus = RTTComms.RttConnectionStatus.RequestingConnectionInfo;
                 _connectCallback = callback;
                 _useWebSocket = useWebSocket;
     
@@ -222,6 +224,7 @@ public class RTTComms implements IServerCallback {
                 _client.getRTTService().requestClientConnection(this);
                 break;
             }
+            case RequestingConnectionInfo:
             case Connecting:
             {
                 System.out.println("enableRTT: Already in the process of connecting");
@@ -239,6 +242,7 @@ public class RTTComms implements IServerCallback {
 
         switch (_rttConnectionStatus)
         {
+            case RequestingConnectionInfo:
             case Connecting:
             case Connected:
             {
@@ -679,7 +683,7 @@ public class RTTComms implements IServerCallback {
     private void processRTTMessage(ServiceOperation serviceOperation, JSONObject jsonData) {
         switch (_rttConnectionStatus)
         {
-            case Connecting:
+            case RequestingConnectionInfo:
             {
                 switch (serviceOperation) {
                     case REQUEST_CLIENT_CONNECTION: {
@@ -693,6 +697,7 @@ public class RTTComms implements IServerCallback {
                             }
 
                             _auth = data.getJSONObject("auth");
+                            _rttConnectionStatus = RttConnectionStatus.Connecting;
 
                             if (_useWebSocket) {
                                 connectWebSocket();
@@ -714,7 +719,7 @@ public class RTTComms implements IServerCallback {
                 break;
             }
             default:
-                break; // We might have disabled RTT, so silently ignore
+                break; // We might have disabled RTT, or call enable twice, so silently ignore
         }
     }
 
