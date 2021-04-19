@@ -219,7 +219,7 @@ public class CustomEntityServiceTest extends TestFixtureBase {
             _defaultEntityType,
             Helpers.createJsonPair("test", "testy"),
             null,
-            1,
+            0,
             true,
             tr);
 

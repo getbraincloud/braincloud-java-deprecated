@@ -45,7 +45,7 @@ public class CustomEntityService {
      * @param acl The entity's access control list as json. A null acl implies
      *            default permissions which make the entity readable/writeable
      *            by only the player.
-     * @param timeToLive
+     * @param timeToLive The duration of time, in milliseconds, the custom entity should live before being expired. 0 indicates never expires.
      * @param isOwned
      * @param callback Callback.
      */
