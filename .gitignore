@@ -40,3 +40,8 @@ ids.txt
 autobuild/artifacts/
 
 .idea/
+TestBCClient-Android/gradle.properties
+TestBCClient-Desktop/.classpath
+TestBCClient-Desktop/.project
+.gitignore
+TestBCClient-Desktop/brainCloud/.settings/org.eclipse.jdt.core.prefs

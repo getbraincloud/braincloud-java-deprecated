@@ -24,17 +24,28 @@
 		<link>
 			<name>main-java</name>
 			<type>2</type>
-			<location>C:/Users/keving/Workspaces/Java/braincloud-java/brainCloud/main/java</location>
+			<location>/Users/adamj/dev/braincloud-client-master/repositories/java/brainCloud/main/java</location>
 		</link>
 		<link>
 			<name>sharedTest-java</name>
 			<type>2</type>
-			<location>C:/Users/keving/Workspaces/Java/braincloud-java/brainCloud/sharedTest/java</location>
+			<location>/Users/adamj/dev/braincloud-client-master/repositories/java/brainCloud/sharedTest/java</location>
 		</link>
 		<link>
 			<name>test-java</name>
 			<type>2</type>
-			<location>C:/Users/keving/Workspaces/Java/braincloud-java/brainCloud/test/java</location>
+			<location>/Users/adamj/dev/braincloud-client-master/repositories/java/brainCloud/test/java</location>
 		</link>
 	</linkedResources>
+	<filteredResources>
+		<filter>
+			<id>1620759137253</id>
+			<name></name>
+			<type>30</type>
+			<matcher>
+				<id>org.eclipse.core.resources.regexFilterMatcher</id>
+				<arguments>node_modules|.git|__CREATED_BY_JAVA_LANGUAGE_SERVER__</arguments>
+			</matcher>
+		</filter>
+	</filteredResources>
 </projectDescription>
