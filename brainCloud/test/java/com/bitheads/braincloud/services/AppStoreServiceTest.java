@@ -60,4 +60,12 @@ public class AppStoreServiceTest extends TestFixtureBase
         _wrapper.getAppStoreService().finalizePurchase("_invalid_store_id_", "_invalid_transaction_id_", "{}", tr);
         tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.INVALID_STORE_ID);
     }
+
+    @Test
+    public void testRefreshPromotions() throws Exception {
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.getAppStoreService().refreshPromotions(tr);
+        tr.Run();
+    }
 }

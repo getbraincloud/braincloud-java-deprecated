@@ -195,4 +195,21 @@ public class AppStoreService {
             je.printStackTrace();
         }
     }
+
+    /**
+    * Returns up-to-date eligible 'promotions' for the user 
+    * and a 'promotionsRefreshed' flag indicating whether the 
+    * user's promotion info required refreshing.
+    *
+    * Service Name - AppStore
+    * Service Operation - RefreshPromotions
+    *
+    * @param callback The method to be invoked when the server response is received
+    */
+    public void refreshPromotions(IServerCallback callback) {
+        JSONObject data = new JSONObject();
+
+        ServerCall sc = new ServerCall(ServiceName.appStore, ServiceOperation.REFRESH_PROMOTIONS, data, callback);
+        _client.sendRequest(sc);
+    }
 }
