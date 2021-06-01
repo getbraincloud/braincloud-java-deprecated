@@ -19,6 +19,12 @@ public class EventServiceTest extends TestFixtureBase implements IEventCallback 
 
     private boolean _callbackRan = false;
     private String _eventId = null;
+    private String[] evIds = {"608c40c3a3a7950f388c4eac", "368c40c3a3a7950f388c4eac"};
+    private String ev1 = evIds[0];
+    private String ev2 = evIds[1];
+
+    private String eventType = "my-event_type";
+    private long dateMillis = 1619804426154L;
 
     @After
     public void Teardown() throws Exception {
@@ -78,6 +84,36 @@ public class EventServiceTest extends TestFixtureBase implements IEventCallback 
 
         tr.Run();
         _eventId = null;
+    }
+
+    @Test
+    public void testDeleteIncomingEvents() throws Exception {
+        TestResult tr = new TestResult(_wrapper);
+
+        sendDefaultMessage();
+
+        _wrapper.getEventService().deleteIncomingEvents(evIds, tr);
+
+        tr.Run();
+        evIds = null;
+    }
+
+    @Test
+    public void testDeleteIncomingEventsByTypeOlderThan() throws Exception {
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.getEventService().deleteIncomingEventsByTypeOlderThan(eventType, dateMillis, tr);
+
+        tr.Run();
+    }
+
+    @Test
+    public void testDeleteIncomingEventsOlderThan() throws Exception {
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.getEventService().deleteIncomingEventsOlderThan(dateMillis, tr);
+
+        tr.Run();
     }
 
     @Test
