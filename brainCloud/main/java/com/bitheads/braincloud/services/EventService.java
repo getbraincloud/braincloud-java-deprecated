@@ -6,6 +6,7 @@ import com.bitheads.braincloud.client.ServiceName;
 import com.bitheads.braincloud.client.ServiceOperation;
 import com.bitheads.braincloud.comms.ServerCall;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -20,7 +21,9 @@ public class EventService {
         eventId,
         includeIncomingEvents,
         includeSentEvents,
-        evId
+        evId,
+        evIds,
+        dateMillis
     }
 
     private BrainCloudClient _client;
@@ -107,6 +110,77 @@ public class EventService {
             _client.sendRequest(sc);
 
         } catch (JSONException e) {
+        }
+    }
+
+    /**
+     * Delete a list of events out of the user's incoming mailbox.
+     *
+     * Service Name - event
+     * Service Operation - DELETE_INCOMING_EVENTS
+     *
+     * @param evIds Collection of event ids
+     * @param callback The callback.
+     */
+    public void deleteIncomingEvents(String[] evIds, IServerCallback callback)
+    {
+        try {
+            JSONObject data = new JSONObject();
+            data.put(Parameter.evIds.name(), evIds);
+
+            ServerCall serverCall = new ServerCall(ServiceName.event, ServiceOperation.DELETE_INCOMING_EVENTS, data, callback);
+            _client.sendRequest(serverCall);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Delete any events of the given type older than the given date out of the user's incoming mailbox.
+     *
+     * Service Name - event
+     * Service Operation - DELETE_INCOMING_EVENTS_BY_TYPE_OLDER_THAN
+     *
+     * @param eventType The user-defined type of the event
+     * @param dateMillis createdAt cut-off time whereby older events will be deleted
+     * @param callback The callback.
+     */
+    public void deleteIncomingEventsByTypeOlderThan(String eventType, long dateMillis, IServerCallback callback)
+    {
+        try {
+            JSONObject data = new JSONObject();
+            data.put(Parameter.eventType.name(), eventType);
+            data.put(Parameter.dateMillis.name(), dateMillis);
+
+            ServerCall serverCall = new ServerCall(ServiceName.event, ServiceOperation.DELETE_INCOMING_EVENTS_BY_TYPE_OLDER_THAN, data, callback);
+            _client.sendRequest(serverCall);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Delete any events older than the given date out of the user's incoming mailbox.
+     *
+     * Service Name - event
+     * Service Operation - DELETE_INCOMING_EVENTS_OLDER_THAN
+     *
+     * @param dateMillis createdAt cut-off time whereby older events will be deleted
+     * @param callback The callback.
+     */
+    public void deleteIncomingEventsOlderThan(long dateMillis, IServerCallback callback)
+    {
+        try {
+            JSONObject data = new JSONObject();
+            data.put(Parameter.dateMillis.name(), dateMillis);
+
+            ServerCall serverCall = new ServerCall(ServiceName.event, ServiceOperation.DELETE_INCOMING_EVENTS_OLDER_THAN, data, callback);
+            _client.sendRequest(serverCall);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 
