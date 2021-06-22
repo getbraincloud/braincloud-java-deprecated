@@ -164,6 +164,15 @@ public class FriendServiceTest extends TestFixtureBase
     }
 
     @Test
+    public void testAddFriendsFromPlatform() throws Exception
+    {
+        TestResult tr = new TestResult(_wrapper);
+        String[] externalIds = { };
+        _wrapper.getFriendService().addFriendsFromPlatform(FriendService.FriendPlatform.Facebook, "ADD", externalIds, tr);
+        tr.Run();
+    }
+
+    @Test
     public void testRemoveFriends() throws Exception
     {
         addFriend();

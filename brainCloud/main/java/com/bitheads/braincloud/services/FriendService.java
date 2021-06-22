@@ -15,6 +15,8 @@ public class FriendService {
 
     private enum Parameter {
         externalId,
+        externalIds,
+        mode,
         authenticationType,
         profileId,
         searchText,
@@ -307,6 +309,36 @@ public class FriendService {
         }
 
         ServerCall sc = new ServerCall(ServiceName.friend, ServiceOperation.ADD_FRIENDS, data, callback);
+        _client.sendRequest(sc);
+    }
+
+    /**
+     * Links the profiles for the specified externalIds for the given friend platform as internal friends.
+     *
+     * Service Name - Friend
+     * Service Operation - ADD_FRIENDS_FROM_PLATFORM
+     *
+     * @param friendPlatform Platform to add from (i.e: "Facebook").
+     * @param mode ADD or SYNC.
+     * @param externalIds Collection of external IDs from the friend platform.
+     * @param callback Method to be invoked when the server response is received.
+     */
+    public void addFriendsFromPlatform(FriendPlatform friendPlatform, String mode, String[] externalIds, IServerCallback callback) {
+        JSONArray externals = new JSONArray();
+        for (String extId : externalIds) {
+            externals.put(extId);
+        }
+
+        JSONObject data = new JSONObject();
+        try {
+            data.put(Parameter.friendPlatform.name(), friendPlatform.name());
+            data.put(Parameter.mode.name(), mode);
+            data.put(Parameter.externalIds.name(), externals);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        ServerCall sc = new ServerCall(ServiceName.friend, ServiceOperation.ADD_FRIENDS_FROM_PLATFORM, data, callback);
         _client.sendRequest(sc);
     }
 
