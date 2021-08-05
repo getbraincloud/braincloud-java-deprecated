@@ -8,9 +8,9 @@ import static org.junit.Assert.*;
 
 public class GlobalFileServiceTest extends TestFixtureBase
 {
-    String testfileName = "testGlobalFile.png";
-    String testFileId = "ed2d2924-4650-4a88-b095-94b75ce9aa18";
-    String testFolderPath = "/fname/";
+    String testfileName = "png1.png";
+    String testFileId = "34802251-0da0-419e-91b5-59d91790af15";
+    String testFolderPath = "/existingfolder/";
 
     @Test
     public void testGetFileInfo() throws Exception
