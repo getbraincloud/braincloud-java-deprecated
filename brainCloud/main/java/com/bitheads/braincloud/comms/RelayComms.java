@@ -443,8 +443,8 @@ public class RelayComms {
     }
 
     public int getNetIdForProfileId(String profileId) {
-        for (Map.Entry<String, Object> entry : _cxIdToNetId.entrySet()) {
-            String[] splits = _cxIdToNetId.getKey().split(":");
+        for (Map.Entry<String, Integer> entry : _cxIdToNetId.entrySet()) {
+            String[] splits = entry.getKey().split(":");
             if (splits.length != 3) continue; // Invalid cxId
             String id = splits[1];
             if (id.equals(profileId)) {
