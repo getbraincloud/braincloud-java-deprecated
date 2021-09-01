@@ -102,6 +102,27 @@ public class RelayService {
     }
 
     /**
+     * Get the lobby's owner connection Id.
+     */
+    public String getOwnerCxId() {
+        return _client.getRelayComms().getOwnerCxId();
+    }
+
+    /**
+     * Returns the connection id associated with a netId.
+     */
+    public String getCxIdForNetId(int netId) {
+        return _client.getRelayComms().getCxIdForNetId(netId);
+    }
+
+    /**
+     * Returns the netId associated with a connection id.
+     */
+    public int getNetIdForCxId(String cxId) {
+        return _client.getRelayComms().getNetIdForCxId(cxId);
+    }
+
+    /**
      * Register callback for relay messages coming from peers.
      * 
      * @param callback Called whenever a relay message was received.
