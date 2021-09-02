@@ -21,6 +21,7 @@ public class RelayService {
     public static final int CHANNEL_HIGH_PRIORITY_2 = 1;
     public static final int CHANNEL_NORMAL_PRIORITY = 2;
     public static final int CHANNEL_LOW_PRIORITY = 3;
+    public static final int INVALID_NET_ID = 40;
 
     public RelayService(BrainCloudClient client) {
         _client = client;

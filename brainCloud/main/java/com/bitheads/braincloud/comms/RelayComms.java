@@ -432,14 +432,17 @@ public class RelayComms {
     }
 
     public String getOwnerProfileId() {
-        if (_ownerCxId == null) return "INVALID";
+        if (_ownerCxId == null) return null;
         String[] splits = _ownerCxId.split(":");
-        if (splits.length != 3) return "INVALID";
+        if (splits.length != 3) return null;
         return splits[1];
     }
 
     public String getProfileIdForNetId(int netId) {
-        return _netIdToCxId.get(netId).split(":")[1];
+        if (!_netIdToCxId.containsKey(netId)) return null;
+        String[] splits = _netIdToCxId.get(netId).split(":");
+        if (splits.length != 3) return null;
+        return splits[1];
     }
 
     public int getNetIdForProfileId(String profileId) {
