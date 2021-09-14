@@ -48,7 +48,9 @@ public class LobbyService implements IServerCallback{
         toTeamCode,
         roomType,
         lobbyTypes,
-        pingData
+        pingData,
+        minRating,
+        maxRating
     }
 
     class ErrorCallbackEvent {
@@ -637,6 +639,31 @@ public class LobbyService implements IServerCallback{
 
             ServerCall sc = new ServerCall(ServiceName.lobby,
                     ServiceOperation.UPDATE_SETTINGS, data, callback);
+            _client.sendRequest(sc);
+        } catch (JSONException je) {
+            je.printStackTrace();
+        }
+    }
+
+    /**
+     * Gets a map keyed by rating of the visible lobby instances matching the given type and rating range.
+     *
+     * Service Name - Lobby
+     * Service Operation - GET_VISIBLE_LOBBY_INSTANCES
+     *
+     * @param lobbyType The type of lobby to look for.
+     * @param minRating Minimum lobby rating.
+     * @param maxRating Maximum lobby rating.
+     */
+    public void getVisibleLobbyInstances(String lobbyType, int minRating, int maxRating, IServerCallback callback) {
+        try {
+            JSONObject data = new JSONObject();
+            data.put(Parameter.lobbyType.name(), lobbyType);
+            data.put(Parameter.minRating.name(), minRating);
+            data.put(Parameter.maxRating.name(), maxRating);
+
+            ServerCall sc = new ServerCall(ServiceName.lobby,
+                    ServiceOperation.GET_VISIBLE_LOBBY_INSTANCES, data, callback);
             _client.sendRequest(sc);
         } catch (JSONException je) {
             je.printStackTrace();
