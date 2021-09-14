@@ -417,6 +417,7 @@ public enum ServiceOperation {
     CANCEL_FIND_REQUEST,
     GET_REGIONS_FOR_LOBBIES,
     PING_REGIONS,
+    GET_VISIBLE_LOBBY_INSTANCES,
 
     //messaging
     DELETE_MESSAGES,

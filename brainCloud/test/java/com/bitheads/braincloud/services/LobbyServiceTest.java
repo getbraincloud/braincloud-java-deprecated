@@ -16,6 +16,14 @@ public class LobbyServiceTest extends TestFixtureBase
     static private String _lobbyId = "";
 
     @Test
+    public void testGetVisibleLobbyInstances() throws Exception {
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.getLobbyService().getVisibleLobbyInstances("MATCH_UNRANKED", 1, 10000, tr);
+        tr.Run();
+    }
+
+    @Test
     public void testCreateLobby() throws Exception {
         TestResult tr = new TestResult(_wrapper);
 
