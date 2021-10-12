@@ -48,7 +48,8 @@ public class LobbyService implements IServerCallback{
         toTeamCode,
         roomType,
         lobbyTypes,
-        pingData
+        pingData,
+        criteriaJson
     }
 
     class ErrorCallbackEvent {
@@ -638,6 +639,51 @@ public class LobbyService implements IServerCallback{
             ServerCall sc = new ServerCall(ServiceName.lobby,
                     ServiceOperation.UPDATE_SETTINGS, data, callback);
             _client.sendRequest(sc);
+        } catch (JSONException je) {
+            je.printStackTrace();
+        }
+    }
+
+    /**
+     * Gets a map keyed by rating of the visible lobby instances matching the given type and rating range.
+     *
+     * Service Name - Lobby
+     * Service Operation - GET_LOBBY_INSTANCES
+     *
+     * @param lobbyType The type of lobby to look for.
+     * @param criteriaJson A JSON string used to describe filter criteria.
+     */
+    public void getLobbyInstances(String lobbyType, String criteriaJson, IServerCallback callback) {
+        try {
+            JSONObject data = new JSONObject();
+            data.put(Parameter.lobbyType.name(), lobbyType);
+            data.put(Parameter.criteriaJson.name(), new JSONObject(criteriaJson));
+
+            ServerCall sc = new ServerCall(ServiceName.lobby,
+                    ServiceOperation.GET_LOBBY_INSTANCES, data, callback);
+            _client.sendRequest(sc);
+        } catch (JSONException je) {
+            je.printStackTrace();
+        }
+    }
+
+    /**
+     * Gets a map keyed by rating of the visible lobby instances matching the given type and rating range.
+     * Only lobby instances in the regions that satisfy the ping portion of the criteriaJson (based on the values provided in pingData) will be returned.
+     *
+     * Service Name - Lobby
+     * Service Operation - GET_LOBBY_INSTANCES_WITH_PING_DATA
+     *
+     * @param lobbyType The type of lobby to look for.
+     * @param criteriaJson A JSON string used to describe filter criteria.
+     */
+    public void getLobbyInstancesWithPingData(String lobbyType, String criteriaJson, IServerCallback callback) {
+        try {
+            JSONObject data = new JSONObject();
+            data.put(Parameter.lobbyType.name(), lobbyType);
+            data.put(Parameter.criteriaJson.name(), new JSONObject(criteriaJson));
+
+            attachPingDataAndSend(data, ServiceOperation.GET_LOBBY_INSTANCES_WITH_PING_DATA, callback);
         } catch (JSONException je) {
             je.printStackTrace();
         }

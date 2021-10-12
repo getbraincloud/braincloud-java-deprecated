@@ -501,6 +501,53 @@ public class SocialLeaderboardService {
             je.printStackTrace();
         }
     }
+ 
+    /**
+     * Posts score to group leaderbopard and dynamically creates if necessary. leaderboardType, rotationReset, retainedCount and rotationType are required. uses UTC time in milliseconds since epoch
+     *
+     * @param leaderboardId The leaderboard to post to
+     * @param groupId the group's id
+     * @param score The score to post
+     * @param jsonData Optional user-defined data to post with the score
+     * @param leaderboardType leaderboard type
+     * @param rotationResetUTC Date to reset the leaderboard - in UTC milliseconds since epoch
+     * @param retainedCount How many rotations to keep
+     * @param numDaysToRotate How many days between each rotation
+     * @param callback The callback.
+     */
+    public void postScoreToDynamicGroupLeaderboardDaysUTC(
+            String leaderboardId,
+            String groupId,
+            long score,
+            String jsonData,
+            String leaderboardType,
+            long rotationResetUTC,
+            int retainedCount,
+            int numDaysToRotate,
+            IServerCallback callback) {
+        try {
+            JSONObject data = new JSONObject();
+            data.put(Parameter.leaderboardId.name(), leaderboardId);
+            data.put(Parameter.groupId.name(), groupId);
+            data.put(Parameter.score.name(), score);
+            if (StringUtil.IsOptionalParameterValid(jsonData)) {
+                data.put(Parameter.data.name(), new JSONObject(jsonData));
+            }
+            data.put(Parameter.leaderboardType.name(), leaderboardType);
+            data.put(Parameter.rotationType.name(), "DAYS");
+
+            data.put(Parameter.rotationResetTime.name(), rotationResetUTC);
+
+            data.put(Parameter.retainedCount.name(), retainedCount);
+            data.put(Parameter.numDaysToRotate.name(), numDaysToRotate);
+
+            ServerCall sc = new ServerCall(ServiceName.leaderboard,
+                    ServiceOperation.POST_GROUP_SCORE_DYNAMIC, data, callback);
+            _client.sendRequest(sc);
+        } catch (JSONException je) {
+            je.printStackTrace();
+        }
+    }
 
     /**
      * @deprecated Use postScoreToDynamicLeaderboardDays instead - Removal September 1, 2021

@@ -21,6 +21,7 @@ public class RelayService {
     public static final int CHANNEL_HIGH_PRIORITY_2 = 1;
     public static final int CHANNEL_NORMAL_PRIORITY = 2;
     public static final int CHANNEL_LOW_PRIORITY = 3;
+    public static final int INVALID_NET_ID = 40;
 
     public RelayService(BrainCloudClient client) {
         _client = client;
@@ -99,6 +100,27 @@ public class RelayService {
      */
     public int getNetIdForProfileId(String profileId) {
         return _client.getRelayComms().getNetIdForProfileId(profileId);
+    }
+
+    /**
+     * Get the lobby's owner connection Id.
+     */
+    public String getOwnerCxId() {
+        return _client.getRelayComms().getOwnerCxId();
+    }
+
+    /**
+     * Returns the connection id associated with a netId.
+     */
+    public String getCxIdForNetId(int netId) {
+        return _client.getRelayComms().getCxIdForNetId(netId);
+    }
+
+    /**
+     * Returns the netId associated with a connection id.
+     */
+    public int getNetIdForCxId(String cxId) {
+        return _client.getRelayComms().getNetIdForCxId(cxId);
     }
 
     /**

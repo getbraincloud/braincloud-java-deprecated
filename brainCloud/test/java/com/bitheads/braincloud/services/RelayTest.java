@@ -27,38 +27,39 @@ import java.util.ArrayList;
  */
 public class RelayTest extends TestFixtureBase
 {
-    // @Test
-    // public void testConnectWithNullOptions() throws Exception {
-    //     RelayConnectionTestResult tr = new RelayConnectionTestResult(_wrapper);
-    //     _wrapper.getRelayService().connect(RelayConnectionType.WEBSOCKET, null, tr);
-    //     tr.RunExpectFail();
-    // }
+    @Test
+    public void testConnectWithNullOptions() throws Exception {
+        RelayConnectionTestResult tr = new RelayConnectionTestResult(_wrapper);
+        _wrapper.getRelayService().connect(RelayConnectionType.WEBSOCKET, null, tr);
+        tr.RunExpectFail();
+    }
 
-    // @Test
-    // public void testConnectWithEmptyOptions() throws Exception {
-    //     RelayConnectionTestResult tr = new RelayConnectionTestResult(_wrapper);
-    //     JSONObject options = new JSONObject();
-    //     _wrapper.getRelayService().connect(RelayConnectionType.WEBSOCKET, options, tr);
-    //     tr.RunExpectFail();
-    // }
-    // @Test
-    // public void testInvalidProfileIdForNetId() throws Exception {
-    //     String profileId = _wrapper.getRelayService().getProfileIdForNetId(0); // Just make sure the dictionary returns null and doesn't asserts
-    //     Assert.assertTrue(profileId == null);
-    // }
+    @Test
+    public void testConnectWithEmptyOptions() throws Exception {
+        RelayConnectionTestResult tr = new RelayConnectionTestResult(_wrapper);
+        JSONObject options = new JSONObject();
+        _wrapper.getRelayService().connect(RelayConnectionType.WEBSOCKET, options, tr);
+        tr.RunExpectFail();
+    }
 
-    // @Test
-    // public void testConnectWithBadURL() throws Exception {
-    //     RelayConnectionTestResult tr = new RelayConnectionTestResult(_wrapper);
-    //     JSONObject options = new JSONObject();
-    //     options.put("ssl", false);
-    //     options.put("host", "ws://192.168.1.0");
-    //     options.put("port", 1234);
-    //     options.put("passcode", "invalid_passcode");
-    //     options.put("lobbyId", "invalid_lobbyId");
-    //     _wrapper.getRelayService().connect(RelayConnectionType.WEBSOCKET, options, tr);
-    //     tr.RunExpectFail();
-    // }
+    @Test
+    public void testInvalidProfileIdForNetId() throws Exception {
+        String profileId = _wrapper.getRelayService().getProfileIdForNetId(0); // Just make sure the dictionary returns null and doesn't asserts
+        Assert.assertTrue(profileId == null);
+    }
+
+    @Test
+    public void testConnectWithBadURL() throws Exception {
+        RelayConnectionTestResult tr = new RelayConnectionTestResult(_wrapper);
+        JSONObject options = new JSONObject();
+        options.put("ssl", false);
+        options.put("host", "ws://192.168.1.0");
+        options.put("port", 1234);
+        options.put("passcode", "invalid_passcode");
+        options.put("lobbyId", "invalid_lobbyId");
+        _wrapper.getRelayService().connect(RelayConnectionType.WEBSOCKET, options, tr);
+        tr.RunExpectFail();
+    }
 
     private void fullFlow(RelayConnectionType connectionType) throws Exception {
         RTTLobbyResults lobbyTR = new RTTLobbyResults(_wrapper);
@@ -114,6 +115,18 @@ public class RelayTest extends TestFixtureBase
             _wrapper.getRelayService().send("Hello World!".getBytes(StandardCharsets.US_ASCII), myNetId, true, true, RelayService.CHANNEL_HIGH_PRIORITY_1);
         }
         relayCallbackReceived.Run();
+
+        // Check the cx/profile id conversions
+        String myProfileId = _wrapper.getAuthenticationService().getProfileId();
+        String myCxId = _wrapper.getClient().getRttConnectionId();
+        int myNetId = _wrapper.getRelayService().getNetIdForCxId(myCxId);
+        Assert.assertTrue(myNetId != RelayService.INVALID_NET_ID);
+        String _cxId = _wrapper.getRelayService().getCxIdForNetId(myNetId);
+        Assert.assertTrue(_cxId.equals(myCxId));
+        String _profileId = _wrapper.getRelayService().getProfileIdForNetId(myNetId);
+        Assert.assertTrue(_profileId.equals(myProfileId));
+        int _netId = _wrapper.getRelayService().getNetIdForProfileId(myProfileId);
+        Assert.assertTrue(_netId == myNetId);
 
         // Wait 30sec and make sure the Ping kept us alive
         int t = 0;
@@ -218,7 +231,7 @@ public class RelayTest extends TestFixtureBase
     public class RTTLobbyResults implements IRTTCallback {
         private boolean m_done = false;
         private JSONObject m_server = null;
-        public String ownerId = null;
+        public String ownerCxId = null;
 
         BrainCloudWrapper _wrapper;
 
@@ -241,7 +254,7 @@ public class RelayTest extends TestFixtureBase
                         break;
                     }
                     case "STARTING": {
-                        ownerId = jsonData.getJSONObject("lobby").getString("owner");
+                        ownerCxId = jsonData.getJSONObject("lobby").getString("ownerCxId");
                         break;
                     }
                     case "ROOM_READY": {

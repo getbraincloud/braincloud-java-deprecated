@@ -214,11 +214,11 @@ public class RelayComms {
     private boolean _isConnecting = false;
     private long _lastConnectTryTime = 0;
     private int _netId = -1;
-    private String _ownerId = null;
+    private String _ownerCxId = null;
     private ConnectInfo _connectInfo = null;
 
-    private HashMap<Integer, String> _netIdToProfileId = new HashMap<Integer, String>();
-    private HashMap<String, Integer> _profileIdToNetId = new HashMap<String, Integer>();
+    private HashMap<Integer, String> _netIdToCxId = new HashMap<Integer, String>();
+    private HashMap<String, Integer> _cxIdToNetId = new HashMap<String, Integer>();
 
     private HashMap<Long, Integer> _sendPacketId = new HashMap<Long, Integer>();
     private HashMap<Long, Integer> _recvPacketId = new HashMap<Long, Integer>();
@@ -263,10 +263,10 @@ public class RelayComms {
         _connectCallback = callback;
         _ping = 999;
         _pingInFlight = false;
-        _netIdToProfileId.clear();
-        _profileIdToNetId.clear();
+        _netIdToCxId.clear();
+        _cxIdToNetId.clear();
         _netId = -1;
-        _ownerId = null;
+        _ownerCxId = null;
         _sendPacketId.clear();
         _recvPacketId.clear();
         _reliables.clear();
@@ -432,17 +432,43 @@ public class RelayComms {
     }
 
     public String getOwnerProfileId() {
-        return _ownerId;
+        if (_ownerCxId == null) return null;
+        String[] splits = _ownerCxId.split(":");
+        if (splits.length != 3) return null;
+        return splits[1];
     }
 
     public String getProfileIdForNetId(int netId) {
-        return _netIdToProfileId.get(netId);
+        if (!_netIdToCxId.containsKey(netId)) return null;
+        String[] splits = _netIdToCxId.get(netId).split(":");
+        if (splits.length != 3) return null;
+        return splits[1];
     }
 
     public int getNetIdForProfileId(String profileId) {
-        if (_profileIdToNetId.containsKey(profileId))
+        for (Map.Entry<String, Integer> entry : _cxIdToNetId.entrySet()) {
+            String[] splits = entry.getKey().split(":");
+            if (splits.length != 3) continue; // Invalid cxId
+            String id = splits[1];
+            if (id.equals(profileId)) {
+                return entry.getValue();
+            }
+        }
+        return INVALID_NET_ID;
+    }
+
+    public String getOwnerCxId() {
+        return _ownerCxId;
+    }
+
+    public String getCxIdForNetId(int netId) {
+        return _netIdToCxId.get(netId);
+    }
+
+    public int getNetIdForCxId(String cxId) {
+        if (_cxIdToNetId.containsKey(cxId))
         {
-            return _profileIdToNetId.get(profileId);
+            return _cxIdToNetId.get(cxId);
         }
         return INVALID_NET_ID;
     }
@@ -530,7 +556,7 @@ public class RelayComms {
         JSONObject json = new JSONObject();
 
         json.put("lobbyId", _connectInfo._lobbyId);
-        json.put("profileId", _client.getAuthenticationService().getProfileId());
+        json.put("cxId", _client.getRttConnectionId());
         json.put("passcode", _connectInfo._passcode);
         json.put("version", _client.getBrainCloudVersion());
 
@@ -1081,17 +1107,17 @@ public class RelayComms {
             switch (json.getString("op")) {
                 case "CONNECT": {
                     int netId = json.getInt("netId");
-                    String profileId = json.getString("profileId");
-                    _netIdToProfileId.put(netId, profileId);
-                    _profileIdToNetId.put(profileId, netId);
-                    if (profileId.equals(_client.getAuthenticationService().getProfileId())) {
+                    String cxId = json.getString("cxId");
+                    _netIdToCxId.put(netId, cxId);
+                    _cxIdToNetId.put(cxId, netId);
+                    if (cxId.equals(_client.getRttConnectionId())) {
                         synchronized(_lock) {
                             if (!_isConnected) {
                                 _isConnected = true;
                                 _isConnecting = false;
                                 _lastPingTime = System.currentTimeMillis();
                                 _netId = netId;
-                                _ownerId = json.getString("ownerId");
+                                _ownerCxId = json.getString("ownerCxId");
 
                                 synchronized(_callbackEventQueue) {
                                     _callbackEventQueue.add(new RelayCallback(RelayCallbackType.ConnectSuccess, json));
@@ -1103,13 +1129,13 @@ public class RelayComms {
                 }
                 case "NET_ID": {
                     int netId = json.getInt("netId");
-                    String profileId = json.getString("profileId");
-                    _netIdToProfileId.put(netId, profileId);
-                    _profileIdToNetId.put(profileId, netId);
+                    String cxId = json.getString("cxId");
+                    _netIdToCxId.put(netId, cxId);
+                    _cxIdToNetId.put(cxId, netId);
                     break;
                 }
                 case "MIGRATE_OWNER": {
-                    _ownerId = json.getString("profileId");
+                    _ownerCxId = json.getString("cxId");
                     break;
                 }
             }
