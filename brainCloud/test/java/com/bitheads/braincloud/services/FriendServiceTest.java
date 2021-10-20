@@ -131,7 +131,7 @@ public class FriendServiceTest extends TestFixtureBase
                 "failType",
                 tr);
 
-        tr.RunExpectFail(400, ReasonCodes.INVALID_CREDENTIAL);
+        tr.RunExpectFail(400, ReasonCodes.INVALID_EXT_AUTH_TYPE);
     }
 
     @Test
