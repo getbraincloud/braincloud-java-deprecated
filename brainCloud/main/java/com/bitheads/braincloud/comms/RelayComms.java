@@ -225,7 +225,6 @@ public class RelayComms {
     private HashMap<Long, ArrayList<RelayPacket>> _orderedReliablePackets = new HashMap<Long, ArrayList<RelayPacket>>();
     
     private int _ping = 999;
-    private boolean _pingInFlight = false;
     private int _pingIntervalMS = 1000;
     private long _lastPingTime = 0;
     private long _lastRecvTime = 0;
@@ -262,7 +261,6 @@ public class RelayComms {
         _isConnected = false;
         _connectCallback = callback;
         _ping = 999;
-        _pingInFlight = false;
         _netIdToCxId.clear();
         _cxIdToNetId.clear();
         _netId = -1;
@@ -787,7 +785,6 @@ public class RelayComms {
     }
 
     private void sendPing() {
-        if (_pingInFlight) return;
         if (_loggingEnabled && VERBOSE_LOG) {
             System.out.println("RELAY SEND: PING");
         }
@@ -800,7 +797,6 @@ public class RelayComms {
         send(buffer);
         
         _lastPingTime = System.currentTimeMillis();
-        _pingInFlight = true;
     }
 
     private void onRecv(ByteBuffer buffer) {
@@ -1049,12 +1045,9 @@ public class RelayComms {
         }
     }
     private void onPONG() {
-        if (_pingInFlight) {
-            _pingInFlight = false;
-            _ping = (int)Math.min((long)999, System.currentTimeMillis() - _lastPingTime);
-            if (_loggingEnabled && VERBOSE_LOG) {
-                System.out.println("RELAY PONG: " + _ping);
-            }
+        _ping = (int)Math.min((long)999, System.currentTimeMillis() - _lastPingTime);
+        if (_loggingEnabled && VERBOSE_LOG) {
+            System.out.println("RELAY PONG: " + _ping);
         }
     }
 
