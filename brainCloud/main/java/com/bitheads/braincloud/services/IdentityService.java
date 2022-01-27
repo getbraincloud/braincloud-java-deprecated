@@ -1,5 +1,6 @@
 package com.bitheads.braincloud.services;
 
+import com.bitheads.braincloud.client.AuthenticationIds;
 import com.bitheads.braincloud.client.AuthenticationType;
 import com.bitheads.braincloud.client.BrainCloudClient;
 import com.bitheads.braincloud.client.IServerCallback;
@@ -29,6 +30,7 @@ public class IdentityService {
         languageCode,
         timeZoneOffset,
         externalAuthName,
+        extraJson,
         peer,
         oldEmailAddress,
         newEmailAddress,
@@ -104,6 +106,114 @@ public class IdentityService {
      */
     public void detachFacebookIdentity(String facebookId, boolean continueAnon, IServerCallback callback) {
         detachIdentity(facebookId, AuthenticationType.Facebook, continueAnon, callback);
+    }
+
+    /**
+     * Attach the user's credentials to the current profile.
+     *
+     * Service Name - identity
+     * Service Operation - Attach
+     *
+     * @param authenticationType Universal, Email, Facebook, etc
+     * @param ids Auth IDs structure
+     * @param extraJson Additional to piggyback along with the call, to be picked up by pre- or post- hooks. Leave empty string for no extraJson.
+     * @param callback The method to be invoked when the server response is received
+     *
+     * Errors to watch for:  SWITCHING_PROFILES - this means that the identity you provided
+     * already points to a different profile.  You will likely want to offer the user the
+     * choice to *SWITCH* to that profile, or *MERGE* the profiles.
+     *
+     * To switch profiles, call ClearSavedProfileID() and call AuthenticateAdvanced().
+     */
+    public void attachAdvancedIdentity(AuthenticationType authenticationType, AuthenticationIds ids, String extraJson, IServerCallback callback) {
+        
+        try {
+            JSONObject data = new JSONObject();
+            data.put(Parameter.externalId.name(), ids.externalId);
+            data.put(Parameter.authenticationType.name(), authenticationType.toString());
+            data.put(Parameter.authenticationToken.name(), ids.authenticationToken);
+
+            if (StringUtil.IsOptionalParameterValid(ids.authenticationSubType)) {
+                data.put(Parameter.externalAuthName.name(), ids.authenticationSubType);
+            }
+
+            if (StringUtil.IsOptionalParameterValid(extraJson)) {
+                data.put(Parameter.extraJson.name(), new JSONObject(extraJson));
+            }
+
+            ServerCall sc = new ServerCall(ServiceName.identity, ServiceOperation.ATTACH, data, callback);
+            _client.sendRequest(sc);
+        } catch (JSONException ignored) {
+        }
+    }
+
+    /**
+     * Merge the profile associated with the provided credentials with the
+     * current profile.
+     *
+     * Service Name - identity
+     * Service Operation - Merge
+     *
+     * @param authenticationType Universal, Email, Facebook, etc
+     * @param ids Auth IDs structure
+     * @param extraJson Additional to piggyback along with the call, to be picked up by pre- or post- hooks. Leave empty string for no extraJson.
+     * @param callback The method to be invoked when the server response is received
+     *
+     */
+    public void mergeAdvancedIdentity(AuthenticationType authenticationType, AuthenticationIds ids, String extraJson, IServerCallback callback) {
+
+        try {
+            JSONObject data = new JSONObject();
+            data.put(Parameter.externalId.name(), ids.externalId);
+            data.put(Parameter.authenticationType.name(), authenticationType.toString());
+            data.put(Parameter.authenticationToken.name(), ids.authenticationToken);
+
+            if (StringUtil.IsOptionalParameterValid(ids.authenticationSubType)) {
+                data.put(Parameter.externalAuthName.name(), ids.authenticationSubType);
+            }
+
+            if (StringUtil.IsOptionalParameterValid(extraJson)) {
+                data.put(Parameter.extraJson.name(), new JSONObject(extraJson));
+            }
+    
+            ServerCall sc = new ServerCall(ServiceName.identity, ServiceOperation.MERGE, data, callback);
+            _client.sendRequest(sc);
+        } catch (JSONException ignored) {
+        }
+    }
+
+    /**
+     * Detach the identity from this profile.
+     *
+     * Service Name - identity
+     * Service Operation - Detach
+     *
+     * @param authenticationType Universal, Email, Facebook, etc
+     * @param externalId User ID
+     * @param continueAnon Proceed even if the profile will revert to anonymous?
+     * @param extraJson Additional to piggyback along with the call, to be picked up by pre- or post- hooks. Leave empty string for no extraJson.
+     * @param callback The method to be invoked when the server response is received
+     *
+     * Watch for DOWNGRADING_TO_ANONYMOUS_ERROR - occurs if you set in_continueAnon to false, and
+     * disconnecting this identity would result in the profile being anonymous (which means that
+     * the profile wouldn't be retrievable if the user loses their device)
+     */
+    public void detachAdvancedIdentity(AuthenticationType authenticationType, String externalId, boolean continueAnon, String extraJson, IServerCallback callback) {
+
+        try {
+            JSONObject data = new JSONObject();
+            data.put(Parameter.externalId.name(), externalId);
+            data.put(Parameter.authenticationType.name(), authenticationType.toString());
+            data.put(Parameter.confirmAnonymous.name(), continueAnon);
+
+            if (StringUtil.IsOptionalParameterValid(extraJson)) {
+                data.put(Parameter.extraJson.name(), new JSONObject(extraJson));
+            }
+    
+            ServerCall sc = new ServerCall(ServiceName.identity, ServiceOperation.DETACH, data, callback);
+            _client.sendRequest(sc);
+        } catch (JSONException ignored) {
+        }
     }
 
     /**

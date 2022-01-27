@@ -583,6 +583,27 @@ public class BrainCloudWrapper implements IServerCallback {
         getClient().getAuthenticationService().authenticateUniversal(userId, userPassword, forceCreate, this);
     }
 
+    /*
+     * A generic Authenticate method that translates to the same as calling a specific one, except it takes an extraJson
+     * that will be passed along to pre- or post- hooks.
+     *
+     * Service Name - Authenticate
+     * Service Operation - Authenticate
+     *
+     * @param authenticationType Universal, Email, Facebook, etc
+     * @param ids Auth IDs object
+     * @param forceCreate Should a new profile be created for this user if the account does not exist?
+     * @param extraJson Additional to piggyback along with the call, to be picked up by pre- or post- hooks. Leave empty string for no extraJson.
+     * @param callback The method to be invoked when the server response is received
+     */
+    public void authenticateAdvanced(AuthenticationType authenticationType, AuthenticationIds ids, boolean forceCreate, String extraJson, IServerCallback callback) {
+        _authenticateCallback = callback;
+
+        initializeIdentity(false);
+
+        getClient().getAuthenticationService().authenticateAdvanced(authenticationType, ids, forceCreate, extraJson, this);
+    }
+
     /**
      * Re-authenticates the user with brainCloud
      *
