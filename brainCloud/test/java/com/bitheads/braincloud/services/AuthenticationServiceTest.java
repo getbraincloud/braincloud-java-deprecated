@@ -2,7 +2,8 @@ package com.bitheads.braincloud.services;
 
 import com.bitheads.braincloud.client.ReasonCodes;
 import com.bitheads.braincloud.client.StatusCodes;
-
+import com.bitheads.braincloud.client.AuthenticationType;
+import com.bitheads.braincloud.client.AuthenticationIds;
 import com.bitheads.braincloud.client.BrainCloudClient;
 import com.bitheads.braincloud.client.BrainCloudWrapper;
 
@@ -46,6 +47,22 @@ public class AuthenticationServiceTest extends TestFixtureNoAuth
         _wrapper.getClient().getAuthenticationService().authenticateUniversal(getUser(Users.UserA).id, getUser(Users.UserA).password, true, tr2);
         
         tr2.Run();
+    }
+
+    @Test
+    public void testAuthenticateAdvanced() throws Exception
+    {
+        TestResult tr = new TestResult(_wrapper);
+
+        // Call it directly on the wrapper. This way we test both the wrapper and the service
+        _wrapper.getClient().getAuthenticationService().authenticateAdvanced(
+            AuthenticationType.Universal, 
+            new AuthenticationIds("authAdvancedUser", "authAdvancedPass"),
+            true,
+            "{\"AnswerToEverything\":42}",
+            tr);
+        
+        tr.Run();
     }
 
     @Test
