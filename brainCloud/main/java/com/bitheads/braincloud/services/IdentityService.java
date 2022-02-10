@@ -759,6 +759,64 @@ public class IdentityService {
     }
 
     /**
+     * Attach an Ultra identity to the current profile.
+     *
+     * Service Name - Identity
+     * Service Operation - Attach
+     *
+     * @param ultraUsername      it's what the user uses to log into the Ultra endpoint initially
+     * @param ultraIdToken       The "id_token" taken from Ultra's JWT.
+     * @param callback           The method to be invoked when the server response is received
+     *
+     * @returns performs the success callback on success, failure callback on failure
+     *.
+     * Errors to watch for:  SWITCHING_PROFILES - this means that the email address you provided
+     * already points to a different profile.  You will likely want to offer the player the 
+     * choice to *SWITCH* to that profile, or *MERGE* the profiles.
+     *
+     * To switch profiles, call ClearSavedProfileID() and then call AuthenticateUltra().
+     */
+    public void attachUltraIdentity(String ultraUsername, String ultraIdToken, IServerCallback callback) {
+        attachIdentity(ultraUsername, ultraIdToken, AuthenticationType.Ultra, callback);
+    }
+
+    /**
+     * Merge the profile associated with the provided ultra account with the current profile.
+     *
+     * Service Name - Identity
+     * Service Operation - Merge
+     *
+     * @param ultraUsername      it's what the user uses to log into the Ultra endpoint initially
+     * @param ultraIdToken       The "id_token" taken from Ultra's JWT.
+     * @param callback           The method to be invoked when the server response is received
+     *
+     * @returns performs the success callback on success, failure callback on failure
+     */
+    public void mergeUltraIdentity(String ultraUsername, String ultraIdToken, IServerCallback callback) {
+        mergeIdentity(ultraUsername, ultraIdToken, AuthenticationType.Ultra, callback);
+    }
+
+    /**
+     * Detach the ultra identity from the current profile
+     *
+     * Service Name - Identity
+     * Service Operation - Detach
+     *
+     * @param ultraUsername      it's what the user uses to log into the Ultra endpoint initially
+     * @param continueAnon       Proceed even if the profile will revert to anonymous?
+     * @param callback           The method to be invoked when the server response is received
+     *
+     * @returns performs the success callback on success, failure callback on failure
+     *
+     * Watch for DOWNGRADING_TO_ANONYMOUS_ERROR - occurs if you set continueAnon to false, and
+     * disconnecting this identity would result in the profile being anonymous (which means that 
+     * the profile wouldn't be retrievable if the user loses their device)
+     */
+    public void detachUltraIdentity(String ultraUsername, boolean continueAnon, IServerCallback callback) {
+        detachIdentity(ultraUsername, AuthenticationType.Ultra, continueAnon, callback);
+    }
+
+    /**
      * Attach the user's Twitter credentials to the current profile.
      *
      * Service Name - Identity
