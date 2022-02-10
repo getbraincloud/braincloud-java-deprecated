@@ -263,6 +263,19 @@ public class AuthenticationService {
     }
 
     /**
+     * Authenticate the user for Ultra.
+     *
+     * @param ultraUsername      it's what the user uses to log into the Ultra endpoint initially
+     * @param ultraIdToken       The "id_token" taken from Ultra's JWT.
+     * @param forceCreate        Should a new profile be created for this user if the account
+     *                           does not exist?
+     * @param callback           The callback handler
+     */
+    public void authenticateUltra(String ultraUsername, String ultraIdToken, boolean forceCreate, IServerCallback callback) {
+        authenticate(ultraUsername, ultraIdToken, AuthenticationType.Ultra, null, forceCreate, null, callback);
+    }
+
+    /**
      * Authenticate the user using a Twitter userid, authentication token, and secret from Twitter.
      * <p/>
      * Service Name - Authenticate

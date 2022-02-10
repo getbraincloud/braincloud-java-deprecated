@@ -31,6 +31,11 @@ public class TestFixtureBase {
     public static BrainCloudWrapper _wrapper;
     public static BrainCloudClient _client;
 
+    static String getServerUrl()
+    {
+        return m_serverUrl;
+    }
+
     @Before
     public void setUp() throws Exception {
 
