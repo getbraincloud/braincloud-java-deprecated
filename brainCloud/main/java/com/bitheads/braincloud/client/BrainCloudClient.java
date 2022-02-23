@@ -131,7 +131,7 @@ public class BrainCloudClient {
 
     private static BrainCloudClient instance = null;
 
-    private static String DEFAULT_SERVER_URL = "https://sharedprod.braincloudservers.com/dispatcherv2";
+    private static String DEFAULT_SERVER_URL = "https://api.braincloudservers.com/dispatcherv2";
 
     public BrainCloudClient() {
         _restClient = new BrainCloudRestClient(this);
