@@ -143,6 +143,19 @@ public class CustomEntityServiceTest extends TestFixtureBase {
                 tr);
         tr.Run();
     }
+    
+    @Test
+    public void testUpdateEntityFieldsSharded() throws Exception {
+        TestResult tr = new TestResult(_wrapper);
+        _wrapper.getCustomEntityService().updateEntityFieldsSharded(
+                "athletes",
+                "aaaa-bbbb-cccc-dddd",
+                1,
+                "{\"stats.gamesPlayedTotal\":2,\"stats.goalsTotal\":2,\"games.played\":[{\"date\":\"2022-01-21\",\"goals\":1,\"assists\":1,\"penalties\":0},{\"date\":\"2022-01-10\",\"goals\":1,\"assists\":0,\"penalties\":1}]}",
+                "{\"ownerId\":\"profileIdOfEntityOwner\"}",
+                tr);
+        tr.RunExpectFail(400, 40571);
+    }
 
     @Test
     public void testDeleteEntities() throws Exception {

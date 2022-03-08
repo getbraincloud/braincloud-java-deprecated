@@ -28,7 +28,8 @@ public class CustomEntityService {
         doCount,
         pageOffset, 
         context,
-        fieldsJson
+        fieldsJson,
+        shardKeyJson
     }
 
     private BrainCloudClient _client;
@@ -341,9 +342,7 @@ public class CustomEntityService {
      * @param entityType The entity type as defined by the user
      * @param entityId
      * @param version
-     * @param dataJson
-     * @param acl
-     * @param timeToLive
+     * @param fieldsJson
      * @param callback Callback.
      */
     public void updateEntityFields(String entityType, String entityId, int version, String fieldsJson,
@@ -360,6 +359,39 @@ public class CustomEntityService {
 
             ServerCall serverCall = new ServerCall(ServiceName.customEntity,
                     ServiceOperation.UPDATE_ENTITY_FIELDS, data, callback);
+            _client.sendRequest(serverCall);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Replaces the specified custom entity's data, and optionally updates the acl and expiry, on the server, enforcing current ownership/ACL permissions.
+     *
+     * @param entityType The entity type as defined by the user
+     * @param entityId
+     * @param version
+     * @param fieldsJson
+     * @param shardKeyJson The shard key field(s) and value(s), as JSON, applicable to the entity being updated.
+     * @param callback Callback.
+     */
+    public void updateEntityFieldsSharded(String entityType, String entityId, int version, String fieldsJson, String shardKeyJson, IServerCallback callback) {
+
+        try {
+            JSONObject data = new JSONObject();
+            data.put(Parameter.entityType.name(), entityType);
+            data.put(Parameter.entityId.name(), entityId);
+            data.put(Parameter.version.name(), version);
+
+            JSONObject fieldsData = new JSONObject(fieldsJson);
+            data.put(Parameter.fieldsJson.name(), fieldsData);
+
+            JSONObject shardKeyData = new JSONObject(shardKeyJson);
+            data.put(Parameter.shardKeyJson.name(), shardKeyData);
+
+            ServerCall serverCall = new ServerCall(ServiceName.customEntity,
+                    ServiceOperation.UPDATE_ENTITY_FIELDS_SHARDED, data, callback);
             _client.sendRequest(serverCall);
 
         } catch (JSONException e) {
