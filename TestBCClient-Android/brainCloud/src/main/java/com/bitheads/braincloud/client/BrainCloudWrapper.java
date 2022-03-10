@@ -61,7 +61,7 @@ public class BrainCloudWrapper implements IServerCallback {
 
     private static final String AUTHENTICATION_ANONYMOUS = "anonymous";
     private static final String _SHARED_PREFERENCES = "bcprefs";
-    private static final String _DEFAULT_URL = "https://sharedprod.braincloudservers.com/dispatcherv2";
+    private static final String _DEFAULT_URL = "https://api.braincloudservers.com/dispatcherv2";
 
     private static BrainCloudWrapper _instance = null;
 
@@ -662,6 +662,26 @@ public class BrainCloudWrapper implements IServerCallback {
     }
 
     /**
+     * Authenticate the user for Ultra.
+     *
+     * @param ultraUsername      it's what the user uses to log into the Ultra endpoint initially
+     * @param ultraIdToken       The "id_token" taken from Ultra's JWT.
+     * @param forceCreate        Should a new profile be created for this user if the account
+     *                           does not exist?
+     * @param callback           The callback handler
+     */
+    public void authenticateUltra(String ultraUsername,
+                                  String ultraIdToken,
+                                  boolean forceCreate,
+                                  IServerCallback callback) {
+        _authenticateCallback = callback;
+
+        initializeIdentity(false);
+
+        getClient().getAuthenticationService().authenticateUltra(ultraUsername, ultraIdToken, forceCreate, this);
+    }
+
+    /**
      * Authenticate the user using a Twitter userid, authentication token, and secret from Twitter.
      * <p>
      * Service Name - Authenticate
@@ -708,6 +728,27 @@ public class BrainCloudWrapper implements IServerCallback {
         initializeIdentity(false);
 
         getClient().getAuthenticationService().authenticateUniversal(userId, userPassword, forceCreate, this);
+    }
+
+    /*
+     * A generic Authenticate method that translates to the same as calling a specific one, except it takes an extraJson
+     * that will be passed along to pre- or post- hooks.
+     *
+     * Service Name - Authenticate
+     * Service Operation - Authenticate
+     *
+     * @param authenticationType Universal, Email, Facebook, etc
+     * @param ids Auth IDs object
+     * @param forceCreate Should a new profile be created for this user if the account does not exist?
+     * @param extraJson Additional to piggyback along with the call, to be picked up by pre- or post- hooks. Leave empty string for no extraJson.
+     * @param callback The method to be invoked when the server response is received
+     */
+    public void authenticateAdvanced(AuthenticationType authenticationType, AuthenticationIds ids, boolean forceCreate, String extraJson, IServerCallback callback) {
+        _authenticateCallback = callback;
+
+        initializeIdentity(false);
+
+        getClient().getAuthenticationService().authenticateAdvanced(authenticationType, ids, forceCreate, extraJson, this);
     }
 
     /**

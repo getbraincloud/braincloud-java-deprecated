@@ -2,7 +2,8 @@ package com.bitheads.braincloud.services;
 
 import com.bitheads.braincloud.client.ReasonCodes;
 import com.bitheads.braincloud.client.StatusCodes;
-
+import com.bitheads.braincloud.client.AuthenticationType;
+import com.bitheads.braincloud.client.AuthenticationIds;
 import com.bitheads.braincloud.client.BrainCloudClient;
 import com.bitheads.braincloud.client.BrainCloudWrapper;
 
@@ -46,6 +47,22 @@ public class AuthenticationServiceTest extends TestFixtureNoAuth
         _wrapper.getClient().getAuthenticationService().authenticateUniversal(getUser(Users.UserA).id, getUser(Users.UserA).password, true, tr2);
         
         tr2.Run();
+    }
+
+    @Test
+    public void testAuthenticateAdvanced() throws Exception
+    {
+        TestResult tr = new TestResult(_wrapper);
+
+        // Call it directly on the wrapper. This way we test both the wrapper and the service
+        _wrapper.getClient().getAuthenticationService().authenticateAdvanced(
+            AuthenticationType.Universal, 
+            new AuthenticationIds("authAdvancedUser", "authAdvancedPass"),
+            true,
+            "{\"AnswerToEverything\":42}",
+            tr);
+        
+        tr.Run();
     }
 
     @Test
@@ -437,5 +454,39 @@ public class AuthenticationServiceTest extends TestFixtureNoAuth
                 tr3);
         tr3.RunExpectFail(StatusCodes.FORBIDDEN, ReasonCodes.NO_SESSION);
 
+    }
+
+    @Test
+    public void testAuthenticateUltra() throws Exception
+    {
+        if (!getServerUrl().contains("api-internal.braincloudservers.com") &&
+            !getServerUrl().contains("internala.braincloudservers.com") &&
+            !getServerUrl().contains("api.internalg.braincloudservers.com")/* &&
+            !getServerUrl().contains("api.ultracloud.ultra.io")*/)
+        {
+            return;
+        }
+
+        TestResult tr = new TestResult(_wrapper);
+
+        // Auth universal
+        _wrapper.getClient().getAuthenticationService().authenticateEmailPassword(
+            getUser(Users.UserA).email,
+            getUser(Users.UserA).password,
+            true, tr);
+        tr.Run();
+
+        // Run a cloud script to grab the ultra's JWT token
+        _wrapper.getClient().getScriptService().runScript("getUltraToken", "{}", tr);
+        tr.Run();
+        String id_token = tr.m_response.getJSONObject("data").getJSONObject("response").getJSONObject("data").getJSONObject("json").getString("id_token");
+
+        // Logout
+        _wrapper.getClient().getPlayerStateService().logout(tr);
+        tr.Run();
+
+        // Auth ultra
+        _wrapper.getClient().getAuthenticationService().authenticateUltra("braincloud1", id_token, true, tr);
+        tr.Run();
     }
 }

@@ -22,6 +22,7 @@ public class AuthenticationType {
     public static final AuthenticationType Handoff = new AuthenticationType("Handoff");
     public static final AuthenticationType SettopHandoff = new AuthenticationType("SettopHandoff");
     public static final AuthenticationType External = new AuthenticationType("External");
+    public static final AuthenticationType Ultra = new AuthenticationType("Ultra");
     public static final AuthenticationType Unknown = new AuthenticationType("Unknown");
 
     private AuthenticationType(String value) {
@@ -78,6 +79,9 @@ public class AuthenticationType {
         }
         if (s.equals(External.toString())) {
             return External;
+        }
+        if (s.equals(Ultra.toString())) {
+            return Ultra;
         }
         return Unknown;
     }

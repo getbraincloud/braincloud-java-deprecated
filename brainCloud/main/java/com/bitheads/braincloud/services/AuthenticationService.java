@@ -1,5 +1,6 @@
 package com.bitheads.braincloud.services;
 
+import com.bitheads.braincloud.client.AuthenticationIds;
 import com.bitheads.braincloud.client.AuthenticationType;
 import com.bitheads.braincloud.client.BrainCloudClient;
 import com.bitheads.braincloud.client.IServerCallback;
@@ -33,6 +34,7 @@ public class AuthenticationService {
         releasePlatform,
         clientLibVersion,
         externalAuthName,
+        extraJson,
         profileId,
         anonymousId,
         gameVersion,
@@ -104,7 +106,7 @@ public class AuthenticationService {
      * @param callback    The callback handler
      */
     public void authenticateAnonymous(boolean forceCreate, IServerCallback callback) {
-        authenticate(_anonymousId, "", AuthenticationType.Anonymous, null, forceCreate, callback);
+        authenticate(_anonymousId, "", AuthenticationType.Anonymous, null, forceCreate, null, callback);
     }
 
     /**
@@ -139,7 +141,7 @@ public class AuthenticationService {
      * @param callback    The callback handler
      */
     public void authenticateEmailPassword(String email, String password, boolean forceCreate, IServerCallback callback) {
-        authenticate(email, password, AuthenticationType.Email, null, forceCreate, callback);
+        authenticate(email, password, AuthenticationType.Email, null, forceCreate, null, callback);
     }
 
     /**
@@ -161,7 +163,7 @@ public class AuthenticationService {
             String externalAuthName,
             boolean forceCreate,
             IServerCallback callback) {
-        authenticate(userId, token, AuthenticationType.External, externalAuthName, forceCreate, callback);
+        authenticate(userId, token, AuthenticationType.External, externalAuthName, forceCreate, null, callback);
     }
 
     /**
@@ -175,7 +177,7 @@ public class AuthenticationService {
      * @param callback    The callback handler
      */
     public void authenticateFacebook(String fbUserId, String fbAuthToken, boolean forceCreate, IServerCallback callback) {
-        authenticate(fbUserId, fbAuthToken, AuthenticationType.Facebook, null, forceCreate, callback);
+        authenticate(fbUserId, fbAuthToken, AuthenticationType.Facebook, null, forceCreate, null, callback);
     }
 
     /**
@@ -189,7 +191,7 @@ public class AuthenticationService {
      * @param callback    The callback handler
      */
     public void authenticateFacebookLimited(String fbLimitedUserId, String fbAuthToken, boolean forceCreate, IServerCallback callback) {
-        authenticate(fbLimitedUserId, fbAuthToken, AuthenticationType.FacebookLimited, null, forceCreate, callback);
+        authenticate(fbLimitedUserId, fbAuthToken, AuthenticationType.FacebookLimited, null, forceCreate, null, callback);
     }
 
     /**
@@ -202,7 +204,7 @@ public class AuthenticationService {
      * @param callback    The callback handler
      */
     public void authenticateOculus(String oculusUserId, String oculusNonce, boolean forceCreate, IServerCallback callback) {
-        authenticate(oculusUserId, oculusNonce, AuthenticationType.Oculus, null, forceCreate, callback);
+        authenticate(oculusUserId, oculusNonce, AuthenticationType.Oculus, null, forceCreate, null, callback);
     }
 
     /**
@@ -215,7 +217,7 @@ public class AuthenticationService {
      * @param callback        The callback handler
      */
     public void authenticateApple(String appleUserId, String identityToken, boolean forceCreate, IServerCallback callback) {
-        authenticate(appleUserId, identityToken, AuthenticationType.Apple, null, forceCreate, callback);
+        authenticate(appleUserId, identityToken, AuthenticationType.Apple, null, forceCreate, null, callback);
     }
 
     /**
@@ -229,7 +231,7 @@ public class AuthenticationService {
      * @param callback        The callback handler
      */
     public void authenticateGoogle(String googleUserId, String serverAuthCode, boolean forceCreate, IServerCallback callback) {
-        authenticate(googleUserId, serverAuthCode, AuthenticationType.Google, null, forceCreate, callback);
+        authenticate(googleUserId, serverAuthCode, AuthenticationType.Google, null, forceCreate, null, callback);
     }
 
     /**
@@ -243,7 +245,7 @@ public class AuthenticationService {
      * @param callback        The callback handler
      */
     public void authenticateGoogleOpenId(String googleUserAccountEmail, String IdToken, boolean forceCreate, IServerCallback callback) {
-        authenticate(googleUserAccountEmail, IdToken, AuthenticationType.GoogleOpenId, null, forceCreate, callback);
+        authenticate(googleUserAccountEmail, IdToken, AuthenticationType.GoogleOpenId, null, forceCreate, null, callback);
     }
 
     /**
@@ -257,7 +259,20 @@ public class AuthenticationService {
      * @param callback           The callback handler
      */
     public void authenticateSteam(String steamUserId, String steamSessionTicket, boolean forceCreate, IServerCallback callback) {
-        authenticate(steamUserId, steamSessionTicket, AuthenticationType.Steam, null, forceCreate, callback);
+        authenticate(steamUserId, steamSessionTicket, AuthenticationType.Steam, null, forceCreate, null, callback);
+    }
+
+    /**
+     * Authenticate the user for Ultra.
+     *
+     * @param ultraUsername      it's what the user uses to log into the Ultra endpoint initially
+     * @param ultraIdToken       The "id_token" taken from Ultra's JWT.
+     * @param forceCreate        Should a new profile be created for this user if the account
+     *                           does not exist?
+     * @param callback           The callback handler
+     */
+    public void authenticateUltra(String ultraUsername, String ultraIdToken, boolean forceCreate, IServerCallback callback) {
+        authenticate(ultraUsername, ultraIdToken, AuthenticationType.Ultra, null, forceCreate, null, callback);
     }
 
     /**
@@ -278,9 +293,8 @@ public class AuthenticationService {
                                     boolean forceCreate,
                                     IServerCallback callback) {
         String tokenSecretCombo = token + ":" + secret;
-        authenticate(userId, tokenSecretCombo, AuthenticationType.Twitter, null, forceCreate, callback);
+        authenticate(userId, tokenSecretCombo, AuthenticationType.Twitter, null, forceCreate, null, callback);
     }
-
 
     /**
      * Authenticate the user using a userid and password (without any validation
@@ -295,7 +309,24 @@ public class AuthenticationService {
      * @param callback     The callback handler
      */
     public void authenticateUniversal(String userId, String userPassword, boolean forceCreate, IServerCallback callback) {
-        authenticate(userId, userPassword, AuthenticationType.Universal, null, forceCreate, callback);
+        authenticate(userId, userPassword, AuthenticationType.Universal, null, forceCreate, null, callback);
+    }
+
+    /*
+     * A generic Authenticate method that translates to the same as calling a specific one, except it takes an extraJson
+     * that will be passed along to pre- or post- hooks.
+     *
+     * Service Name - Authenticate
+     * Service Operation - Authenticate
+     *
+     * @param authenticationType Universal, Email, Facebook, etc
+     * @param ids Auth IDs object
+     * @param forceCreate Should a new profile be created for this user if the account does not exist?
+     * @param extraJson Additional to piggyback along with the call, to be picked up by pre- or post- hooks. Leave empty string for no extraJson.
+     * @param callback The method to be invoked when the server response is received
+     */
+    public void authenticateAdvanced(AuthenticationType authenticationType, AuthenticationIds ids, boolean forceCreate, String extraJson, IServerCallback callback) {
+        authenticate(ids.externalId, ids.authenticationToken, AuthenticationType.Universal, ids.authenticationSubType, forceCreate, extraJson, callback);
     }
 
     /**
@@ -308,7 +339,7 @@ public class AuthenticationService {
      * @param callback        The callback handler
      */
     public void authenticateParse(String userId, String authenticationToken, boolean forceCreate, IServerCallback callback) {
-        authenticate(userId, authenticationToken, AuthenticationType.Parse, null, forceCreate, callback);
+        authenticate(userId, authenticationToken, AuthenticationType.Parse, null, forceCreate, null, callback);
     }
 
     /**
@@ -319,7 +350,7 @@ public class AuthenticationService {
      * @param callback   The callback handler
      */
     public void authenticateHandoff(String handoffId, String securityToken, IServerCallback callback) {
-        authenticate(handoffId, securityToken, AuthenticationType.Handoff, null, false, callback);
+        authenticate(handoffId, securityToken, AuthenticationType.Handoff, null, false, null, callback);
     }
 
     /**
@@ -329,7 +360,7 @@ public class AuthenticationService {
      * @param callback   The callback handler
      */
     public void authenticateSettopHandoff(String handoffCode, IServerCallback callback) {
-        authenticate(handoffCode, "", AuthenticationType.SettopHandoff, null, false, callback);
+        authenticate(handoffCode, "", AuthenticationType.SettopHandoff, null, false, null, callback);
     }
 
     /**
@@ -552,6 +583,7 @@ public class AuthenticationService {
             AuthenticationType authenticationType,
             String externalAuthName,
             boolean forceCreate,
+            String extraJson,
             IServerCallback callback) {
         try {
             JSONObject message = new JSONObject();
@@ -574,6 +606,10 @@ public class AuthenticationService {
             message.put(Parameter.languageCode.name(), _client.getLanguageCode());
             message.put(Parameter.timeZoneOffset.name(), _client.getTimeZoneOffset());
             message.put("clientLib", "java");
+
+            if (StringUtil.IsOptionalParameterValid(extraJson)) {
+                message.put(Parameter.extraJson.name(), new JSONObject(extraJson));
+            }
 
             ServerCall serverCall = new ServerCall(
                     ServiceName.authenticationV2,

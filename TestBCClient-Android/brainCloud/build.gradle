@@ -42,7 +42,7 @@ android {
         unitTests.all {
             unitTests.returnDefaultValues = true
             reports {
-                junitXml.enabled = false
+                junitXml.enabled = true
                 html.enabled = true
             }
             testLogging {

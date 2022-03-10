@@ -220,6 +220,8 @@ public class FriendService {
 
     /**
      * Read a friend's user state.
+     * If you are not friend with this user, you will get an error
+     * with NOT_FRIENDS reason code.
      *
      * Service Name - PlayerState
      * Service Operation - ReadFriendsPlayerState

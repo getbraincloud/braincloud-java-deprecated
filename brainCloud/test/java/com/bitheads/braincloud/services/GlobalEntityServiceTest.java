@@ -22,7 +22,7 @@ public class GlobalEntityServiceTest extends TestFixtureBase {
 
         _wrapper.getGlobalEntityService().createEntity(
                 _defaultEntityType,
-                0,
+                3434343,
                 null,
                 Helpers.createJsonPair(_defaultEntityValueName, _defaultEntityValue),
                 tr);
@@ -37,7 +37,7 @@ public class GlobalEntityServiceTest extends TestFixtureBase {
         _wrapper.getGlobalEntityService().createEntityWithIndexedId(
                 _defaultEntityType,
                 "indexedIdTest",
-                0,
+                3434343,
                 null,
                 Helpers.createJsonPair(_defaultEntityValueName, _defaultEntityValue),
                 tr);
@@ -206,7 +206,7 @@ public class GlobalEntityServiceTest extends TestFixtureBase {
 
         _wrapper.getGlobalEntityService().createEntity(
                 _defaultEntityType,
-                10000,
+                3434343,
                 "",
                 Helpers.createJsonPair("test", 1234),
                 tr);
@@ -307,7 +307,7 @@ public class GlobalEntityServiceTest extends TestFixtureBase {
         if (indexedId.length() <= 0) {
             _wrapper.getGlobalEntityService().createEntity(
                     _defaultEntityType,
-                    0,
+                    3434343,
                     access.toJsonString(),
                     Helpers.createJsonPair(_defaultEntityValueName, _defaultEntityValue),
                     tr);
@@ -315,7 +315,7 @@ public class GlobalEntityServiceTest extends TestFixtureBase {
             _wrapper.getGlobalEntityService().createEntityWithIndexedId(
                     _defaultEntityType,
                     indexedId,
-                    0,
+                    3434343,
                     access.toJsonString(),
                     Helpers.createJsonPair(_defaultEntityValueName, _defaultEntityValue),
                     tr);

@@ -81,7 +81,7 @@ public class BrainCloudClient {
     private double _timeZoneOffset;
 
 
-    private final static String BRAINCLOUD_VERSION = "4.9.0";
+    private final static String BRAINCLOUD_VERSION = "4.10.0";
 
     private BrainCloudRestClient _restClient;
     private RTTComms _rttComms;
@@ -131,7 +131,7 @@ public class BrainCloudClient {
 
     private static BrainCloudClient instance = null;
 
-    private static String DEFAULT_SERVER_URL = "https://sharedprod.braincloudservers.com/dispatcherv2";
+    private static String DEFAULT_SERVER_URL = "https://api.braincloudservers.com/dispatcherv2";
 
     public BrainCloudClient() {
         _restClient = new BrainCloudRestClient(this);
