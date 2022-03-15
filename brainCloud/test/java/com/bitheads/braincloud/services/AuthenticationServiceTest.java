@@ -30,6 +30,18 @@ public class AuthenticationServiceTest extends TestFixtureNoAuth
     long secondMostRecentPacket = -1000000;
 
     @Test
+    public void testAuthManualRedirect() throws Exception
+    {
+        _client.initialize(m_serverUrl, m_redirectAppId, m_secret, m_appVersion);
+
+        TestResult tr = new TestResult(_wrapper);
+        String anonId = _client.getAuthenticationService().generateAnonymousId();
+        _client.getAuthenticationService().authenticateAnonymous(anonId, true, tr);
+
+        tr.RunExpectFail(202, ReasonCodes.MANUAL_REDIRECT /* 40308 */);
+    }
+
+    @Test
     public void testAuthenticateAnonymous() throws Exception
     {
         TestResult tr = new TestResult(_wrapper);

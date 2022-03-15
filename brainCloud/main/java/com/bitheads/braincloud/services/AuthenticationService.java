@@ -18,6 +18,18 @@ public class AuthenticationService {
 
     private BrainCloudClient _client;
 
+    private class PreviousAuthParams
+    {
+        public String externalId = "";
+        public String authenticationToken = "";
+        public AuthenticationType authenticationType = AuthenticationType.Unknown;
+        public String externalAuthName = "";
+        public boolean forceCreate = true;
+        public String extraJson;
+    };
+
+    private PreviousAuthParams _previousAuthParams = new PreviousAuthParams();
+
     public AuthenticationService(BrainCloudClient client) {
         _client = client;
     }
@@ -67,6 +79,17 @@ public class AuthenticationService {
 
     public void setProfileId(String profileId) {
         _profileId = profileId;
+    }
+
+    public void retryPreviousAuthenticate(IServerCallback callback)
+    {
+        authenticate(_previousAuthParams.externalId,
+                     _previousAuthParams.authenticationToken,
+                     _previousAuthParams.authenticationType,
+                     _previousAuthParams.externalAuthName,
+                     _previousAuthParams.forceCreate,
+                     _previousAuthParams.extraJson,
+                     callback);
     }
 
     /**
@@ -586,6 +609,13 @@ public class AuthenticationService {
             String extraJson,
             IServerCallback callback) {
         try {
+            _previousAuthParams.externalId = externalId == null ? "" : externalId;
+            _previousAuthParams.authenticationToken = authenticationToken == null ? "" : authenticationToken;
+            _previousAuthParams.authenticationType = authenticationType;
+            _previousAuthParams.externalAuthName = externalAuthName == null ? "" : externalAuthName;
+            _previousAuthParams.forceCreate = forceCreate;
+            _previousAuthParams.extraJson = extraJson;
+
             JSONObject message = new JSONObject();
             message.put(Parameter.externalId.name(), externalId);
             message.put(Parameter.authenticationToken.name(), authenticationToken);

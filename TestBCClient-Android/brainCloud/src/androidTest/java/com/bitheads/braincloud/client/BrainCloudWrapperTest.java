@@ -56,6 +56,17 @@ public class BrainCloudWrapperTest extends TestFixtureNoAuth
     }
 
     @Test
+    public void testManualRedirect() throws Exception
+    {
+        _wrapper.initialize(m_redirectAppId, m_secret, m_appVersion, m_serverUrl);
+    
+        TestResult tr = new TestResult(_wrapper);
+        _wrapper.authenticateAnonymous(tr);
+
+        tr.Run();
+    }
+
+    @Test
     public void testAuthenticateEmailPassword()
     {
         _wrapper.initialize(m_appId, m_secret, m_appVersion, m_serverUrl);
