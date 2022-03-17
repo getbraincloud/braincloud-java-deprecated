@@ -165,6 +165,16 @@ public class BrainCloudWrapper implements IServerCallback {
         }
     }
 
+    private class InitializeParams
+    {
+        public String appId = "";
+        public String secretKey = "";
+        public String appVersion = "";
+        public String serverUrl = "";
+        public Map<String, String> secretMap = null;
+    };
+    private InitializeParams m_initializeParams = new InitializeParams();
+
     /**
      * Method initializes the BrainCloudClient.
      *
@@ -175,6 +185,13 @@ public class BrainCloudWrapper implements IServerCallback {
      */
     public void initialize(Context ctx, String appId, String secretKey, String appVersion) {
         setContext(ctx);
+
+        m_initializeParams.appId = appId;
+        m_initializeParams.secretKey = secretKey;
+        m_initializeParams.appVersion = appVersion;
+        m_initializeParams.serverUrl = _DEFAULT_URL;
+        m_initializeParams.secretMap = null;
+
         if(_client == null)
         {
             _client = new BrainCloudClient();
@@ -198,6 +215,13 @@ public class BrainCloudWrapper implements IServerCallback {
      */
     public void initialize(Context ctx, String appId, String secretKey, String appVersion, String serverUrl) {
         setContext(ctx);
+
+        m_initializeParams.appId = appId;
+        m_initializeParams.secretKey = secretKey;
+        m_initializeParams.appVersion = appVersion;
+        m_initializeParams.serverUrl = serverUrl;
+        m_initializeParams.secretMap = null;
+
         if(_client == null)
         {
             _client = new BrainCloudClient();
@@ -222,6 +246,12 @@ public class BrainCloudWrapper implements IServerCallback {
      */
     public void initialize(String appId, String secretKey, String appVersion, String serverUrl) {
 
+        m_initializeParams.appId = appId;
+        m_initializeParams.secretKey = secretKey;
+        m_initializeParams.appVersion = appVersion;
+        m_initializeParams.serverUrl = serverUrl;
+        m_initializeParams.secretMap = null;
+
         if(_client == null)
         {
             _client = new BrainCloudClient();
@@ -243,6 +273,12 @@ public class BrainCloudWrapper implements IServerCallback {
      */
     public void initialize(String appId, String secretKey, String appVersion) {
         
+        m_initializeParams.appId = appId;
+        m_initializeParams.secretKey = secretKey;
+        m_initializeParams.appVersion = appVersion;
+        m_initializeParams.serverUrl = _DEFAULT_URL;
+        m_initializeParams.secretMap = null;
+        
         if(_client == null)
         {
             _client = new BrainCloudClient();
@@ -256,6 +292,12 @@ public class BrainCloudWrapper implements IServerCallback {
 
     public void initializeWithApps(String url, String appId, Map<String, String> secretMap, String version, String companyName, String appName)
     {
+        m_initializeParams.appId = appId;
+        m_initializeParams.secretKey = "";
+        m_initializeParams.appVersion = version;
+        m_initializeParams.serverUrl = url;
+        m_initializeParams.secretMap = secretMap;
+
         if(_client == null)
         {
             _client = new BrainCloudClient();
@@ -278,6 +320,12 @@ public class BrainCloudWrapper implements IServerCallback {
      */
     public void initializeWithApps(String url, String defaultAppId, Map<String, String> secretMap, String version)
     {
+        m_initializeParams.appId = defaultAppId;
+        m_initializeParams.secretKey = "";
+        m_initializeParams.appVersion = version;
+        m_initializeParams.serverUrl = url;
+        m_initializeParams.secretMap = secretMap;
+
         if(_client == null)
         {
             _client = new BrainCloudClient();
@@ -820,6 +868,46 @@ public class BrainCloudWrapper implements IServerCallback {
      * @param jsonError        The error json string
      */
     public void serverError(ServiceName serviceName, ServiceOperation serviceOperation, int statusCode, int reasonCode, String jsonError) {
+
+        if (statusCode == 202 && reasonCode == ReasonCodes.MANUAL_REDIRECT) // This should only happen on auth calls
+        {
+            try
+            {
+                // Manual redirection
+                JSONObject data = new JSONObject(jsonError);
+
+                m_initializeParams.serverUrl = data.has("redirect_url") ? data.getString("redirect_url") : m_initializeParams.serverUrl;
+                String newAppId = data.has("redirect_appid") ? data.getString("redirect_appid") : null;
+
+                // re-initialize the client with our app info
+                if (m_initializeParams.secretMap == null)
+                {
+                    if (newAppId != null) m_initializeParams.appId = newAppId;
+                    getClient().initialize(m_initializeParams.serverUrl, 
+                                        m_initializeParams.appId, 
+                                        m_initializeParams.secretKey, 
+                                        m_initializeParams.appVersion);
+                }
+                else
+                {
+                    // For initialize with apps, we ignore the app id
+                    getClient().initializeWithApps(m_initializeParams.serverUrl, 
+                                                m_initializeParams.appId, 
+                                                m_initializeParams.secretMap, 
+                                                m_initializeParams.appVersion);
+                }
+
+                initializeIdentity(true);
+                getClient().getAuthenticationService().retryPreviousAuthenticate(this);
+
+                return;
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+
         if (_authenticateCallback != null) {
             _authenticateCallback.serverError(serviceName, serviceOperation, statusCode, reasonCode, jsonError);
         }
