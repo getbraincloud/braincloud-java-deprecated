@@ -7,6 +7,7 @@ import com.bitheads.braincloud.client.IServerCallback;
 import com.bitheads.braincloud.client.ServiceName;
 import com.bitheads.braincloud.client.ServiceOperation;
 import com.bitheads.braincloud.comms.ServerCall;
+import com.bitheads.braincloud.client.IdentityCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;

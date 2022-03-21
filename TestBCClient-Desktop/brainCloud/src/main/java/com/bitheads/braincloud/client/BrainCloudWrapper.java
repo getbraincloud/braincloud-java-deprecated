@@ -4,6 +4,7 @@ import com.bitheads.braincloud.client.BrainCloudClient;
 import com.bitheads.braincloud.client.IServerCallback;
 import com.bitheads.braincloud.client.ServiceName;
 import com.bitheads.braincloud.client.ServiceOperation;
+import com.bitheads.braincloud.client.SmartSwitchCallback;
 import com.bitheads.braincloud.services.AppStoreService;
 import com.bitheads.braincloud.services.AsyncMatchService;
 import com.bitheads.braincloud.services.AuthenticationService;
@@ -818,6 +819,29 @@ public class BrainCloudWrapper implements IServerCallback {
     public void resetUniversalIdPasswordAdvancedWithExpiry(String universalId, String serviceParams, Integer tokenTtlInMinutes,
                                           IServerCallback callback) {
         getClient().getAuthenticationService().resetUniversalIdPasswordAdvancedWithExpiry(universalId, serviceParams, tokenTtlInMinutes, this);
+    }
+
+    public void smartSwitchAuthenticateEmail(String email, String password, boolean forceCreate, IServerCallback callback) 
+    {
+        SmartSwitchCallback smartSwitch = new SmartSwitchCallback(this, callback);
+        smartSwitch.SetUpEmailSmartSwitch(email, password, forceCreate);
+
+        getIdentitiesCallback(smartSwitch);
+    }
+
+    private void getIdentitiesCallback(IServerCallback success) 
+    {
+
+        IdentityCallback identityCallback = new IdentityCallback(this, success);
+
+        if (getClient().isAuthenticated()) 
+        {
+            getClient().getIdentityService().getIdentities(identityCallback);
+        } 
+        else 
+        {
+            success.serverCallback(ServiceName.authenticationV2, ServiceOperation.AUTHENTICATE, null);
+        }
     }
 
 
