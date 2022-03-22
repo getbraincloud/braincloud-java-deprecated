@@ -3,6 +3,12 @@ package com.bitheads.braincloud.client;
 import com.bitheads.braincloud.client.IServerCallback;
 import org.json.JSONObject;
 
+
+/**
+* Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
+* In event the current session was previously an anonymous account, the smart switch will delete that profile.
+* Use this function to keep a clean designflow from anonymous to signed profiles
+ */
 public class SmartSwitchCallback implements IServerCallback 
 {
     protected BrainCloudWrapper _wrapper;
@@ -31,6 +37,28 @@ public class SmartSwitchCallback implements IServerCallback
         _callback.serverError(in_serviceName, in_serviceOperation, in_statusCode, in_reasonCode, jsonString);
     }
 
+    /*
+    * Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
+    * In event the current session was previously an anonymous account, the smart switch will delete that profile.
+    * Use this function to keep a clean designflow from anonymous to signed profiles
+    *
+    * Authenticate the user with a custom Email and Password.  Note that the client app
+    * is responsible for collecting (and storing) the e-mail and potentially password
+    * (for convenience) in the client data.  For the greatest security,
+    * force the user to re-enter their * password at each login.
+    * (Or at least give them that option).
+    *
+    * Note that the password sent from the client to the server is protected via SSL.
+    *
+    * Service Name - Authenticate
+    * Service Operation - Authenticate
+    *
+    * @param in_email  The e-mail address of the user
+    * @param in_password  The password of the user
+    * @param forceCreate Should a new profile be created for this user if the account does not exist?
+    * @param in_callback The method to be invoked when the server response is received
+    *
+    */
     public class SmartSwitchEmail extends SmartSwitchCallback 
     {
         String _email;
@@ -57,6 +85,24 @@ public class SmartSwitchCallback implements IServerCallback
         }
     }
 
+    /**
+     * Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
+     * In event the current session was previously an anonymous account, the smart switch will delete that profile.
+     * Use this function to keep a clean designflow from anonymous to signed profiles
+     *
+     * Authenticate the user via cloud code (which in turn validates the supplied credentials against an external system).
+     * This allows the developer to extend brainCloud authentication to support other backend authentication systems.
+     *
+     * Service Name - Authenticate
+     * Server Operation - Authenticate
+     *
+     * @param in_userid The user id
+     * @param in_token The user token (password etc)
+     * @param in_externalAuthName The name of the cloud script to call for external authentication
+     * @param in_force Should a new profile be created for this user if the account does not exist?
+     *
+     * @returns   performs the in_success callback on success, in_failure callback on failure
+     */
     public class SmartSwitchExternal extends SmartSwitchCallback
     {
         String _userId;
@@ -85,6 +131,23 @@ public class SmartSwitchCallback implements IServerCallback
         }
     }
 
+    /*
+    * Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
+    * In event the current session was previously an anonymous account, the smart switch will delete that profile.
+    * Use this function to keep a clean designflow from anonymous to signed profiles
+    *
+    * Authenticate the user with brainCloud using their Facebook Credentials
+    *
+    * Service Name - Authenticate
+    * Service Operation - Authenticate
+    *
+    * @param in_fbUserId The facebook id of the user
+    * @param in_fbAuthToken The validated token from the Facebook SDK
+    *   (that will be further validated when sent to the bC service)
+    * @param in_forceCreate Should a new profile be created for this user if the account does not exist?
+    * @param in_callback The method to be invoked when the server response is received
+    *
+    */
     public class SmartSwitchFacebook extends SmartSwitchCallback
     {
         String _fbUserId;
@@ -111,6 +174,22 @@ public class SmartSwitchCallback implements IServerCallback
         }
     }
 
+    /*
+    * Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
+    * In event the current session was previously an anonymous account, the smart switch will delete that profile.
+    * Use this function to keep a clean designflow from anonymous to signed profiles
+    *
+    * Authenticate the user with brainCloud using their Oculus Credentials
+    *
+    * Service Name - Authenticate
+    * Service Operation - Authenticate
+    *
+    * @param in_oculusUserId The oculus id of the user
+    * @param in_oculusNonce oculus token from the Oculus SDK
+    * @param in_forceCreate Should a new profile be created for this user if the account does not exist?
+    * @param in_callback The method to be invoked when the server response is received
+    *
+    */
     public class SmartSwitchOculus extends SmartSwitchCallback
     {
         String _oculusUserId;
@@ -137,6 +216,24 @@ public class SmartSwitchCallback implements IServerCallback
         }
     }
 
+    /*
+    * Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
+    * In event the current session was previously an anonymous account, the smart switch will delete that profile.
+    * Use this function to keep a clean designflow from anonymous to signed profiles
+    *
+    * Authenticate the user using a google userid(email address) and google authentication token.
+    *
+    * Service Name - Authenticate
+    * Service Operation - Authenticate
+    *
+    * @param in_googleUserId  String representation of google+ userid (email)
+    * @param in_serverAuthCode  The authentication token derived via the google apis.
+    * @param in_forceCreate Should a new profile be created for this user if the account does not exist?
+    * @param in_callback The method to be invoked when the server response is received
+    *
+    * @returns   performs the in_success callback on success, in_failure callback on failure
+    *
+    */
     public class SmartSwitchGoogle extends SmartSwitchCallback
     {
         String _googleUserId;
@@ -162,7 +259,25 @@ public class SmartSwitchCallback implements IServerCallback
             _wrapper.getClient().getAuthenticationService().authenticateGoogle(_googleUserId, _serverAuthCode, _forceCreate, _callback);
         }
     }
-
+    
+    /*
+    * Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
+    * In event the current session was previously an anonymous account, the smart switch will delete that profile.
+    * Use this function to keep a clean designflow from anonymous to signed profiles
+    *
+    * Authenticate the user using a google userid(email address) and google authentication token.
+    *
+    * Service Name - Authenticate
+    * Service Operation - Authenticate
+    *
+    * @param in_googleUserAccountEmail  String representation of google+ userid (email)
+    * @param in_IdToken  The authentication token derived via the google apis.
+    * @param in_forceCreate Should a new profile be created for this user if the account does not exist?
+    * @param in_callback The method to be invoked when the server response is received
+    *
+    * @returns   performs the in_success callback on success, in_failure callback on failure
+    *
+    */
     public class SmartSwitchGoogleOpenId extends SmartSwitchCallback
     {
         String _googleUserAccountEmail;
@@ -189,6 +304,24 @@ public class SmartSwitchCallback implements IServerCallback
         }
     }
 
+    /*
+    * Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
+    * In event the current session was previously an anonymous account, the smart switch will delete that profile.
+    * Use this function to keep a clean designflow from anonymous to signed profiles
+    *
+    * Authenticate the user using a apple userid(email address) and apple authentication token.
+    *
+    * Service Name - Authenticate
+    * Service Operation - Authenticate
+    *
+    * @param in_appleUserId  String representation of apple+ userid (email)
+    * @param in_token  The authentication token derived via the apple apis.
+    * @param in_forceCreate Should a new profile be created for this user if the account does not exist?
+    * @param in_callback The method to be invoked when the server response is received
+    *
+    * @returns   performs the in_success callback on success, in_failure callback on failure
+    *
+    */
     public class SmartSwitchApple extends SmartSwitchCallback
     {
         String _appleUserId;
@@ -215,6 +348,24 @@ public class SmartSwitchCallback implements IServerCallback
         }
     }
 
+    /*
+    * Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
+    * In event the current session was previously an anonymous account, the smart switch will delete that profile.
+    * Use this function to keep a clean designflow from anonymous to signed profiles
+    *
+    * Authenticate the user using a steam userid and session ticket (without any validation on the userid).
+    *
+    * Service Name - Authenticate
+    * Service Operation - Authenticate
+    *
+    * @param in_steamUserId  String representation of 64 bit steam id
+    * @param in_sessionticket  The session ticket of the user (hex encoded)
+    * @param in_forceCreate Should a new profile be created for this user if the account does not exist?
+    * @param in_callback The method to be invoked when the server response is received
+    *
+    * @returns   performs the in_success callback on success, in_failure callback on failure
+    *
+    */
     public class SmartSwitchSteam extends SmartSwitchCallback
     {
         String _steamUserId;
@@ -240,7 +391,25 @@ public class SmartSwitchCallback implements IServerCallback
             _wrapper.getClient().getAuthenticationService().authenticateSteam(_steamUserId, _sessionTicket, _forceCreate, _callback);
         }
     }
-
+    /*
+    * Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
+    * In event the current session was previously an anonymous account, the smart switch will delete that profile.
+    * Use this function to keep a clean designflow from anonymous to signed profiles
+    *
+    * Authenticate the user using a Twitter userid, authentication token, and secret from Twitter.
+    *
+    * Service Name - Authenticate
+    * Service Operation - Authenticate
+    *
+    * @param in_userid  String representation of Twitter userid
+    * @param in_token  The authentication token derived via the Twitter apis.
+    * @param in_secret  The secret given when attempting to link with Twitter
+    * @param in_forceCreate Should a new profile be created for this user if the account does not exist?
+    * @param in_callback The method to be invoked when the server response is received
+    *
+    * @returns   performs the in_success callback on success, in_failure callback on failure
+    *
+    */
     public class SmartSwitchTwitter extends SmartSwitchCallback
     {
         String _userId;
@@ -269,6 +438,24 @@ public class SmartSwitchCallback implements IServerCallback
         }
     }
 
+    /*
+    * Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
+    * In event the current session was previously an anonymous account, the smart switch will delete that profile.
+    * Use this function to keep a clean designflow from anonymous to signed profiles
+    *
+    * Authenticate the user using a userid and password (without any validation on the userid).
+    * Similar to AuthenticateEmailPassword - except that that method has additional features to
+    * allow for e-mail validation, password resets, etc.
+    *
+    * Service Name - Authenticate
+    * Service Operation - Authenticate
+    *
+    * @param in_userId  The e-mail address of the user
+    * @param in_password  The password of the user
+    * @param in_forceCreate Should a new profile be created for this user if the account does not exist?
+    * @param in_callback The method to be invoked when the server response is received
+    *
+    */
     public class SmartSwitchUniversal extends SmartSwitchCallback 
     {
         String _userId;
@@ -295,6 +482,21 @@ public class SmartSwitchCallback implements IServerCallback
         }
     }
 
+    /*
+    * Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
+    * In event the current session was previously an anonymous account, the smart switch will delete that profile.
+    * Use this function to keep a clean designflow from anonymous to signed profiles
+    * 
+    * Authenticate the user for Ultra.
+    *
+    * Service Name - Authenticate
+    * Server Operation - Authenticate
+    *
+    * @param _ultraUserId it's what the user uses to log into the Ultra endpoint initially
+    * @param in_ultraIdToken The "id_token" taken from Ultra's JWT.
+    * @param _forceCreate Should a new profile be created for this user if the account does not exist?
+    * @param in_callback The method to be invoked when the server response is received
+    */
     public class SmartSwitchUltra extends SmartSwitchCallback 
     {
         String _ultraUserId;
@@ -321,6 +523,23 @@ public class SmartSwitchCallback implements IServerCallback
         }
     }
 
+    /*
+    * Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
+    * In event the current session was previously an anonymous account, the smart switch will delete that profile.
+    * Use this function to keep a clean designflow from anonymous to signed profiles
+    *
+    * A generic Authenticate method that translates to the same as calling a specific one, except it takes an extraJson
+    * that will be passed along to pre- or post- hooks.
+    *
+    * Service Name - Authenticate
+    * Service Operation - Authenticate
+    *
+    * @param in_authenticationType Universal, Email, Facebook, etc
+    * @param in_ids Auth IDs structure
+    * @param in_forceCreate Should a new profile be created for this user if the account does not exist?
+    * @param in_extraJson Additional to piggyback along with the call, to be picked up by pre- or post- hooks. Leave empty string for no extraJson.
+    * @param in_callback The method to be invoked when the server response is received
+    */
     public class SmartSwitchAdvanced extends SmartSwitchCallback 
     {
         AuthenticationType _authenticationType;
