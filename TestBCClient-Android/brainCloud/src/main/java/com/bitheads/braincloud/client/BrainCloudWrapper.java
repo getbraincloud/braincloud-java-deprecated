@@ -3,6 +3,20 @@ package com.bitheads.braincloud.client;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.bitheads.braincloud.client.SmartSwitchCallback;
+import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchEmail;
+import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchExternal;
+import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchFacebook;
+import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchOculus;
+import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchGoogle;
+import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchGoogleOpenId;
+import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchApple;
+import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchSteam;
+import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchTwitter;
+import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchUniversal;
+import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchUltra;
+import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchAdvanced;
+
 import com.bitheads.braincloud.services.AppStoreService;
 import com.bitheads.braincloud.services.AsyncMatchService;
 import com.bitheads.braincloud.services.AuthenticationService;
@@ -797,6 +811,117 @@ public class BrainCloudWrapper implements IServerCallback {
         initializeIdentity(false);
 
         getClient().getAuthenticationService().authenticateAdvanced(authenticationType, ids, forceCreate, extraJson, this);
+    }
+
+    public void smartSwitchAuthenticateEmail(String email, String password, boolean forceCreate, IServerCallback callback) 
+    {
+        SmartSwitchCallback smartSwitch = new SmartSwitchCallback(this, callback);
+        SmartSwitchEmail emailSwitch = smartSwitch.new SmartSwitchEmail(email, password, forceCreate, this, callback);
+        
+        getIdentitiesCallback(emailSwitch);
+    }
+
+    public void smartSwitchAuthenticateExternal(String userId, String token, String externalAuthName, boolean forceCreate, IServerCallback callback)
+    {
+        SmartSwitchCallback smartSwitch = new SmartSwitchCallback(this, callback);
+        SmartSwitchExternal externalSwitch = smartSwitch.new SmartSwitchExternal(userId, token, externalAuthName, forceCreate, this, callback);
+
+        getIdentitiesCallback(externalSwitch);
+    }
+
+    public void smartSwitchAuthenticateFacebook(String fbUserId, String fbAuthToken, boolean forceCreate, IServerCallback callback)
+    {
+        SmartSwitchCallback smartSwitch = new SmartSwitchCallback(this, callback);
+        SmartSwitchFacebook facebookSwitch = smartSwitch.new SmartSwitchFacebook(fbUserId, fbAuthToken, forceCreate, this, callback);
+
+        getIdentitiesCallback(facebookSwitch);
+    }
+
+    public void smartSwitchAuthenticateOculus(String oculusUserId, String oculusNonce, boolean forceCreate, IServerCallback callback)
+    {
+        SmartSwitchCallback smartSwitch = new SmartSwitchCallback(this, callback);
+        SmartSwitchOculus oculusSwitch = smartSwitch.new SmartSwitchOculus(oculusUserId, oculusNonce, forceCreate, this, callback);
+
+        getIdentitiesCallback(oculusSwitch);
+    }
+
+    public void smartSwitchAuthenticateGoogle(String googleUserId, String serverAuthCode, boolean forceCreate, IServerCallback callback)
+    {
+        SmartSwitchCallback smartSwitch = new SmartSwitchCallback(this, callback);
+        SmartSwitchGoogle googleSwitch = smartSwitch.new SmartSwitchGoogle(googleUserId, serverAuthCode, forceCreate, this, callback);
+
+        getIdentitiesCallback(googleSwitch);
+    }
+
+    public void smartSwitchAuthenticateGoogleOpenId(String googleUserAccountEmail, String IdToken, boolean forceCreate, IServerCallback callback)
+    {
+        SmartSwitchCallback smartSwitch = new SmartSwitchCallback(this, callback);
+        SmartSwitchGoogleOpenId googleSwitch = smartSwitch.new SmartSwitchGoogleOpenId(googleUserAccountEmail, IdToken, forceCreate, this, callback);
+
+        getIdentitiesCallback(googleSwitch);
+    }
+
+    public void smartSwitchAuthenticateApple(String appleUserId, String token, boolean forceCreate, IServerCallback callback)
+    {
+        SmartSwitchCallback smartSwitch = new SmartSwitchCallback(this, callback);
+        SmartSwitchApple appleSwitch = smartSwitch.new SmartSwitchApple(appleUserId, token, forceCreate, this, callback);
+
+        getIdentitiesCallback(appleSwitch);
+    }
+
+    public void smartSwitchAuthenticateSteam(String steamUserId, String sessionTicket, boolean forceCreate, IServerCallback callback)
+    {
+        SmartSwitchCallback smartSwitch = new SmartSwitchCallback(this, callback);
+        SmartSwitchSteam steamSwitch = smartSwitch.new SmartSwitchSteam(steamUserId, sessionTicket, forceCreate, this, callback);
+
+        getIdentitiesCallback(steamSwitch);
+    }
+
+    public void smartSwitchAuthenticateTwitter(String userId, String token, String secret, boolean forceCreate, IServerCallback callback)
+    {
+        SmartSwitchCallback smartSwitch = new SmartSwitchCallback(this, callback);
+        SmartSwitchTwitter twitterSwitch = smartSwitch.new SmartSwitchTwitter(userId, token, secret, forceCreate, this, callback);
+
+        getIdentitiesCallback(twitterSwitch);
+    }
+
+    public void smartSwitchAuthenticateUniversal(String userId, String password, boolean forceCreate, IServerCallback callback) 
+    {
+        SmartSwitchCallback smartSwitch = new SmartSwitchCallback(this, callback);
+        SmartSwitchUniversal universalSwitch = smartSwitch.new SmartSwitchUniversal(userId, password, forceCreate, this, callback);
+
+        getIdentitiesCallback(universalSwitch);
+    }
+
+    public void smartSwitchAuthenticateUltra(String ultraUserId, String ultraIdToken, boolean forceCreate, IServerCallback callback)
+    {
+        SmartSwitchCallback smartSwitch = new SmartSwitchCallback(this, callback);
+        SmartSwitchUltra ultraSwitch = smartSwitch.new SmartSwitchUltra(ultraUserId, ultraIdToken, forceCreate, this, callback);
+
+        getIdentitiesCallback(ultraSwitch);
+    }
+
+    public void smartSwitchAuthenticateAdvanced(AuthenticationType authenticationType, AuthenticationIds ids, boolean forceCreate, String extraJson, IServerCallback callback)
+    {
+        SmartSwitchCallback smartSwitch = new SmartSwitchCallback(this, callback);
+        SmartSwitchAdvanced advancedSwitch = smartSwitch.new SmartSwitchAdvanced(authenticationType, ids, forceCreate, extraJson, this, callback);
+
+        getIdentitiesCallback(advancedSwitch);
+    }
+
+    private void getIdentitiesCallback(IServerCallback success) 
+    {
+
+        IdentityCallback identityCallback = new IdentityCallback(this, success);
+
+        if (getClient().isAuthenticated()) 
+        {
+            getClient().getIdentityService().getIdentities(identityCallback);
+        } 
+        else 
+        {
+            success.serverCallback(ServiceName.authenticationV2, ServiceOperation.AUTHENTICATE, null);
+        }
     }
 
     /**
