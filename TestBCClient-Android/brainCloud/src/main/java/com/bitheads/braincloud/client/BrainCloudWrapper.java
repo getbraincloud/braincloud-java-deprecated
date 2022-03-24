@@ -16,6 +16,7 @@ import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchTwitter;
 import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchUniversal;
 import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchUltra;
 import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchAdvanced;
+import com.bitheads.braincloud.client.IdentityCallback;
 
 import com.bitheads.braincloud.services.AppStoreService;
 import com.bitheads.braincloud.services.AsyncMatchService;

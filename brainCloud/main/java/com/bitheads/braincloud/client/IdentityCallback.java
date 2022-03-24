@@ -6,8 +6,8 @@ import org.json.JSONObject;
 public class IdentityCallback implements IServerCallback 
 {
 
-    public BrainCloudWrapper _wrapper;
-    public IServerCallback _callback;
+    private BrainCloudWrapper _wrapper;
+    private IServerCallback _callback;
 
     public IdentityCallback(BrainCloudWrapper in_wrapper, IServerCallback in_callback) 
     {

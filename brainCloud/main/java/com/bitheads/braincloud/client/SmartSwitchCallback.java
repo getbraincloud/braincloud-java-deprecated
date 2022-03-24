@@ -61,9 +61,9 @@ public class SmartSwitchCallback implements IServerCallback
     */
     public class SmartSwitchEmail extends SmartSwitchCallback 
     {
-        String _email;
-        String _password;
-        boolean _forceCreate;
+        private String _email;
+        private String _password;
+        private boolean _forceCreate;
 
         public SmartSwitchEmail(BrainCloudWrapper in_wrapper, IServerCallback in_callback) 
         {
@@ -105,10 +105,10 @@ public class SmartSwitchCallback implements IServerCallback
      */
     public class SmartSwitchExternal extends SmartSwitchCallback
     {
-        String _userId;
-        String _token;
-        String _externalAuthName;
-        boolean _forceCreate;
+        private String _userId;
+        private String _token;
+        private String _externalAuthName;
+        private boolean _forceCreate;
 
         public SmartSwitchExternal(BrainCloudWrapper in_wrapper, IServerCallback in_callback)
         {
@@ -150,9 +150,9 @@ public class SmartSwitchCallback implements IServerCallback
     */
     public class SmartSwitchFacebook extends SmartSwitchCallback
     {
-        String _fbUserId;
-        String _fbAuthToken;
-        boolean _forceCreate;
+        private String _fbUserId;
+        private String _fbAuthToken;
+        private boolean _forceCreate;
 
         public SmartSwitchFacebook(BrainCloudWrapper in_wrapper, IServerCallback in_callback)
         {
@@ -192,9 +192,9 @@ public class SmartSwitchCallback implements IServerCallback
     */
     public class SmartSwitchOculus extends SmartSwitchCallback
     {
-        String _oculusUserId;
-        String _oculusNonce;
-        boolean _forceCreate;
+        private String _oculusUserId;
+        private String _oculusNonce;
+        private boolean _forceCreate;
 
         public SmartSwitchOculus(BrainCloudWrapper in_wrapper, IServerCallback in_callback)
         {
@@ -236,9 +236,9 @@ public class SmartSwitchCallback implements IServerCallback
     */
     public class SmartSwitchGoogle extends SmartSwitchCallback
     {
-        String _googleUserId;
-        String _serverAuthCode;
-        boolean _forceCreate;
+        private String _googleUserId;
+        private String _serverAuthCode;
+        private boolean _forceCreate;
 
         public SmartSwitchGoogle(BrainCloudWrapper in_wrapper, IServerCallback in_callback)
         {
@@ -280,9 +280,9 @@ public class SmartSwitchCallback implements IServerCallback
     */
     public class SmartSwitchGoogleOpenId extends SmartSwitchCallback
     {
-        String _googleUserAccountEmail;
-        String _IdToken;
-        boolean _forceCreate;
+        private String _googleUserAccountEmail;
+        private String _IdToken;
+        private boolean _forceCreate;
 
         public SmartSwitchGoogleOpenId(BrainCloudWrapper in_wrapper, IServerCallback in_callback)
         {
@@ -324,9 +324,9 @@ public class SmartSwitchCallback implements IServerCallback
     */
     public class SmartSwitchApple extends SmartSwitchCallback
     {
-        String _appleUserId;
-        String _token;
-        boolean _forceCreate;
+        private String _appleUserId;
+        private String _token;
+        private boolean _forceCreate;
 
         public SmartSwitchApple(BrainCloudWrapper in_wrapper, IServerCallback in_callback)
         {
@@ -368,9 +368,9 @@ public class SmartSwitchCallback implements IServerCallback
     */
     public class SmartSwitchSteam extends SmartSwitchCallback
     {
-        String _steamUserId;
-        String _sessionTicket;
-        boolean _forceCreate;
+        private String _steamUserId;
+        private String _sessionTicket;
+        private boolean _forceCreate;
 
         public SmartSwitchSteam(BrainCloudWrapper in_wrapper, IServerCallback in_callback)
         {
@@ -412,10 +412,10 @@ public class SmartSwitchCallback implements IServerCallback
     */
     public class SmartSwitchTwitter extends SmartSwitchCallback
     {
-        String _userId;
-        String _token;
-        String _secret;
-        boolean _forceCreate;
+        private String _userId;
+        private String _token;
+        private String _secret;
+        private boolean _forceCreate;
 
         public SmartSwitchTwitter(BrainCloudWrapper in_wrapper, IServerCallback in_callback)
         {
@@ -458,9 +458,9 @@ public class SmartSwitchCallback implements IServerCallback
     */
     public class SmartSwitchUniversal extends SmartSwitchCallback 
     {
-        String _userId;
-        String _password;
-        boolean _forceCreate;
+        private String _userId;
+        private String _password;
+        private boolean _forceCreate;
 
         public SmartSwitchUniversal(BrainCloudWrapper in_wrapper, IServerCallback in_callback) 
         {
@@ -499,9 +499,9 @@ public class SmartSwitchCallback implements IServerCallback
     */
     public class SmartSwitchUltra extends SmartSwitchCallback 
     {
-        String _ultraUserId;
-        String _ultraIdToken;
-        boolean _forceCreate;
+        private String _ultraUserId;
+        private String _ultraIdToken;
+        private boolean _forceCreate;
 
         public SmartSwitchUltra(BrainCloudWrapper in_wrapper, IServerCallback in_callback) 
         {
@@ -542,10 +542,10 @@ public class SmartSwitchCallback implements IServerCallback
     */
     public class SmartSwitchAdvanced extends SmartSwitchCallback 
     {
-        AuthenticationType _authenticationType;
-        AuthenticationIds _ids;
-        boolean _forceCreate;
-        String _extraJson;
+        private AuthenticationType _authenticationType;
+        private AuthenticationIds _ids;
+        private boolean _forceCreate;
+        private String _extraJson;
 
         public SmartSwitchAdvanced(BrainCloudWrapper in_wrapper, IServerCallback in_callback) 
         {
