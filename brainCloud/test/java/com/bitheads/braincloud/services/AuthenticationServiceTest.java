@@ -505,9 +505,6 @@ public class AuthenticationServiceTest extends TestFixtureNoAuth
     @Test
     public void testSmartSwitchAuthenticateEmailFromAnonAuth() throws Exception
     {
-        _wrapper.resetStoredAnonymousId();
-        _wrapper.resetStoredProfileId();
-
         // get anon auth
         TestResult tr = new TestResult(_wrapper);
         String anonId = _client.getAuthenticationService().generateAnonymousId();
@@ -523,9 +520,6 @@ public class AuthenticationServiceTest extends TestFixtureNoAuth
     @Test
     public void testSmartSwitchAuthenticateUniversalFromAnon() throws Exception
     {
-        _wrapper.resetStoredAnonymousId();
-        _wrapper.resetStoredProfileId();
-
         // get anon auth
         TestResult tr = new TestResult(_wrapper);
         String anonId = _client.getAuthenticationService().generateAnonymousId();
@@ -542,9 +536,6 @@ public class AuthenticationServiceTest extends TestFixtureNoAuth
     public void testSmartSwitchAuthenticateEmailFromUniversal() throws Exception
     {
         String email = "braincloudunittest@gmail.com";
-        _wrapper.resetStoredAnonymousId();
-        _wrapper.resetStoredProfileId();
-
         // get anon auth
         TestResult tr = new TestResult(_wrapper);
         

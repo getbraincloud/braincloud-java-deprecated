@@ -14,6 +14,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 @RunWith(AndroidJUnit4.class)
 public class BrainCloudWrapperTest extends TestFixtureNoAuth
@@ -118,6 +121,10 @@ public class BrainCloudWrapperTest extends TestFixtureNoAuth
     public void testReInitWrapper() throws Exception
     {
         //case 1 Multiple init on client
+        Map<String, String> originalAppSecretMap = new HashMap<String, String>();
+        originalAppSecretMap.put(m_appId, m_secret);
+        originalAppSecretMap.put(m_childAppId, m_childSecret);
+
         int initCounter = 1;
         _wrapper.initializeWithApps(m_serverUrl, m_appId, originalAppSecretMap, m_appVersion);
         Assert.assertTrue(initCounter == 1);
