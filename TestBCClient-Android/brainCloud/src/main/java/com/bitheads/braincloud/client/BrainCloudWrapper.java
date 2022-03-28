@@ -912,7 +912,7 @@ public class BrainCloudWrapper implements IServerCallback {
 
     public void IdentityCallback(JSONObject jsonData)
     {
-        String[] listOfidentities = JSONObject.getNames(jsonData.getJSONObject("data"));
+        String[] listOfidentities = jsonData.getNames(jsonData.getJSONObject("data"));
 
         if (listOfidentities.length > 0)
         {
