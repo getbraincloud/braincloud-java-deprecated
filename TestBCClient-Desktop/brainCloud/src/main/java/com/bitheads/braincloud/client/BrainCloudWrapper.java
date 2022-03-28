@@ -937,11 +937,11 @@ public class BrainCloudWrapper implements IServerCallback {
 
         if (listOfidentities.length > 0)
         {
-            _wrapper.getClient().getPlayerStateService().logout(null);
+            getClient().getPlayerStateService().logout(null);
         }
         else
         {
-            _wrapper.getClient().getPlayerStateService().deleteUser(null);
+            getClient().getPlayerStateService().deleteUser(null);
         }
     }
 
