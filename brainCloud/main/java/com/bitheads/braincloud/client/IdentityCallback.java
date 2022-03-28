@@ -1,6 +1,9 @@
 package com.bitheads.braincloud.client;
 
 import com.bitheads.braincloud.client.IServerCallback;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import org.json.JSONObject;
 
 public class IdentityCallback implements IServerCallback 
@@ -28,11 +31,11 @@ public class IdentityCallback implements IServerCallback
 
         if (listOfidentities.length > 0)
         {
-            getClient().getPlayerStateService().logout(null);
+            _wrapper.getClient().getPlayerStateService().logout(null);
         }
         else
         {
-            getClient().getPlayerStateService().deleteUser(null);
+            _wrapper.getClient().getPlayerStateService().deleteUser(null);
         }
 
         _wrapper.getClient().insertEndOfMessageBundleMarker();
