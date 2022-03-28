@@ -931,20 +931,6 @@ public class BrainCloudWrapper implements IServerCallback {
         getIdentitiesCallback(advancedSwitch);
     }
 
-    public void IdentityCallback(JSONObject jsonData)
-    {
-        String[] listOfidentities = jsonData.getNames(jsonData.getJSONObject("data"));
-
-        if (listOfidentities.length > 0)
-        {
-            getClient().getPlayerStateService().logout(null);
-        }
-        else
-        {
-            getClient().getPlayerStateService().deleteUser(null);
-        }
-    }
-
     private void getIdentitiesCallback(IServerCallback success) 
     {
 
