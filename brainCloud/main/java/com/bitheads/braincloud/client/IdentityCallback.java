@@ -16,18 +16,8 @@ public class IdentityCallback implements IServerCallback
     }
 
     public void serverCallback(ServiceName serviceName, ServiceOperation serviceOperation, JSONObject jsonData) 
-    {    
-        String[] listOfidentities = JSONObject.getNames(jsonData.getJSONObject("data"));
-        
-        if (listOfidentities.length > 0) 
-        {
-            _wrapper.getClient().getPlayerStateService().logout(null);
-        } 
-        else 
-        {
-            _wrapper.getClient().getPlayerStateService().deleteUser(null);
-        }
-
+    {
+        _wrapper.IdentityCallback(jsonData);
         _wrapper.getClient().insertEndOfMessageBundleMarker();
         _callback.serverCallback(serviceName, serviceOperation, jsonData);
     }
