@@ -193,7 +193,7 @@ public class SocialLeaderboardServiceTest extends TestFixtureBase
 
         long date = TimeUtil.UTCDateTimeToUTCMillis(addDays(new Date(), 3));
         _wrapper.getLeaderboardService().postScoreToDynamicLeaderboardUTC(
-                _dynamicLeaderboardId + "_" + (int)(Math.random() * 10000000),
+                _dynamicLeaderboardId,
                 100,
                 Helpers.createJsonPair("testDataKey", 400),
                 SocialLeaderboardService.SocialLeaderboardType.LAST_VALUE.toString(),
@@ -211,7 +211,7 @@ public class SocialLeaderboardServiceTest extends TestFixtureBase
         TestResult tr = new TestResult(_wrapper);
 
         _wrapper.getLeaderboardService().postScoreToDynamicLeaderboardDays(
-                _dynamicLeaderboardId + "_" + "DAYS",
+                _dynamicLeaderboardId,
                 100,
                 Helpers.createJsonPair("testDataKey", 400),
                 SocialLeaderboardService.SocialLeaderboardType.LOW_VALUE.toString(),
@@ -229,7 +229,7 @@ public class SocialLeaderboardServiceTest extends TestFixtureBase
         TestResult tr = new TestResult(_wrapper);
 
         _wrapper.getLeaderboardService().postScoreToDynamicLeaderboardDaysUTC(
-                _dynamicLeaderboardId + "_" + "DAYS",
+                _dynamicLeaderboardId,
                 100,
                 Helpers.createJsonPair("testDataKey", 400),
                 SocialLeaderboardService.SocialLeaderboardType.LOW_VALUE.toString(),
@@ -247,7 +247,7 @@ public class SocialLeaderboardServiceTest extends TestFixtureBase
         TestResult tr = new TestResult(_wrapper);
 
         _wrapper.getLeaderboardService().postScoreToDynamicLeaderboard(
-                _dynamicLeaderboardId + "_" + SocialLeaderboardService.SocialLeaderboardType.LOW_VALUE,
+                _dynamicLeaderboardId,
                 100,
                 Helpers.createJsonPair("testDataKey", 400),
                 SocialLeaderboardService.SocialLeaderboardType.LOW_VALUE.toString(),
@@ -265,7 +265,7 @@ public class SocialLeaderboardServiceTest extends TestFixtureBase
         TestResult tr = new TestResult(_wrapper);
 
         _wrapper.getLeaderboardService().postScoreToDynamicLeaderboard(
-                _dynamicLeaderboardId + "_" + SocialLeaderboardService.SocialLeaderboardType.CUMULATIVE,
+                _dynamicLeaderboardId,
                 100,
                 Helpers.createJsonPair("testDataKey", 400),
                 SocialLeaderboardService.SocialLeaderboardType.CUMULATIVE.toString(),
@@ -283,7 +283,7 @@ public class SocialLeaderboardServiceTest extends TestFixtureBase
         TestResult tr = new TestResult(_wrapper);
 
         _wrapper.getLeaderboardService().postScoreToDynamicLeaderboard(
-                _dynamicLeaderboardId + "_" + SocialLeaderboardService.SocialLeaderboardType.LAST_VALUE,
+                _dynamicLeaderboardId,
                 100,
                 Helpers.createJsonPair("testDataKey", 400),
                 SocialLeaderboardService.SocialLeaderboardType.LAST_VALUE.toString(),
