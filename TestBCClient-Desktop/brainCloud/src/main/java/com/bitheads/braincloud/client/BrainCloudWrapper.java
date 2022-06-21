@@ -4,6 +4,21 @@ import com.bitheads.braincloud.client.BrainCloudClient;
 import com.bitheads.braincloud.client.IServerCallback;
 import com.bitheads.braincloud.client.ServiceName;
 import com.bitheads.braincloud.client.ServiceOperation;
+import com.bitheads.braincloud.client.SmartSwitchCallback;
+import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchEmail;
+import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchExternal;
+import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchFacebook;
+import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchOculus;
+import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchGoogle;
+import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchGoogleOpenId;
+import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchApple;
+import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchSteam;
+import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchTwitter;
+import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchUniversal;
+import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchUltra;
+import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchAdvanced;
+import com.bitheads.braincloud.client.IdentityCallback;
+
 import com.bitheads.braincloud.services.AppStoreService;
 import com.bitheads.braincloud.services.AsyncMatchService;
 import com.bitheads.braincloud.services.AuthenticationService;
@@ -113,6 +128,16 @@ public class BrainCloudWrapper implements IServerCallback {
         setReleasePlatform(getReleasePlatform().detectGenericPlatform(System.getProperty("os.name").toLowerCase()));
     }
 
+    private class InitializeParams
+    {
+        public String appId = "";
+        public String secretKey = "";
+        public String appVersion = "";
+        public String serverUrl = "";
+        public Map<String, String> secretMap = null;
+    };
+    private InitializeParams m_initializeParams = new InitializeParams();
+
     /**
      * Method initializes the BrainCloudClient.
      *
@@ -122,6 +147,12 @@ public class BrainCloudWrapper implements IServerCallback {
      */
     public void initialize(String appId, String secretKey, String appVersion) {
         
+        m_initializeParams.appId = appId;
+        m_initializeParams.secretKey = secretKey;
+        m_initializeParams.appVersion = appVersion;
+        m_initializeParams.serverUrl = _DEFAULT_URL;
+        m_initializeParams.secretMap = null;
+
         if(_client == null)
         {
             _client = new BrainCloudClient();
@@ -142,6 +173,13 @@ public class BrainCloudWrapper implements IServerCallback {
      * @param serverUrl  The url to the brainCloud server
      */
     public void initialize(String appId, String secretKey, String appVersion, String serverUrl) {
+
+        m_initializeParams.appId = appId;
+        m_initializeParams.secretKey = secretKey;
+        m_initializeParams.appVersion = appVersion;
+        m_initializeParams.serverUrl = serverUrl;
+        m_initializeParams.secretMap = null;
+
         if(_client == null)
         {
             _client = new BrainCloudClient();
@@ -165,6 +203,12 @@ public class BrainCloudWrapper implements IServerCallback {
      */
     private void initializeWithApps(String url, String defaultAppId, Map<String, String> secretMap, String version, String companyName, String appName)
     {
+        m_initializeParams.appId = defaultAppId;
+        m_initializeParams.secretKey = "";
+        m_initializeParams.appVersion = version;
+        m_initializeParams.serverUrl = url;
+        m_initializeParams.secretMap = secretMap;
+
         if(_client == null)
         {
             _client = new BrainCloudClient();
@@ -176,7 +220,7 @@ public class BrainCloudWrapper implements IServerCallback {
         getClient().initializeWithApps(url, defaultAppId, secretMap, version);
     } 
 
-        /**
+    /**
      * Method initializes the BrainCloudClient.
      *
      * @param appId      The app id
@@ -186,6 +230,12 @@ public class BrainCloudWrapper implements IServerCallback {
      */
     private void initializeWithApps(String url, String defaultAppId, Map<String, String> secretMap, String version)
     {
+        m_initializeParams.appId = defaultAppId;
+        m_initializeParams.secretKey = "";
+        m_initializeParams.appVersion = version;
+        m_initializeParams.serverUrl = url;
+        m_initializeParams.secretMap = secretMap;
+
         if(_client == null)
         {
             _client = new BrainCloudClient();
@@ -785,6 +835,117 @@ public class BrainCloudWrapper implements IServerCallback {
         getClient().getAuthenticationService().resetUniversalIdPasswordAdvancedWithExpiry(universalId, serviceParams, tokenTtlInMinutes, this);
     }
 
+    public void smartSwitchAuthenticateEmail(String email, String password, boolean forceCreate, IServerCallback callback) 
+    {
+        SmartSwitchCallback smartSwitch = new SmartSwitchCallback(this, callback);
+        SmartSwitchEmail emailSwitch = smartSwitch.new SmartSwitchEmail(email, password, forceCreate, this, callback);
+        
+        getIdentitiesCallback(emailSwitch);
+    }
+
+    public void smartSwitchAuthenticateExternal(String userId, String token, String externalAuthName, boolean forceCreate, IServerCallback callback)
+    {
+        SmartSwitchCallback smartSwitch = new SmartSwitchCallback(this, callback);
+        SmartSwitchExternal externalSwitch = smartSwitch.new SmartSwitchExternal(userId, token, externalAuthName, forceCreate, this, callback);
+
+        getIdentitiesCallback(externalSwitch);
+    }
+
+    public void smartSwitchAuthenticateFacebook(String fbUserId, String fbAuthToken, boolean forceCreate, IServerCallback callback)
+    {
+        SmartSwitchCallback smartSwitch = new SmartSwitchCallback(this, callback);
+        SmartSwitchFacebook facebookSwitch = smartSwitch.new SmartSwitchFacebook(fbUserId, fbAuthToken, forceCreate, this, callback);
+
+        getIdentitiesCallback(facebookSwitch);
+    }
+
+    public void smartSwitchAuthenticateOculus(String oculusUserId, String oculusNonce, boolean forceCreate, IServerCallback callback)
+    {
+        SmartSwitchCallback smartSwitch = new SmartSwitchCallback(this, callback);
+        SmartSwitchOculus oculusSwitch = smartSwitch.new SmartSwitchOculus(oculusUserId, oculusNonce, forceCreate, this, callback);
+
+        getIdentitiesCallback(oculusSwitch);
+    }
+
+    public void smartSwitchAuthenticateGoogle(String googleUserId, String serverAuthCode, boolean forceCreate, IServerCallback callback)
+    {
+        SmartSwitchCallback smartSwitch = new SmartSwitchCallback(this, callback);
+        SmartSwitchGoogle googleSwitch = smartSwitch.new SmartSwitchGoogle(googleUserId, serverAuthCode, forceCreate, this, callback);
+
+        getIdentitiesCallback(googleSwitch);
+    }
+
+    public void smartSwitchAuthenticateGoogleOpenId(String googleUserAccountEmail, String IdToken, boolean forceCreate, IServerCallback callback)
+    {
+        SmartSwitchCallback smartSwitch = new SmartSwitchCallback(this, callback);
+        SmartSwitchGoogleOpenId googleSwitch = smartSwitch.new SmartSwitchGoogleOpenId(googleUserAccountEmail, IdToken, forceCreate, this, callback);
+
+        getIdentitiesCallback(googleSwitch);
+    }
+
+    public void smartSwitchAuthenticateApple(String appleUserId, String token, boolean forceCreate, IServerCallback callback)
+    {
+        SmartSwitchCallback smartSwitch = new SmartSwitchCallback(this, callback);
+        SmartSwitchApple appleSwitch = smartSwitch.new SmartSwitchApple(appleUserId, token, forceCreate, this, callback);
+
+        getIdentitiesCallback(appleSwitch);
+    }
+
+    public void smartSwitchAuthenticateSteam(String steamUserId, String sessionTicket, boolean forceCreate, IServerCallback callback)
+    {
+        SmartSwitchCallback smartSwitch = new SmartSwitchCallback(this, callback);
+        SmartSwitchSteam steamSwitch = smartSwitch.new SmartSwitchSteam(steamUserId, sessionTicket, forceCreate, this, callback);
+
+        getIdentitiesCallback(steamSwitch);
+    }
+
+    public void smartSwitchAuthenticateTwitter(String userId, String token, String secret, boolean forceCreate, IServerCallback callback)
+    {
+        SmartSwitchCallback smartSwitch = new SmartSwitchCallback(this, callback);
+        SmartSwitchTwitter twitterSwitch = smartSwitch.new SmartSwitchTwitter(userId, token, secret, forceCreate, this, callback);
+
+        getIdentitiesCallback(twitterSwitch);
+    }
+
+    public void smartSwitchAuthenticateUniversal(String userId, String password, boolean forceCreate, IServerCallback callback) 
+    {
+        SmartSwitchCallback smartSwitch = new SmartSwitchCallback(this, callback);
+        SmartSwitchUniversal universalSwitch = smartSwitch.new SmartSwitchUniversal(userId, password, forceCreate, this, callback);
+
+        getIdentitiesCallback(universalSwitch);
+    }
+
+    public void smartSwitchAuthenticateUltra(String ultraUserId, String ultraIdToken, boolean forceCreate, IServerCallback callback)
+    {
+        SmartSwitchCallback smartSwitch = new SmartSwitchCallback(this, callback);
+        SmartSwitchUltra ultraSwitch = smartSwitch.new SmartSwitchUltra(ultraUserId, ultraIdToken, forceCreate, this, callback);
+
+        getIdentitiesCallback(ultraSwitch);
+    }
+
+    public void smartSwitchAuthenticateAdvanced(AuthenticationType authenticationType, AuthenticationIds ids, boolean forceCreate, String extraJson, IServerCallback callback)
+    {
+        SmartSwitchCallback smartSwitch = new SmartSwitchCallback(this, callback);
+        SmartSwitchAdvanced advancedSwitch = smartSwitch.new SmartSwitchAdvanced(authenticationType, ids, forceCreate, extraJson, this, callback);
+
+        getIdentitiesCallback(advancedSwitch);
+    }
+
+    private void getIdentitiesCallback(IServerCallback success) 
+    {
+
+        IdentityCallback identityCallback = new IdentityCallback(this, success);
+
+        if (getClient().isAuthenticated()) 
+        {
+            getClient().getIdentityService().getIdentities(identityCallback);
+        } 
+        else 
+        {
+            success.serverCallback(ServiceName.authenticationV2, ServiceOperation.AUTHENTICATE, null);
+        }
+    }
+
 
     /**
      * Run callbacks, to be called once per frame from your main thread
@@ -832,8 +993,42 @@ public class BrainCloudWrapper implements IServerCallback {
      * @param reasonCode       The brainCloud reason code (see reason codes on apidocs site)
      * @param jsonError        The error json string
      */
-    public void serverError(ServiceName serviceName, ServiceOperation serviceOperation, int statusCode, int reasonCode, String jsonError) {
-        if (_authenticateCallback != null) {
+    public void serverError(ServiceName serviceName, ServiceOperation serviceOperation, int statusCode, int reasonCode, String jsonError)
+    {
+        if (statusCode == 202 && reasonCode == ReasonCodes.MANUAL_REDIRECT) // This should only happen on auth calls
+        {
+            // Manual redirection
+            JSONObject data = new JSONObject(jsonError);
+
+            m_initializeParams.serverUrl = data.has("redirect_url") ? data.getString("redirect_url") : m_initializeParams.serverUrl;
+            String newAppId = data.has("redirect_appid") ? data.getString("redirect_appid") : null;
+
+            // re-initialize the client with our app info
+            if (m_initializeParams.secretMap == null)
+            {
+                if (newAppId != null) m_initializeParams.appId = newAppId;
+                getClient().initialize(m_initializeParams.serverUrl, 
+                                       m_initializeParams.appId, 
+                                       m_initializeParams.secretKey, 
+                                       m_initializeParams.appVersion);
+            }
+            else
+            {
+                // For initialize with apps, we ignore the app id
+                getClient().initializeWithApps(m_initializeParams.serverUrl, 
+                                               m_initializeParams.appId, 
+                                               m_initializeParams.secretMap, 
+                                               m_initializeParams.appVersion);
+            }
+
+            initializeIdentity(true);
+            getClient().getAuthenticationService().retryPreviousAuthenticate(this);
+
+            return;
+        }
+
+        if (_authenticateCallback != null)
+        {
             _authenticateCallback.serverError(serviceName, serviceOperation, statusCode, reasonCode, jsonError);
         }
     }

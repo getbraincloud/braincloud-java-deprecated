@@ -30,6 +30,18 @@ public class AuthenticationServiceTest extends TestFixtureNoAuth
     long secondMostRecentPacket = -1000000;
 
     @Test
+    public void testAuthManualRedirect() throws Exception
+    {
+        _client.initialize(m_serverUrl, m_redirectAppId, m_secret, m_appVersion);
+
+        TestResult tr = new TestResult(_wrapper);
+        String anonId = _client.getAuthenticationService().generateAnonymousId();
+        _client.getAuthenticationService().authenticateAnonymous(anonId, true, tr);
+
+        tr.RunExpectFail(202, ReasonCodes.MANUAL_REDIRECT /* 40308 */);
+    }
+
+    @Test
     public void testAuthenticateAnonymous() throws Exception
     {
         TestResult tr = new TestResult(_wrapper);
@@ -488,5 +500,51 @@ public class AuthenticationServiceTest extends TestFixtureNoAuth
         // Auth ultra
         _wrapper.getClient().getAuthenticationService().authenticateUltra("braincloud1", id_token, true, tr);
         tr.Run();
+    }
+
+    @Test
+    public void testSmartSwitchAuthenticateEmailFromAnonAuth() throws Exception
+    {
+        // get anon auth
+        TestResult tr = new TestResult(_wrapper);
+        String anonId = _client.getAuthenticationService().generateAnonymousId();
+        _client.getAuthenticationService().authenticateAnonymous(anonId, true, tr);
+
+        tr.Run();
+
+        TestResult tr2 = new TestResult(_wrapper);
+        _wrapper.smartSwitchAuthenticateEmail(anonId, "12345", true, tr2);
+        tr2.Run();
+    }
+
+    @Test
+    public void testSmartSwitchAuthenticateUniversalFromAnon() throws Exception
+    {
+        // get anon auth
+        TestResult tr = new TestResult(_wrapper);
+        String anonId = _client.getAuthenticationService().generateAnonymousId();
+        _client.getAuthenticationService().authenticateAnonymous(anonId, true, tr);
+
+        tr.Run();
+
+        TestResult tr2 = new TestResult(_wrapper);
+        _wrapper.smartSwitchAuthenticateUniversal(anonId, "12345", true, tr2);
+        tr2.Run();
+    }
+
+    @Test
+    public void testSmartSwitchAuthenticateEmailFromUniversal() throws Exception
+    {
+        String email = "braincloudunittest@gmail.com";
+        // get anon auth
+        TestResult tr = new TestResult(_wrapper);
+        
+        _client.getAuthenticationService().authenticateUniversal(email, "12345", true, tr);
+
+        tr.Run();
+
+        TestResult tr2 = new TestResult(_wrapper);
+        _wrapper.smartSwitchAuthenticateEmail(email, "12345", true, tr2);
+        tr2.Run();
     }
 }

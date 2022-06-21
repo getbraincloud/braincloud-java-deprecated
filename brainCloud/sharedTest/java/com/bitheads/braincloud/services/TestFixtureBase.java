@@ -26,6 +26,7 @@ public class TestFixtureBase {
     static protected String m_childAppId = "";
     static protected String m_childSecret = "";
     static protected String m_peerName = "";
+    static protected String m_redirectAppId = "";
 
     static protected Map<String, String> m_secretMap;
     public static BrainCloudWrapper _wrapper;
@@ -143,6 +144,9 @@ public class TestFixtureBase {
                     break;
                 case "peerName":
                     m_peerName = split[1];
+                    break;
+                case "redirectAppId":
+                    m_redirectAppId = split[1];
                     break;
             }
         }
