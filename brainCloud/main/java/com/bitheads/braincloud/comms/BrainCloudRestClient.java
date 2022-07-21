@@ -883,7 +883,9 @@ public class BrainCloudRestClient implements Runnable {
             int status_code = 0;
             try {
                 status_code = connection != null ? connection.getResponseCode() : 0;
-                if (status_code == 503) {
+                if (status_code == 503 ||
+                    status_code == 502 ||
+                    status_code == 504) {
                     return onTimeout();
                 }
             } catch(Exception e2) {
