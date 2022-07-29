@@ -680,7 +680,11 @@ public class BrainCloudWrapper implements IServerCallback {
      * @param callback The callback handler
      */
     public void reconnect(IServerCallback callback) {
-        authenticateAnonymous(callback);
+        _authenticateCallback = callback;
+
+        initializeIdentity(true);
+
+        getClient().getAuthenticationService().authenticateAnonymous(false, this);
     }
 
         /**
