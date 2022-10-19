@@ -16,7 +16,7 @@ public class BlockchainServiceTest extends TestFixtureBase {
     public void testGetBlockchainItems() throws Exception {
         TestResult tr = new TestResult(_wrapper);
         
-        _wrapper.getClient().getBrainCloudBlockchainService.GetBlockchainItems(_defaultIntegrationId,
+        _wrapper.getClient().getBlockchainService().GetBlockchainItems(_defaultIntegrationId,
                 _defaultContextJson, tr);
 
         tr.Run();
@@ -26,7 +26,7 @@ public class BlockchainServiceTest extends TestFixtureBase {
     public void testGetUniqs() throws Exception {
         TestResult tr = new TestResult(_wrapper);
 
-        _wrapper.getClient().getBrainCloudBlockchainService.GetUniqs(_defaultIntegrationId, _defaultContextJson, tr);
+        _wrapper.getClient().getBlockchainService().GetUniqs(_defaultIntegrationId, _defaultContextJson, tr);
 
         tr.Run();
     }

@@ -26,7 +26,7 @@ import com.bitheads.braincloud.services.IdentityService;
 import com.bitheads.braincloud.services.LobbyService;
 import com.bitheads.braincloud.services.MailService;
 import com.bitheads.braincloud.services.MessagingService;
-import com.bitheads.braincloud.services.BrainCloudBlockchainService;
+import com.bitheads.braincloud.services.BlockchainService;
 import com.bitheads.braincloud.services.MatchMakingService;
 import com.bitheads.braincloud.services.OneWayMatchService;
 import com.bitheads.braincloud.services.PlaybackStreamService;
@@ -58,6 +58,8 @@ import java.util.TimeZone;
 //import android.os.Build;
 
 public class BrainCloudClient {
+
+    public BlockchainService getBrainCloudBlockchainService;
 
     public enum BrainCloudUpdateType
     {
@@ -106,7 +108,7 @@ public class BrainCloudClient {
     private LobbyService _lobbyService = new LobbyService(this);
     private MailService _mailService = new MailService(this);
     private MessagingService _messagingService = new MessagingService(this);
-    private BrainCloudBlockchain _blockchainService = new BrainCloudBlockchain(this);
+    private BlockchainService _blockchainService = new BlockchainService(this);
     private MatchMakingService _matchMakingService = new MatchMakingService(this);
     private OneWayMatchService _oneWayMatchService = new OneWayMatchService(this);
     private PlaybackStreamService _playbackStreamService = new PlaybackStreamService(this);
@@ -884,7 +886,7 @@ public class BrainCloudClient {
         return _messagingService;
     }
 
-    public BrainCloudBlockchainService getBrainCloudBlockchainService(){return _blockchainService;}
+    public BlockchainService getBlockchainService(){return _blockchainService;}
 
     public MatchMakingService getMatchMakingService() {
         return _matchMakingService;

@@ -9,7 +9,7 @@ import com.bitheads.braincloud.comms.ServerCall;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class BrainCloudBlockchainService {
+public class BlockchainService {
 
     private enum Parameter{
         integrationId,
@@ -18,12 +18,12 @@ public class BrainCloudBlockchainService {
 
     private BrainCloudClient _client;
 
-    public BrainCloudBlockchain(BrainCloudClient client){
+    public BlockchainService(BrainCloudClient client){
         _client = client;
     }
 
-    public void GetBlockchainItems(String in_integrationID = "default",
-                                   String in_contextJson = "{}",
+    public void GetBlockchainItems(String in_integrationID,
+                                   String in_contextJson,
                                    IServerCallback callback){
         try {
             JSONObject data = new JSONObject();
@@ -41,8 +41,8 @@ public class BrainCloudBlockchainService {
         }
     }
 
-    public void GetUniqs(String in_integrationID = "default",
-                         String in_contextJson = "{}",
+    public void GetUniqs(String in_integrationID,
+                         String in_contextJson,
                          IServerCallback callback){
         try {
             JSONObject data = new JSONObject();
