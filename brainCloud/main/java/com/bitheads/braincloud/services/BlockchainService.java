@@ -22,6 +22,9 @@ public class BlockchainService {
         _client = client;
     }
 
+    /**
+     * Retrieves the blockchain items owned by the caller.
+     */
     public void GetBlockchainItems(String in_integrationID,
                                    String in_contextJson,
                                    IServerCallback callback){
@@ -41,6 +44,9 @@ public class BlockchainService {
         }
     }
 
+    /**
+     * Retrieves the uniqs owned by the caller.
+     */
     public void GetUniqs(String in_integrationID,
                          String in_contextJson,
                          IServerCallback callback){
