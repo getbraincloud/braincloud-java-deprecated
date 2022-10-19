@@ -59,8 +59,6 @@ import java.util.TimeZone;
 
 public class BrainCloudClient {
 
-    public BlockchainService getBrainCloudBlockchainService;
-
     public enum BrainCloudUpdateType
     {
         ALL,
