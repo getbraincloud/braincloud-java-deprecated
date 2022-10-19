@@ -7,6 +7,7 @@ public enum ServiceName {
     appStore,
     asyncMatch,
     authenticationV2,
+    blockchain,
     chat,
     dataStream,
     entity,
