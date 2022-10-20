@@ -571,6 +571,33 @@ public class CustomEntityService {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Increments the specified fields of the singleton owned by the user by the specified amount
+     * within the custom entity data on the server.
+     *
+     * @param entityType The type of custom entity being updated.
+     * @param fieldsJson Specific fields, as JSON, within entity's custom data with respective
+     *                   increment amount.
+     * @param callback Callback.
+     */
+    public void incrementSingletonData(String entityType, String fieldsJson, IServerCallback callback){
+        try {
+            JSONObject data = new JSONObject();
+            data.put(Parameter.entityType.name(), entityType);
+
+            JSONObject fieldsData = new JSONObject(fieldsJson);
+            data.put(Parameter.fieldsJson.name(), fieldsData);
+
+            ServerCall serverCall = new ServerCall(ServiceName.customEntity,
+                    ServiceOperation.INCREMENT_SINGLETON_DATA, data, callback);
+            _client.sendRequest(serverCall);
+
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 }
 
     
