@@ -179,6 +179,17 @@ public class CustomEntityServiceTest extends TestFixtureBase {
     }
 
     @Test
+    public void testIncrementSingletonData() throws Exception{
+        TestResult tr = new TestResult(_wrapper);
+        String entityId = createDefaultEntity(ACL.Access.None);
+        _wrapper.getCustomEntityService().incrementSingletonData(
+                "athletes",
+                "{ \"goals\": 3, \"assists\": 5 }",
+                tr);
+        tr.Run();
+    }
+
+    @Test
     public void testDeleteSingleton() throws Exception {
         TestResult tr = new TestResult(_wrapper);
         String entityId = createDefaultEntity(ACL.Access.None);

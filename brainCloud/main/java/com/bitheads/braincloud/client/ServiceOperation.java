@@ -17,6 +17,7 @@ public enum ServiceOperation {
     DELETE,
     READ,
     READ_SINGLETON,
+    INCREMENT_SINGLETON_DATA,
     READ_FRIENDS,
     READ_SHARED,
     READ_SHARED_ENTITY,
