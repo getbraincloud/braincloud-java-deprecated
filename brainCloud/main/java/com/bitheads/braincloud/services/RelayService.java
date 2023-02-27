@@ -28,31 +28,35 @@ public class RelayService {
     }
 
     /**
-    * Start a connection, based on connection type to 
-    * brainClouds Relay Servers. Connect options come in
-    * from ROOM_ASSIGNED lobby callback.
-    * 
-    * @param connectionType
-    * @param options {
-    *   ssl: false,
-    *   host: "168.0.1.192"
-    *   port: 9000,
-    *   passcode: "somePasscode",
-    *   lobbyId: "55555:v5v:001"
-    * }
-    * @param callback Callback objects that report Success or Failure|Disconnect.
-    *
-    * @note SSL option will only work with WEBSOCKET connetion type.
-    */
+     * Start a connection, based on connection type to
+     * brainClouds Relay Servers. Connect options come in
+     * from ROOM_ASSIGNED lobby callback.
+     *
+     * @param connectionType
+     * @param options {
+     *   ssl: false,
+     *   host: "168.0.1.192"
+     *   port: 9000,
+     *   passcode: "somePasscode",
+     *   lobbyId: "55555:v5v:001"
+     * }
+     * @param callback Callback objects that report Success or Failure|Disconnect.
+     *
+     * @note SSL option will only work with WEBSOCKET connetion type.
+     */
     public void connect(RelayConnectionType connectionType, JSONObject options, IRelayConnectCallback callback) {
         _client.getRelayComms().connect(connectionType, options, callback);
     }
-    
+
     /**
      * Disconnects from the relay server
      */
     public void disconnect() {
         _client.getRelayComms().disconnect();
+    }
+
+    public void endMatch(JSONObject json){
+        _client.getRelayComms().endMatch(json);
     }
 
     /**
@@ -125,7 +129,7 @@ public class RelayService {
 
     /**
      * Register callback for relay messages coming from peers.
-     * 
+     *
      * @param callback Called whenever a relay message was received.
      */
     public void registerRelayCallback(IRelayCallback callback) {
@@ -137,9 +141,9 @@ public class RelayService {
 
     /**
      * Register callback for RelayServer system messages.
-     * 
+     *
      * @param callback Called whenever a system message was received. function(json)
-     * 
+     *
      * # CONNECT
      * Received when a new member connects to the server.
      * {
@@ -148,7 +152,7 @@ public class RelayService {
      *   ownerId: "...",
      *   netId: #
      * }
-     * 
+     *
      * # NET_ID
      * Receive the Net Id assossiated with a profile Id. This is
      * sent for each already connected members once you
@@ -158,14 +162,14 @@ public class RelayService {
      *   profileId: "...",
      *   netId: #
      * }
-     * 
+     *
      * # DISCONNECT
      * Received when a member disconnects from the server.
      * {
      *   op: "DISCONNECT",
      *   profileId: "..."
      * }
-     * 
+     *
      * # MIGRATE_OWNER
      * If the owner left or never connected in a timely manner,
      * the relay-server will migrate the role to the next member
@@ -188,7 +192,7 @@ public class RelayService {
 
     /**
      * Send a packet to peer(s)
-     * 
+     *
      * @param data Byte array for the data to send
      * @param toNetId The net id to send to, TO_ALL_PLAYERS to relay to all.
      * @param reliable Send this reliable or not.
@@ -206,7 +210,7 @@ public class RelayService {
 
     /**
      * Send a packet to any players by using a mask
-     * 
+     *
      * @param data Byte array for the data to send
      * @param playerMask Mask of the players to send to. 0001 = netId 0, 0010 = netId 1, etc. If you pass ALL_PLAYER_MASK you will be included and you will get an echo for your message. Use sendToAll instead, you will be filtered out. You can manually filter out by : ALL_PLAYER_MASK &= ~(1 << myNetId)
      * @param reliable Send this reliable or not.
@@ -219,7 +223,7 @@ public class RelayService {
 
     /**
      * Send a packet to all except yourself
-     * 
+     *
      * @param data Byte array for the data to send
      * @param reliable Send this reliable or not.
      * @param ordered Receive this ordered or not.
