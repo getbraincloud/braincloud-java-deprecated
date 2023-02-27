@@ -1,7 +1,5 @@
 package com.bitheads.braincloud.client;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
