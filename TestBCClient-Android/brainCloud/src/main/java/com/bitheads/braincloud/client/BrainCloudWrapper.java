@@ -1101,6 +1101,10 @@ public class BrainCloudWrapper implements IServerCallback {
         return _client.getGroupService();
     }
 
+    public GroupFileService getGroupFileService(){
+        return _client.getGroupFileService();
+    }
+
     public IdentityService getIdentityService() {
         return _client.getIdentityService();
     }
