@@ -128,6 +128,7 @@ public class BrainCloudClient {
     private ItemCatalogService _itemCatalogService = new ItemCatalogService(this);
     private UserItemsService _userItemsService = new UserItemsService(this);
 
+    private static BrainCloudClient instance = null;
 
     private static String DEFAULT_SERVER_URL = "https://api.braincloudservers.com/dispatcherv2";
 
@@ -147,11 +148,18 @@ public class BrainCloudClient {
      * @return AssertionError warning of disabled singleton usage
      */
     public static BrainCloudClient getInstance() {
+        if (BrainCloudClient.EnableSingletonMode == false) {
+            throw new AssertionError(BrainCloudClient.SingletonUseErrorMessage);
+        }
 
-        throw new AssertionError(BrainCloudClient.SingletonUseErrorMessage);
+        if (instance == null) {
+            instance = new BrainCloudClient();
+        }
+        return instance;
     }
 
     public static void setInstance(BrainCloudClient client) {
+        instance = client;
     }
 
     public BrainCloudRestClient getRestClient() {
@@ -222,7 +230,7 @@ public class BrainCloudClient {
         if(_releasePlatform == null)
         {
             //it is likely desktop
-            setReleasePlatform(Platform.detectGenericPlatform(System.getProperty("os.name").toLowerCase()));
+            setReleasePlatform(getReleasePlatform().detectGenericPlatform(System.getProperty("os.name").toLowerCase()));
             //log detected platform
             System.out.println("Detected Platform: " + System.getProperty("os.name"));
 
@@ -301,7 +309,7 @@ public class BrainCloudClient {
         if(_releasePlatform == null)
         {
             //it is likely desktop
-            setReleasePlatform(Platform.detectGenericPlatform(System.getProperty("os.name").toLowerCase()));
+            setReleasePlatform(getReleasePlatform().detectGenericPlatform(System.getProperty("os.name").toLowerCase()));
             //log detected platform
             System.out.println("Detected Platform: " + System.getProperty("os.name"));
 
