@@ -15,7 +15,7 @@ public class GroupFileServiceTest extends TestFixtureNoAuth implements IFileUplo
 
     /* Information grabbed from internal servers -> Unit Test Master */
     //id for testingGroupFile.dat
-    private String groupFileId = "79aa11eb-ec42-40da-b649-cdebeb1d12b1";
+    private String groupFileId = "f92a7231-2257-4e2d-899c-79c47a8a5215";
     private String groupID = "a7ff751c-3251-407a-b2fd-2bd1e9bca64a";
 
     //Making version a negative value to tell the server to use the latest version

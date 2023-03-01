@@ -36,16 +36,11 @@ public class GroupFileService {
     }
 
     /**
-     * Return whether the specified file exists.
-     * No error if it doesn't - just the 200 return and info
-     *
-     * Note - requires FILE READ permission
-     *      - so user must have at least READ permission on the file
-     *      - otherwise will return exists: false.
-     * @param groupId
-     * @param folderPath
-     * @param filename
-     * @param callback
+     * Check if filename exists for provided path and name.
+     * @param groupId ID of the group
+     * @param folderPath File located cloud path/folder
+     * @param filename File cloud name
+     * @param callback The method to be invoked when the server response is received
      */
     public void checkFilenameExists(
             String groupId,
@@ -72,15 +67,10 @@ public class GroupFileService {
     }
 
     /**
-     * Return whether the specified file exists.
-     * No error if it doesn't - just the 200 return and info
-     *
-     * Note - requires FILE READ permission
-     *      - so user must have at least READ permission on the file
-     *      - otherwise will return exists: false.
-     * @param groupId
-     * @param fullPathFilename
-     * @param callback
+     * Check if filename exists for provided path and name.
+     * @param groupId ID of the group
+     * @param fullPathFilename File cloud name in full path
+     * @param callback The method to be invoked when the server response is received
      */
     public void checkFullpathFilenameExists(
             String groupId,
@@ -105,18 +95,15 @@ public class GroupFileService {
     }
 
     /**
-     * Used to make a duplicate of a file - potentially in a new directory.
-     * User must have at least READ permission on the existing file.
-     * User must have at least WRITE permission in the target directory.
-     * If overwriting a file, user must have WRITE permission on the file to be overwritten.
-     * @param groupId
-     * @param fileId
-     * @param version
-     * @param newTreeId
-     * @param treeVersion
-     * @param newFilename
-     * @param overwriteIfPresent
-     * @param callback
+     * Copy a file.
+     * @param groupId ID of the group
+     * @param fileId ID of the file
+     * @param version Target version of the file
+     * @param newTreeId ID of the destination folder
+     * @param treeVersion Target version of the folder tree
+     * @param newFilename Optional new file name
+     * @param overwriteIfPresent Whether to allow overwrite of an existing file if present
+     * @param callback The method to be invoked when the server response is received
      */
     public void copyFile(
             String groupId,
@@ -151,13 +138,12 @@ public class GroupFileService {
     }
 
     /**
-     * Deletes the specified file.
-     * User must have at least WRITE permission on the existing file.
-     * @param groupId
-     * @param fileId
-     * @param version
-     * @param filename
-     * @param callback
+     * Delete a file.
+     * @param groupId ID of the group
+     * @param fileId ID of the file
+     * @param version Target version of the file
+     * @param filename File name for verification purposes
+     * @param callback The method to be invoked when the server response is received
      */
     public void deleteFile(
             String groupId,
@@ -186,13 +172,10 @@ public class GroupFileService {
     }
 
     /**
-     * Return the CDN url for the specified file.
-     * Should only be used if the client cannot follow a standard HTTP redirect
-     *      (which is rare!) ← otherwise don’t waste the API call!
-     * Requires FILE READ permission
-     * @param groupId
-     * @param fileId
-     * @param callback
+     * Return the CDN url for file for clients that cannot handle redirect
+     * @param groupId ID of the group
+     * @param fileId ID of the file
+     * @param callback The method to be invoked when the server response is received
      */
     public void getCDNUrl(String groupId, String fileId, IServerCallback callback){
         JSONObject data = new JSONObject();
@@ -212,13 +195,10 @@ public class GroupFileService {
     }
 
     /**
-     * Returns info about the specified file
-     * Requires FILE READ permission
-     *      - so user must have at least READ permission on the file
-     *      - otherwise return error as if file does not exist.
-     * @param groupId
-     * @param fileId
-     * @param callback
+     * Returns information on a file using fileId.
+     * @param groupId ID of the group
+     * @param fileId ID of the file
+     * @param callback The method to be invoked when the server response is received
      */
     public void getFileInfo(String groupId, String fileId, IServerCallback callback){
         JSONObject data = new JSONObject();
@@ -239,14 +219,11 @@ public class GroupFileService {
     }
 
     /**
-     * Returns info about the specified file
-     * Requires FILE READ permission
-     *      - so user must have at least READ permission on the file
-     *      - otherwise return error as if file does not exist.
-     * @param groupId
-     * @param folderPath
-     * @param filename
-     * @param callback
+     * Returns information on a file using path and name.
+     * @param groupId ID of the group
+     * @param folderPath Folder path
+     * @param filename File name
+     * @param callback The method to be invoked when the server response is received
      */
     public void getFileInfoSimple(
             String groupId,
@@ -273,15 +250,11 @@ public class GroupFileService {
     }
 
     /**
-     * Retrieves the list of files starting at the specified directory.
-     * Requires FOLDER READ permission, as well as FILE READ permission for each file listed.
-     * Note that user must have at least READ permission on the directory,
-     *      and at least READ permission on each of the files listed…
-     *      (files without permission will not be included in the returned results).
-     * @param groupId
-     * @param folderPath
-     * @param recurse
-     * @param callback
+     * Returns a list of files.
+     * @param groupId ID of group
+     * @param folderPath Folder path
+     * @param recurse Whether to recurse beyond the starting folder
+     * @param callback The method to be invoked when the server response is received
      */
     public void getFileList(
             String groupId,
@@ -308,18 +281,15 @@ public class GroupFileService {
     }
 
     /**
-     * Used to move a file - potentially to a new filename.
-     * User must have at least READ permission on the existing file.
-     * User must have at least WRITE permission in the target directory.
-     * If overwriting a file, user must have WRITE permission on the file to be overwritten.
-     * @param groupId
-     * @param fileId
-     * @param version
-     * @param newTreeId
-     * @param treeVersion
-     * @param newFilename
-     * @param overwriteIfPresent
-     * @param callback
+     * Move a file.
+     * @param groupId ID of the group
+     * @param fileId ID of the file
+     * @param version Target version of the file. As an option, you can use -1 for the latest version of the file
+     * @param newTreeId ID of the destination folder
+     * @param treeVersion Target version of the folder tree
+     * @param newFilename Optional new file name
+     * @param overwriteIfPresent Whether to allow overwrite of an existing file if present
+     * @param callback The method to be invoked when the server response is received
      */
     public void moveFile(
             String groupId,
@@ -354,15 +324,14 @@ public class GroupFileService {
     }
 
     /**
-     * Moves a user file that has been uploaded to group files.
-     * User must have at least WRITE permission in the target directory.
-     * @param userCloudPath
-     * @param userCloudFilename
-     * @param groupId
-     * @param groupTreeId
-     * @param groupFileName
-     * @param overwriteIfPresent
-     * @param callback
+     * Move a file from user space to group space.
+     * @param userCloudPath User file folder
+     * @param userCloudFilename User file name
+     * @param groupId ID of the group
+     * @param groupTreeId ID of the destination folder
+     * @param groupFileName Group file name
+     * @param overwriteIfPresent Whether to allow overwrite of an existing file if present
+     * @param callback The method to be invoked when the server response is received
      */
     public void moveUserToGroupFile(
             String userCloudPath,
@@ -397,15 +366,12 @@ public class GroupFileService {
     }
 
     /**
-     * Used to rename or edit permissions of an uploaded file. Does not change the contents of the file.
-     * Note that the user must have at least WRITE permissions on the file. ← requires FILE WRITE permission.
-     * If 'newFilename' is not ““ or null, then the filename of the file is set to 'newFilename.'
-     * If 'newAcl' is not null or {}, then the acl is set to 'newAcl'
-     * @param groupId
-     * @param fileId
-     * @param version
-     * @param newFilename
-     * @param callback
+     * Rename or edit permissions of an uploaded file. Does not change the contents of the file.
+     * @param groupId ID of the group
+     * @param fileId ID of the file
+     * @param version Target version of the file
+     * @param newFilename Optional new file name
+     * @param callback The method to be invoked when the server response is received
      */
     public void updateFileInfo(
             String groupId,
