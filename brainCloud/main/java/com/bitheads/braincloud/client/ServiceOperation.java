@@ -357,6 +357,16 @@ public enum ServiceOperation {
     GET_RANDOM_GROUPS_MATCHING,
 
 
+    //group file
+    CHECK_FILENAME_EXISTS,
+    CHECK_FULLPATH_FILENAME_EXISTS,
+    COPY_FILE,
+    DELETE_FILE,
+    MOVE_FILE,
+    MOVE_USER_TO_GROUP_FILE,
+    UPDATE_FILE_INFO,
+
+
     //mail
     SEND_BASIC_EMAIL,
     SEND_ADVANCED_EMAIL,
