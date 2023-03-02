@@ -330,6 +330,7 @@ public class GroupFileService {
      * @param groupId ID of the group
      * @param groupTreeId ID of the destination folder
      * @param groupFileName Group file name
+     * @param groupFileAcl Acl of the new group file
      * @param overwriteIfPresent Whether to allow overwrite of an existing file if present
      * @param callback The method to be invoked when the server response is received
      */
@@ -371,6 +372,7 @@ public class GroupFileService {
      * @param fileId ID of the file
      * @param version Target version of the file
      * @param newFilename Optional new file name
+     * @param newAcl Optional new acl
      * @param callback The method to be invoked when the server response is received
      */
     public void updateFileInfo(
