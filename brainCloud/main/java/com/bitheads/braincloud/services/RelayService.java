@@ -55,6 +55,10 @@ public class RelayService {
         _client.getRelayComms().disconnect();
     }
 
+    /**
+     * Terminate the match instance by the owner.
+     * @param json Payload data sent in JSON format. It will be relayed to other connnected players
+     */
     public void endMatch(JSONObject json){
         _client.getRelayComms().endMatch(json);
     }
