@@ -3,6 +3,7 @@ package com.bitheads.braincloud.services;
 import static org.junit.Assert.assertTrue;
 
 import com.bitheads.braincloud.client.BrainCloudWrapper;
+import com.bitheads.braincloud.client.IRelayCallback;
 import com.bitheads.braincloud.client.IRelayConnectCallback;
 import com.bitheads.braincloud.client.IRelaySystemCallback;
 import com.bitheads.braincloud.client.IRTTCallback;
