@@ -301,6 +301,8 @@ public class RelayComms {
             passcode = options.getString("passcode");
             lobbyId = options.getString("lobbyId");
         } catch (JSONException e) {
+            System.out.println("JSONException:");
+            System.out.println(options);
             e.printStackTrace();
             _callbackEventQueue.add(new RelayCallback(RelayCallbackType.ConnectFailure, "Invalid arguments"));
             return;
