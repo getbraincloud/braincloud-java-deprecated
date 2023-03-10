@@ -112,6 +112,8 @@ public class RelayTest extends TestFixtureBase
                 options.put("port", server.getJSONObject("connectData").getJSONObject("ports").getInt("udp"));
             options.put("passcode", server.getString("passcode"));
             options.put("lobbyId", server.getString("lobbyId"));
+            System.out.println("options JSON:");
+            System.out.println(options);
             _wrapper.getRelayService().connect(connectionType, options, tr);
             tr.Run();
         }
