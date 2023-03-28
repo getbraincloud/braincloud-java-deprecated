@@ -32,6 +32,8 @@ import com.bitheads.braincloud.services.IdentityService;
 import com.bitheads.braincloud.services.ItemCatalogService;
 import com.bitheads.braincloud.services.LobbyService;
 import com.bitheads.braincloud.services.MailService;
+import com.bitheads.braincloud.services.MessagingService;
+import com.bitheads.braincloud.services.BlockchainService;
 import com.bitheads.braincloud.services.MatchMakingService;
 import com.bitheads.braincloud.services.MessagingService;
 import com.bitheads.braincloud.services.OneWayMatchService;
@@ -76,8 +78,6 @@ public class BrainCloudClient {
     private String _countryCode;
     private String _languageCode;
     private double _timeZoneOffset;
-
-
 
     private final static String BRAINCLOUD_VERSION = "4.14.0";
 
