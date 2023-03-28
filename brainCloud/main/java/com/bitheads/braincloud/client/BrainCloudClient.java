@@ -1,17 +1,21 @@
 package com.bitheads.braincloud.client;
 
-import com.bitheads.braincloud.client.IRelayCallback;
-import com.bitheads.braincloud.client.IRelayConnectCallback;
-import com.bitheads.braincloud.client.IRTTCallback;
-import com.bitheads.braincloud.client.IRTTConnectCallback;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.TimeZone;
+
 import com.bitheads.braincloud.comms.BrainCloudRestClient;
-import com.bitheads.braincloud.comms.RelayComms;
 import com.bitheads.braincloud.comms.RTTComms;
+import com.bitheads.braincloud.comms.RelayComms;
 import com.bitheads.braincloud.comms.ServerCall;
 import com.bitheads.braincloud.services.AppStoreService;
 import com.bitheads.braincloud.services.AsyncMatchService;
 import com.bitheads.braincloud.services.AuthenticationService;
+import com.bitheads.braincloud.services.BlockchainService;
 import com.bitheads.braincloud.services.ChatService;
+import com.bitheads.braincloud.services.CustomEntityService;
 import com.bitheads.braincloud.services.DataStreamService;
 import com.bitheads.braincloud.services.EntityService;
 import com.bitheads.braincloud.services.EventService;
@@ -20,14 +24,18 @@ import com.bitheads.braincloud.services.FriendService;
 import com.bitheads.braincloud.services.GamificationService;
 import com.bitheads.braincloud.services.GlobalAppService;
 import com.bitheads.braincloud.services.GlobalEntityService;
+import com.bitheads.braincloud.services.GlobalFileService;
 import com.bitheads.braincloud.services.GlobalStatisticsService;
+import com.bitheads.braincloud.services.GroupFileService;
 import com.bitheads.braincloud.services.GroupService;
 import com.bitheads.braincloud.services.IdentityService;
+import com.bitheads.braincloud.services.ItemCatalogService;
 import com.bitheads.braincloud.services.LobbyService;
 import com.bitheads.braincloud.services.MailService;
 import com.bitheads.braincloud.services.MessagingService;
 import com.bitheads.braincloud.services.BlockchainService;
 import com.bitheads.braincloud.services.MatchMakingService;
+import com.bitheads.braincloud.services.MessagingService;
 import com.bitheads.braincloud.services.OneWayMatchService;
 import com.bitheads.braincloud.services.PlaybackStreamService;
 import com.bitheads.braincloud.services.PlayerStateService;
@@ -36,26 +44,16 @@ import com.bitheads.braincloud.services.PlayerStatisticsService;
 import com.bitheads.braincloud.services.PresenceService;
 import com.bitheads.braincloud.services.ProfanityService;
 import com.bitheads.braincloud.services.PushNotificationService;
+import com.bitheads.braincloud.services.RTTService;
 import com.bitheads.braincloud.services.RedemptionCodeService;
 import com.bitheads.braincloud.services.RelayService;
-import com.bitheads.braincloud.services.RTTService;
 import com.bitheads.braincloud.services.S3HandlingService;
 import com.bitheads.braincloud.services.ScriptService;
 import com.bitheads.braincloud.services.SocialLeaderboardService;
 import com.bitheads.braincloud.services.TimeService;
 import com.bitheads.braincloud.services.TournamentService;
-import com.bitheads.braincloud.services.GlobalFileService;
-import com.bitheads.braincloud.services.CustomEntityService;
-import com.bitheads.braincloud.services.VirtualCurrencyService;
-import com.bitheads.braincloud.services.ItemCatalogService;
 import com.bitheads.braincloud.services.UserItemsService;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Locale;
-import java.util.TimeZone;
-//import android.os.Build;
+import com.bitheads.braincloud.services.VirtualCurrencyService;
 
 public class BrainCloudClient {
 
@@ -76,14 +74,12 @@ public class BrainCloudClient {
     private String _appId;
     private Platform _releasePlatform;
     private String _appVersion;
-    private Map _secretMap = new HashMap();
+    private Map<String, String> _secretMap = new HashMap<>();
     private String _countryCode;
     private String _languageCode;
     private double _timeZoneOffset;
 
-
-
-    private final static String BRAINCLOUD_VERSION = "4.13.0";
+    private final static String BRAINCLOUD_VERSION = "4.14.0";
 
     private BrainCloudRestClient _restClient;
     private RTTComms _rttComms;
@@ -102,6 +98,7 @@ public class BrainCloudClient {
     private GlobalAppService _globalAppService = new GlobalAppService(this);
     private GlobalEntityService _globalEntityService = new GlobalEntityService(this);
     private GlobalStatisticsService _globalStatisticsService = new GlobalStatisticsService(this);
+    private GroupFileService _groupFileService = new GroupFileService(this);
     private GroupService _groupService = new GroupService(this);
     private IdentityService _identityService = new IdentityService(this);
     private LobbyService _lobbyService = new LobbyService(this);
@@ -131,7 +128,6 @@ public class BrainCloudClient {
     private ItemCatalogService _itemCatalogService = new ItemCatalogService(this);
     private UserItemsService _userItemsService = new UserItemsService(this);
 
-
     private static BrainCloudClient instance = null;
 
     private static String DEFAULT_SERVER_URL = "https://api.braincloudservers.com/dispatcherv2";
@@ -149,9 +145,9 @@ public class BrainCloudClient {
 
     /**
      * @deprecated Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/apidocs/wrappers-clients-and-inconvenient-singletons/
+     * @return AssertionError warning of disabled singleton usage
      */
     public static BrainCloudClient getInstance() {
-
         if (BrainCloudClient.EnableSingletonMode == false) {
             throw new AssertionError(BrainCloudClient.SingletonUseErrorMessage);
         }
@@ -197,7 +193,7 @@ public class BrainCloudClient {
      * Method initializes the BrainCloudClient.
      *
      * @param serverURL
-     *            
+     *            The server URL
      * @param secretKey
      *            The app id
      * @param appId
@@ -276,7 +272,7 @@ public class BrainCloudClient {
      * Method initializes the BrainCloudClient.
      *
      * @param serverUrl
-     *            
+     *            The server URL
      * @param appId
      *            The app id
      * @param secretMap
@@ -348,8 +344,11 @@ public class BrainCloudClient {
      * @param anonymousId  The anonymous installation id that was generated for this device
      */
     public void initializeIdentity(String profileId, String anonymousId) {
+
         getAuthenticationService().setProfileId(profileId);
+
         getAuthenticationService().setAnonymousId(anonymousId);
+
     }
 
     public void resetCommunication() {
@@ -367,6 +366,8 @@ public class BrainCloudClient {
 
     /**
      * Run callbacks, to be called every so often (e.g. once per frame) from your main thread.
+     * 
+     * @param updateType An enum denoting which callback service to run
      */
     public void runCallbacks(BrainCloudUpdateType updateType) {
         switch (updateType) {
@@ -483,9 +484,9 @@ public class BrainCloudClient {
 
     /**
      * Sets a reward handler for any api call results that return rewards.
+     * See The brainCloud apidocs site for more information on the return JSON
      *
      * @param in_rewardCallback The reward callback handler.
-     * @seealso The brainCloud apidocs site for more information on the return JSON
      */
     public void registerRewardCallback(IRewardCallback in_rewardCallback) {
         _restClient.registerRewardCallback(in_rewardCallback);
@@ -550,6 +551,8 @@ public class BrainCloudClient {
 
     /**
      * Returns the list of packet timeouts.
+     *
+     * @return The list of packet timeouts
      */
     public ArrayList<Integer> getPacketTimeouts() {
         return _restClient.getPacketTimeouts();
@@ -622,7 +625,7 @@ public class BrainCloudClient {
     /**
      * Returns the low transfer rate timeout in secs
      *
-     * @returns The low transfer rate timeout in secs
+     * @return The low transfer rate timeout in secs
      */
     public int getUploadLowTransferRateTimeout() {
         return _restClient.getUploadLowTransferRateTimeout();
@@ -643,7 +646,7 @@ public class BrainCloudClient {
     /**
      * Returns the low transfer rate threshold in bytes/sec
      *
-     * @returns The low transfer rate threshold in bytes/sec
+     * @return The low transfer rate threshold in bytes/sec
      */
     public int getUploadLowTransferRateThreshold() {
         return _restClient.getUploadLowTransferRateThreshold();
@@ -675,7 +678,7 @@ public class BrainCloudClient {
      *     a) retryCachedMessages() to retry sending to brainCloud
      *     b) flushCachedMessages() to dump all messages in the queue.
      *
-     * Between steps 2 & 3, the app can prompt the user to retry connecting
+     * Between steps 2 and 3, the app can prompt the user to retry connecting
      * to brainCloud to determine whether to follow path 3a or 3b.
      *
      * Note that if path 3a is followed, and another network error is encountered,
@@ -738,8 +741,6 @@ public class BrainCloudClient {
 
     /**
      * Returns the sessionId or empty string if no session present.
-     *
-     * @returns The sessionId or empty string if no session present.
      */
     public void getSessionId() {
         _restClient.getSessionId();
@@ -867,6 +868,10 @@ public class BrainCloudClient {
 
     public GlobalStatisticsService getGlobalStatisticsService() {
         return _globalStatisticsService;
+    }
+
+    public GroupFileService getGroupFileService() { 
+        return _groupFileService; 
     }
 
     public GroupService getGroupService() {

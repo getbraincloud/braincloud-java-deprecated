@@ -11,9 +11,7 @@ https://portal.braincloudservers.com/
 
 ## Releases
 
-Package | Description
- ---- | ----
-[**brainCloudClient_Java_X.X.X.X**](https://github.com/getbraincloud/braincloud-java/releases) | Android Java libraries
+Package: [**brainCloudClient_Java_X.X.X.X**](https://github.com/getbraincloud/braincloud-java/releases)
 
 ## Examples
 

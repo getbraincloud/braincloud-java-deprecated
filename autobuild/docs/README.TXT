@@ -5,6 +5,10 @@ including release history, api documentation, and tutorials please visit:
 
 http://apidocs.braincloudservers.com/
 
+For Java-Desktop projects, download the following JAR files:
+https://mvnrepository.com/artifact/org.java-websocket/Java-WebSocket
+https://mvnrepository.com/artifact/org.json/json
+
 Thanks and happy coding!
 - The brainCloud Team
 
