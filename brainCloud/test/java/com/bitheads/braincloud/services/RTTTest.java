@@ -21,6 +21,8 @@ public class RTTTest extends TestFixtureBase
 {
     @Test
     public void testRequestClientConnection() throws Exception {
+        System.out.println("testRequestClientConnection...");
+        
         TestResult tr = new TestResult(_wrapper);
 
         _wrapper.getRTTService().requestClientConnection(tr);
@@ -29,6 +31,8 @@ public class RTTTest extends TestFixtureBase
 
     @Test
     public void testEnableRTTWithWS() throws Exception {
+        System.out.println("testEnableRTTWithWS...");
+        
         RTTConnectionTestResult tr = new RTTConnectionTestResult(_wrapper);
 
         _wrapper.getClient().getRTTService().enableRTT(tr, true);
@@ -43,6 +47,8 @@ public class RTTTest extends TestFixtureBase
 
     @Test
     public void testEnableRTTWithTCP() throws Exception {
+        System.out.println("testEnableRTTWithTCP...");
+        
         RTTConnectionTestResult tr = new RTTConnectionTestResult(_wrapper);
 
         _wrapper.getClient().getRTTService().enableRTT(tr, false);
@@ -57,6 +63,8 @@ public class RTTTest extends TestFixtureBase
 
     @Test
     public void testChatCallback() throws Exception {
+        System.out.println("testChatCallback...");
+        
         String channelId;
         String msgId = "";
 
