@@ -1,5 +1,13 @@
 # brainCloud Java Library
 
+**NOTE:**
+
+This repo contains legacy versions of the brainCloud client API (4.13.0 and earlier).
+
+For the latest version of brainCloud, please refer to:
+
+https://github.com/getbraincloud/braincloud-java
+
 Thanks for downloading the brainCloud Java client library! Here are a few notes to get you started. Further information about the brainCloud API, including example Tutorials can be found here:
 
 http://getbraincloud.com/apidocs/
