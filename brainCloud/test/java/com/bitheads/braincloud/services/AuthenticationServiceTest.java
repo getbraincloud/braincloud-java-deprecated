@@ -240,36 +240,54 @@ public class AuthenticationServiceTest extends TestFixtureNoAuth
     }
 
     @Test
-    public void testResetUniversalIdPassword() throws Exception
-    {
+    public void testResetUniversalIdPassword() throws Exception {
+        System.out.println("Test: resetUniversalIdPassword");
+
         TestResult tr2 = new TestResult(_wrapper);
 
-        _wrapper.getClient().getAuthenticationService().authenticateUniversal(getUser(Users.UserB).id, getUser(Users.UserB).password, true, tr2);
-        
+        _wrapper.getClient().getAuthenticationService().authenticateUniversal(
+                getUser(Users.UserB).id,
+                getUser(Users.UserB).password,
+                true,
+                tr2);
+        tr2.Run();
+
+        _wrapper.getClient().getPlayerStateService().updateContactEmail(
+                "braincloudunittest@gmail.com",
+                tr2);
         tr2.Run();
 
         TestResult tr = new TestResult(_wrapper);
+
         _wrapper.getClient().getAuthenticationService().resetUniversalIdPassword(
-        //an example universal ID of userB
-        "userb-1177370719", tr);
+                getUser(Users.UserB).id,
+                tr);
         tr.Run();
     }
 
     @Test
-    public void testResetUniversalIdPasswordAdvanced() throws Exception
-    {
+    public void testResetUniversalIdPasswordAdvanced() throws Exception {
+        System.out.println("Test: resetUniversalIdPasswordAdvanced");
+
         TestResult tr2 = new TestResult(_wrapper);
 
-        _wrapper.getClient().getAuthenticationService().authenticateUniversal(getUser(Users.UserB).id, getUser(Users.UserB).password, true, tr2);
-        
+        _wrapper.getClient().getAuthenticationService().authenticateUniversal(
+                getUser(Users.UserB).id,
+                getUser(Users.UserB).password,
+                true,
+                tr2);
+        tr2.Run();
+
+        _wrapper.getClient().getPlayerStateService().updateContactEmail(
+                "braincloudunittest@gmail.com",
+                tr2);
         tr2.Run();
 
         TestResult tr = new TestResult(_wrapper);
 
-        String content = "{\"templateId\": \"8f14c77d-61f4-4966-ab6d-0bee8b13d090\", \"substitutions\": { \":name\": \"John Doe\",\":resetLink\": \"www.dummuyLink.io\"}, \"categories\": [\"category1\",\"category2\" ]}"; 
+        String content = "{\"templateId\": \"8f14c77d-61f4-4966-ab6d-0bee8b13d090\", \"substitutions\": { \":name\": \"John Doe\",\":resetLink\": \"www.dummuyLink.io\"}, \"categories\": [\"category1\",\"category2\" ]}";
         _wrapper.getClient().getAuthenticationService().resetUniversalIdPasswordAdvanced(
-            //an example universalId of userB
-                "userb-1177370719",
+                getUser(Users.UserB).id,
                 content,
                 tr);
 
@@ -277,40 +295,58 @@ public class AuthenticationServiceTest extends TestFixtureNoAuth
     }
 
     @Test
-    public void testResetUniversalIdPasswordWithExpiry() throws Exception
-    {
+    public void testResetUniversalIdPasswordWithExpiry() throws Exception {
+        System.out.println("Test: resetUniversalIdPasswordWithExpiry");
+
         TestResult tr2 = new TestResult(_wrapper);
 
-        _wrapper.getClient().getAuthenticationService().authenticateUniversal(getUser(Users.UserB).id, getUser(Users.UserB).password, true, tr2);
-        
+        _wrapper.getClient().getAuthenticationService().authenticateUniversal(
+                getUser(Users.UserB).id,
+                getUser(Users.UserB).password,
+                true,
+                tr2);
+        tr2.Run();
+
+        _wrapper.getClient().getPlayerStateService().updateContactEmail(
+                "braincloudunittest@gmail.com",
+                tr2);
         tr2.Run();
 
         TestResult tr = new TestResult(_wrapper);
+
         _wrapper.getClient().getAuthenticationService().resetUniversalIdPasswordWithExpiry(
-        //an example universal ID of userB
-        "userb-1177370719", 1 , tr);
+                getUser(Users.UserB).id,
+                1,
+                tr);
         tr.Run();
     }
 
     @Test
-    public void testResetUniversalIdPasswordAdvancedWithExpiry() throws Exception
-    {
+    public void testResetUniversalIdPasswordAdvancedWithExpiry() throws Exception {
+        System.out.println("Test: resetUniversalIdPasswordAdvancedWithExpiry");
+
         TestResult tr2 = new TestResult(_wrapper);
 
-        _wrapper.getClient().getAuthenticationService().authenticateUniversal(getUser(Users.UserB).id, getUser(Users.UserB).password, true, tr2);
-        
+        _wrapper.getClient().getAuthenticationService().authenticateUniversal(
+                getUser(Users.UserB).id,
+                getUser(Users.UserB).password,
+                true,
+                tr2);
+        tr2.Run();
+
+        _wrapper.getClient().getPlayerStateService().updateContactEmail(
+                "braincloudunittest@gmail.com",
+                tr2);
         tr2.Run();
 
         TestResult tr = new TestResult(_wrapper);
 
-        String content = "{\"templateId\": \"8f14c77d-61f4-4966-ab6d-0bee8b13d090\", \"substitutions\": { \":name\": \"John Doe\",\":resetLink\": \"www.dummuyLink.io\"}, \"categories\": [\"category1\",\"category2\" ]}"; 
+        String content = "{\"templateId\": \"8f14c77d-61f4-4966-ab6d-0bee8b13d090\", \"substitutions\": { \":name\": \"John Doe\",\":resetLink\": \"www.dummuyLink.io\"}, \"categories\": [\"category1\",\"category2\" ]}";
         _wrapper.getClient().getAuthenticationService().resetUniversalIdPasswordAdvancedWithExpiry(
-            //an example universalId of userB
-                "userb-1177370719",
+                getUser(Users.UserB).id,
                 content,
                 1,
                 tr);
-
         tr.Run();
     }
     
