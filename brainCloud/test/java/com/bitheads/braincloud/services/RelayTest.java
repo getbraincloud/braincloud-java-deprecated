@@ -173,6 +173,7 @@ public class RelayTest extends TestFixtureBase
     @Test
     public void testFullFlowWS() throws Exception {
         System.out.println("Starting test: testFullFlowWS...");
+        System.out.println("Endmatch set to: " + endMatch);
 
         fullFlow(RelayConnectionType.WEBSOCKET);
 
@@ -182,6 +183,7 @@ public class RelayTest extends TestFixtureBase
     @Test
     public void testFullFlowTCP() throws Exception {
         System.out.println("Starting test: testFullFlowTCP...");
+        System.out.println("Endmatch set to: " + endMatch);
 
         fullFlow(RelayConnectionType.TCP);
 
@@ -191,6 +193,7 @@ public class RelayTest extends TestFixtureBase
     @Test
     public void testFullFlowUDP() throws Exception {
         System.out.println("Starting test: testFullFlowUDP...");
+        System.out.println("Endmatch set to: " + endMatch);
 
         fullFlow(RelayConnectionType.UDP);
 
